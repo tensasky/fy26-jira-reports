@@ -132,14 +132,21 @@ curl -s http://127.0.0.1:18800/json/list
 - **当前版本**: v5.0（2026-03-11 重大更新 - SQLite 架构）
 
 ### 技术配置（v5.0 - SQLite 架构）
+- **主脚本**: `/Users/admin/.openclaw/workspace/scripts/fy26_daily_report_v5.sh`
 - **数据库**: `~/.openclaw/workspace/jira-reports/fy26_data.db`
 - **数据抓取**: `/Users/admin/.openclaw/workspace/scripts/fetch_fy26_v5.py`
 - **报告生成**: `/Users/admin/.openclaw/workspace/scripts/generate_fy26_report_v5.py`
 - **HTML 生成**: `/Users/admin/.openclaw/workspace/scripts/generate_fy26_html_v5.py`
 - **数据库架构**: `/Users/admin/.openclaw/workspace/scripts/fy26_db_schema.sql`
-- **邮件发送**: `/Users/admin/.openclaw/workspace/scripts/send_fy26_report_qq.py`
+- **邮件发送**: `/Users/admin/.openclaw/workspace/scripts/send_fy26_report_v5.py`
 - **定时任务**: `~/Library/LaunchAgents/com.openclaw.fy26-daily-report.plist`
 - **执行日志**: `/Users/admin/.openclaw/workspace/logs/fy26_daily_report.log`
+
+**执行流程（每天 18:00）：**
+1. **全量抓取数据** - 从所有 22 个项目抓取最新的 Epic/Feature/Initiative
+2. **生成 JSON 报告** - 从数据库读取数据并生成结构化报告
+3. **生成 HTML 报告** - 将 JSON 转换为可视化的 HTML 页面
+4. **发送邮件** - 通过 QQ 邮箱发送报告给 PMO 团队
 
 ### 邮件配置
 - **SMTP**: smtp.qq.com:587
@@ -205,10 +212,11 @@ curl -s http://127.0.0.1:18800/json/list
 3. 通过 Feature 的 parent 字段找到 CNTIN Initiative
 4. 额外抓取所有带 FY26_INIT 标签的 CNTIN Feature 和 Initiative
 
-**当前统计（2026-03-11 15:32）：**
-- **总 Initiatives**: 50 个
-- **总 Features**: 53 个
-- **总 Epics**: 85 个（11 个项目有 Epic）
+**当前统计（2026-03-11 16:15）：**
+- **总 Initiatives**: 75 个
+- **总 Features**: 78 个
+- **总 Epics**: 110 个（12 个项目有 Epic）
+  - CPR: 25 个
   - CNTEC: 17 个
   - OF: 17 个
   - EPCH: 16 个
@@ -220,22 +228,22 @@ curl -s http://127.0.0.1:18800/json/list
   - CNTMM: 3 个
   - CNENG: 1 个
   - CNTD: 1 个
-- **已关联的 Epics**: 50 个
+- **已关联的 Epics**: 75 个
 - **孤儿 Feature**: 3 个
 - **孤儿 Initiative**: 0 个
 
-**无 Epic 的项目（11 个）：**
-CNTEST, CNINFA, CNCA, CPR, CNCRM, CDM, CMDM, CNSCM, CSCPVT, CNPMO, CYBERPJT
+**无 Epic 的项目（10 个）：**
+CNTEST, CNINFA, CNCA, CNCRM, CDM, CMDM, CNSCM, CSCPVT, CNPMO, CYBERPJT
 
 ### 管理命令（v5.0）
 ```bash
 # 查看定时任务状态
 launchctl list | grep fy26
 
-# 手动执行完整流程（抓取 + 生成报告 + 发送邮件）
-/Users/admin/.openclaw/workspace/scripts/fy26_daily_report.sh
+# 手动执行完整流程（全量抓取 + 生成报告 + 发送邮件）
+/Users/admin/.openclaw/workspace/scripts/fy26_daily_report_v5.sh
 
-# 仅抓取数据（存入数据库）
+# 仅全量抓取数据（存入数据库）
 python3 /Users/admin/.openclaw/workspace/scripts/fetch_fy26_v5.py
 
 # 仅生成报告（从数据库读取）
@@ -244,11 +252,15 @@ python3 /Users/admin/.openclaw/workspace/scripts/generate_fy26_report_v5.py
 # 生成 HTML 报告
 python3 /Users/admin/.openclaw/workspace/scripts/generate_fy26_html_v5.py
 
+# 仅发送邮件（使用最新的 HTML 报告）
+export QQ_MAIL_PASSWORD="your_password"
+python3 /Users/admin/.openclaw/workspace/scripts/send_fy26_report_v5.py
+
 # 查看数据库统计
 sqlite3 ~/.openclaw/workspace/jira-reports/fy26_data.db "SELECT project, COUNT(*) FROM epics GROUP BY project ORDER BY COUNT(*) DESC"
 
 # 查看某个项目的 Epic
-sqlite3 ~/.openclaw/workspace/jira-reports/fy26_data.db "SELECT key, summary FROM epics WHERE project = 'SWMP'"
+sqlite3 ~/.openclaw/workspace/jira-reports/fy26_data.db "SELECT key, summary FROM epics WHERE project = 'CPR'"
 
 # 查看抓取日志
 sqlite3 ~/.openclaw/workspace/jira-reports/fy26_data.db "SELECT * FROM fetch_log ORDER BY fetched_at DESC LIMIT 10"
