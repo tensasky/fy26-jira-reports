@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-03-18
+
+### Fixed
+- **Exclude database files from git**: Added `*.db` to .gitignore
+- **Size reduction**: Removed ~7MB of tracked database files
+- Database files are now generated locally and not versioned
+
 ## [2.0.0] - 2026-03-18
 
 ### 🎉 Major Release - Complete Optimization Suite
