@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-03-18
+
+### Performance - Data Fetch Optimization (FY26_INIT)
+- **Parallel Project Fetching**: 4-5 concurrent workers for 22 projects
+  - Replaced sequential fetching with ThreadPoolExecutor
+  - Real-time progress display per project
+  - Individual retry logic for each project
+  - ~4x speedup for Step 4 (project Epic fetching)
+  
+- **Incremental Update Strategy (Delta Updates)**: Only fetch changed issues
+  - FetchState class tracks last update time per project
+  - JQL optimized: `project=X AND updated >= "YYYY-MM-DD HH:MM"`
+  - Full fetch every 7 days for data integrity
+  - State persisted to `.fetch_state.json`
+  - 90%+ time reduction when few changes
+
+### Expected Performance
+- Before: ~5 min for 22 projects (sequential)
+- After Parallel: ~1.5 min (5 concurrent workers)
+- After Incremental: ~30s (when only 10% changed)
+
 ## [1.2.0] - 2026-03-18
 
 ### Performance - AI Summary Optimization
