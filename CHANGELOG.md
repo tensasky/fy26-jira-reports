@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-03-18
+
+### Architecture - Pipeline Orchestration (FY26_INIT)
+- **True Pipeline Architecture**: Producer-Consumer pattern with multiprocessing
+  - Producer: Parallel fetching (5 workers)
+  - Consumer-1: DB writer (immediate persistence)
+  - Consumer-2: AI processor (background processing)
+  - Consumer-3: HTML renderer (progressive rendering)
+  
+- **Queue-Based Data Flow**:
+  - `result_queue`: Raw fetch results
+  - `db_queue`: Persisted data
+  - `ai_queue`: AI-processed data
+  - Real-time handoff between stages
+  
+- **Progressive HTML Rendering**:
+  - Start generating HTML immediately (no waiting for all projects)
+  - Dynamic progress display in generated HTML
+  - Component-based rendering
+  
+- **Monitor Process**:
+  - Real-time stats every 5 seconds
+  - Track fetch/processing/render progress
+  - Performance metrics
+
+### Expected Performance
+- Before: Sequential 4 steps (5 min total)
+- After: Parallel pipeline with overlap (3-3.5 min total)
+- Time reduction: 30-50%
+
 ## [1.4.0] - 2026-03-18
 
 ### Performance - Database & IO Optimization (FY26_INIT)
