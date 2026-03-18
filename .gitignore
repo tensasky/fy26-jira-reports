@@ -41,6 +41,7 @@ temp/
 jira-reports/*.json
 jira-reports/*.html
 jira-reports/*.csv
+jira-reports/*.db
 reports/*.html
 !reports/.gitkeep
 
