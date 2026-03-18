@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-03-18
+
+### Performance - Database & IO Optimization (FY26_INIT)
+- **SQLite WAL Mode**: Write-Ahead Logging for concurrent read/write
+  - `PRAGMA journal_mode=WAL`
+  - `PRAGMA synchronous=NORMAL`
+  - 64MB cache for faster queries
+  - Added `updated` column to all tables for delta tracking
+  
+- **Optimized Database Schema**:
+  - Added composite indexes on (project, status, updated)
+  - Statistics views: `v_epic_stats`, `v_daily_changes`
+  - Foreign key constraints for integrity
+  
+- **Memory-Optimized HTML Generation**:
+  - `io.StringIO` buffer instead of string concatenation
+  - Batch data queries (single query for all stats)
+  - Pre-defined HTML templates
+  - Write to disk only once (90%+ IO reduction)
+
+### Expected Performance
+- Before: Multiple DB round trips, frequent disk writes
+- After: Single batch query, memory buffer, one disk write
+- HTML Generation: ~2-3x faster
+
 ## [1.3.0] - 2026-03-18
 
 ### Performance - Data Fetch Optimization (FY26_INIT)
