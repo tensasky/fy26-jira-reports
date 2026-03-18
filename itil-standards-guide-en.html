@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FY26 ITIL Standards Implementation Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        @page {
+            size: 1920px 1080px;
+            margin: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .slide {
+            width: 1920px;
+            height: 1080px;
+            margin: 0 auto 40px;
+            background: linear-gradient(135deg, #D31334 0%, #9B0F28 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            page-break-after: always;
+        }
+        
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+        
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            padding: 80px 120px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .cover .content-wrapper {
+            justify-content: center;
+            align-items: flex-start;
+            text-align: left;
+        }
+        
+        .cover-label {
+            background: #D31334;
+            color: #ffffff;
+            padding: 12px 32px;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+        }
+        
+        .cover h1 {
+            font-size: 88px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+        
+        .cover .subtitle {
+            font-size: 32px;
+            color: #2D2D2D;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+        
+        .cover .highlight {
+            font-size: 36px;
+            color: #D31334;
+            font-weight: 600;
+            margin-bottom: 80px;
+        }
+        
+        .cover-footer {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-top: auto;
+        }
+        
+        .cover-icon {
+            width: 80px;
+            height: 80px;
+            background: #D31334;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 36px;
+        }
+        
+        .cover-meta {
+            font-size: 24px;
+            color: #2D2D2D;
+        }
+        
+        .cover-year {
+            margin-left: auto;
+            font-size: 48px;
+            font-weight: 700;
+            color: #D31334;
+        }
+        
+        .content-slide .header {
+            margin-bottom: 48px;
+        }
+        
+        .content-slide h2 {
+            font-size: 56px;
+            color: #1A1A1A;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .content-slide .section-num {
+            font-size: 24px;
+            color: #D31334;
+            font-weight: 600;
+            letter-spacing: 4px;
+        }
+        
+        .content-body {
+            flex: 1;
+            display: flex;
+            gap: 60px;
+        }
+        
+        .white-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+        
+        .gray-card {
+            background: #F8F8F8;
+            border-radius: 16px;
+            padding: 32px;
+            border-left: 6px solid #D31334;
+        }
+        
+        .card-number {
+            width: 60px;
+            height: 60px;
+            background: #D31334;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 12px;
+        }
+        
+        .card-desc {
+            font-size: 20px;
+            color: #2D2D2D;
+            line-height: 1.6;
+        }
+        
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        
+        .activity-item {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 28px;
+            border: 2px solid #D31334;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .activity-num {
+            width: 48px;
+            height: 48px;
+            background: #D31334;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .activity-content h4 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 8px;
+        }
+        
+        .activity-content p {
+            font-size: 18px;
+            color: #2D2D2D;
+        }
+        
+        .end-slide .content-wrapper {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .end-slide h2 {
+            font-size: 80px;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+        
+        .end-slide p {
+            font-size: 32px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .divider {
+            width: 80px;
+            height: 6px;
+            background: #D31334;
+            margin-bottom: 40px;
+        }
+        
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .three-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .metric-card {
+            background: #F8F8F8;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .metric-icon {
+            width: 56px;
+            height: 56px;
+            background: #D31334;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px;
+        }
+        
+        .metric-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 8px;
+        }
+        
+        .metric-desc {
+            font-size: 16px;
+            color: #2D2D2D;
+        }
+        
+        .kpis-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .kpis-list li {
+            padding: 16px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 20px;
+            color: #2D2D2D;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .kpis-list li::before {
+            content: '✓';
+            color: #D31334;
+            font-weight: bold;
+        }
+        
+        .team-badge {
+            display: inline-block;
+            background: #D31334;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover -->
+    <div class="slide cover">
+        <div class="content-wrapper" style="background: #ffffff;">
+            <div class="cover-label">FY26 STRATEGIC PLAN</div>
+            <h1>ITIL Standards<br>Implementation Guide</h1>
+            <p class="subtitle">Team Performance Metrics System Based on ITIL 4 Framework</p>
+            <p class="highlight">From Operational Excellence to Strategic Advantage</p>
+            <div class="cover-footer">
+                <div class="cover-icon">📊</div>
+                <div class="cover-meta">Portfolio &amp; Operation<br>Data-Driven Performance</div>
+                <div class="cover-year">2026</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contents -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">CONTENTS</div>
+                <h2 style="color: #1A1A1A;">Table of Contents</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div class="gray-card">
+                    <div class="card-number">01</div>
+                    <div class="card-title">ITIL 4 Framework Overview</div>
+                    <div class="card-desc">Service Value Chain &amp; Operating Model, Mapping OKRs to ITIL Standards</div>
+                </div>
+                <div class="gray-card">
+                    <div class="card-number">02</div>
+                    <div class="card-title">L1 Service Team Metrics</div>
+                    <div class="card-desc">Incident Management, Service Request Fulfillment, First Contact Resolution Rate</div>
+                </div>
+                <div class="gray-card">
+                    <div class="card-number">03</div>
+                    <div class="card-title">L2 Service Team Metrics</div>
+                    <div class="card-desc">Problem Management, Root Cause Analysis, Knowledge Management &amp; Enablement</div>
+                </div>
+                <div class="gray-card">
+                    <div class="card-number">04</div>
+                    <div class="card-title">NSO &amp; Hardware Team</div>
+                    <div class="card-desc">IT Asset Management, Change &amp; Release Management, New Store Deployment</div>
+                </div>
+                <div class="gray-card">
+                    <div class="card-number">05</div>
+                    <div class="card-title">Portfolio Management</div>
+                    <div class="card-desc">Project Delivery, Service Level Management, Resource Optimization</div>
+                </div>
+                <div class="gray-card">
+                    <div class="card-number">06</div>
+                    <div class="card-title">Vendor Management</div>
+                    <div class="card-desc">Supplier Performance, Financial Management, Compliance &amp; Risk Control</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ITIL 4 Framework -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">ITIL 4 SERVICE VALUE CHAIN</div>
+                <h2 style="color: #1A1A1A;">ITIL 4 Service Value Chain:<br>Our Operating Framework</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body">
+                <div style="flex: 1;">
+                    <div class="white-card" style="height: 100%;">
+                        <h3 style="font-size: 28px; color: #1A1A1A; margin-bottom: 32px; display: flex; align-items: center; gap: 16px;">
+                            <span style="width: 48px; height: 48px; background: #D31334; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">🔗</span>
+                            Six Core Activities
+                        </h3>
+                        <div class="activity-grid">
+                            <div class="activity-item">
+                                <div class="activity-num">1</div>
+                                <div class="activity-content">
+                                    <h4>Plan</h4>
+                                    <p>Strategic Planning &amp; Goal Alignment</p>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-num">2</div>
+                                <div class="activity-content">
+                                    <h4>Improve</h4>
+                                    <p>Continuous Improvement &amp; Optimization</p>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-num">3</div>
+                                <div class="activity-content">
+                                    <h4>Engage</h4>
+                                    <p>Stakeholder Engagement</p>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-num">4</div>
+                                <div class="activity-content">
+                                    <h4>Design &amp; Transition</h4>
+                                    <p>Service Design &amp; Transition</p>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-num">5</div>
+                                <div class="activity-content">
+                                    <h4>Obtain/Build</h4>
+                                    <p>Resource Acquisition &amp; Build</p>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-num">6</div>
+                                <div class="activity-content">
+                                    <h4>Deliver &amp; Support</h4>
+                                    <p>Service Delivery &amp; Support</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- L1 Service Team -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">L1 SERVICE TEAM METRICS</div>
+                <h2 style="color: #1A1A1A;">L1 Service Team KPIs</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body">
+                <div class="two-col" style="width: 100%;">
+                    <div class="white-card">
+                        <div class="team-badge">Service Desk</div>
+                        <ul class="kpis-list">
+                            <li>Incident Response Time &lt; 15 minutes</li>
+                            <li>First Contact Resolution Rate &gt; 75%</li>
+                            <li>Service Request Fulfillment SLA &gt; 90%</li>
+                            <li>Customer Satisfaction Score &gt; 4.2/5</li>
+                            <li>Average Handle Time optimization</li>
+                            <li>Ticket Escalation Rate &lt; 20%</li>
+                        </ul>
+                    </div>
+                    <div class="white-card">
+                        <div class="team-badge">Key Focus Areas</div>
+                        <ul class="kpis-list">
+                            <li>Reduce mean time to acknowledge (MTTA)</li>
+                            <li>Improve first call resolution (FCR)</li>
+                            <li>Enhance self-service adoption rate</li>
+                            <li>Standardize ticket categorization</li>
+                            <li>Strengthen knowledge base utilization</li>
+                            <li>Implement proactive monitoring alerts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- L2 Service Team -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">L2 SERVICE TEAM METRICS</div>
+                <h2 style="color: #1A1A1A;">L2 Service Team KPIs</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body">
+                <div class="two-col" style="width: 100%;">
+                    <div class="white-card">
+                        <div class="team-badge">Problem Management</div>
+                        <ul class="kpis-list">
+                            <li>Problem Identification Accuracy &gt; 85%</li>
+                            <li>Root Cause Analysis Completion Rate</li>
+                            <li>Known Error Database Update Timeliness</li>
+                            <li>Problem Resolution SLA Achievement</li>
+                            <li>Recurring Incident Reduction Rate</li>
+                            <li>Major Problem Review Documentation</li>
+                        </ul>
+                    </div>
+                    <div class="white-card">
+                        <div class="team-badge">Knowledge Management</div>
+                        <ul class="kpis-list">
+                            <li>Knowledge Article Creation Rate</li>
+                            <li>Knowledge Base Usage &amp; Feedback</li>
+                            <li>Technical Documentation Quality</li>
+                            <li>Cross-team Knowledge Transfer Sessions</li>
+                            <li>Training Material Development</li>
+                            <li>Lessons Learned Documentation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NSO & Hardware Team -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">NSO &amp; HARDWARE TEAM METRICS</div>
+                <h2 style="color: #1A1A1A;">NSO &amp; Hardware Team KPIs</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body">
+                <div class="three-col" style="width: 100%;">
+                    <div class="white-card">
+                        <div class="metric-icon">💻</div>
+                        <div class="metric-title">IT Asset Management</div>
+                        <ul class="kpis-list" style="text-align: left; margin-top: 20px;">
+                            <li>Asset Inventory Accuracy &gt; 98%</li>
+                            <li>Asset Lifecycle Tracking</li>
+                            <li>Procurement Process Efficiency</li>
+                            <li>Asset Disposal Compliance</li>
+                        </ul>
+                    </div>
+                    <div class="white-card">
+                        <div class="metric-icon">🔄</div>
+                        <div class="metric-title">Change &amp; Release</div>
+                        <ul class="kpis-list" style="text-align: left; margin-top: 20px;">
+                            <li>Change Success Rate &gt; 95%</li>
+                            <li>Emergency Change Rate &lt; 10%</li>
+                            <li>Release Deployment Time</li>
+                            <li>Rollback Rate Minimization</li>
+                        </ul>
+                    </div>
+                    <div class="white-card">
+                        <div class="metric-icon">🏪</div>
+                        <div class="metric-title">New Store Deployment</div>
+                        <ul class="kpis-list" style="text-align: left; margin-top: 20px;">
+                            <li>Store Opening On-time Rate &gt; 90%</li>
+                            <li>IT Infrastructure Setup Time</li>
+                            <li>Equipment Delivery Accuracy</li>
+                            <li>Post-opening Support Handover</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Management -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">PORTFOLIO MANAGEMENT METRICS</div>
+                <h2 style="color: #1A1A1A;">Portfolio Management KPIs</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body">
+                <div class="two-col" style="width: 100%;">
+                    <div class="white-card">
+                        <div class="team-badge">Project Delivery</div>
+                        <ul class="kpis-list">
+                            <li>Project On-time Delivery Rate &gt; 85%</li>
+                            <li>Budget Variance Control &lt; 10%</li>
+                            <li>Scope Change Management</li>
+                            <li>Resource Utilization Rate</li>
+                            <li>Project Risk Mitigation Effectiveness</li>
+                            <li>Stakeholder Satisfaction Score</li>
+                        </ul>
+                    </div>
+                    <div class="white-card">
+                        <div class="team-badge">Service Level Management</div>
+                        <ul class="kpis-list">
+                            <li>SLA Compliance Rate &gt; 95%</li>
+                            <li>Service Availability &gt; 99.5%</li>
+                            <li>Mean Time To Recovery (MTTR)</li>
+                            <li>Capacity Planning Accuracy</li>
+                            <li>Service Improvement Initiative Tracking</li>
+                            <li>Business Continuity Readiness</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor Management -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">VENDOR MANAGEMENT METRICS</div>
+                <h2 style="color: #1A1A1A;">Vendor Management KPIs</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body">
+                <div class="two-col" style="width: 100%;">
+                    <div class="white-card">
+                        <div class="team-badge">Supplier Performance</div>
+                        <ul class="kpis-list">
+                            <li>Vendor SLA Compliance &gt; 90%</li>
+                            <li>Service Quality Score &gt; 4.0/5</li>
+                            <li>Incident Resolution Time by Vendor</li>
+                            <li>Vendor Responsiveness Rating</li>
+                            <li>Contract Renewal Rate</li>
+                            <li>Vendor Diversification Index</li>
+                        </ul>
+                    </div>
+                    <div class="white-card">
+                        <div class="team-badge">Financial &amp; Risk</div>
+                        <ul class="kpis-list">
+                            <li>Cost Savings Achievement</li>
+                            <li>Budget vs. Actual Spend Variance</li>
+                            <li>Contract Compliance Rate</li>
+                            <li>Risk Assessment Completion</li>
+                            <li>Security Audit Pass Rate</li>
+                            <li>Vendor Business Continuity Plans</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Implementation Roadmap -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">IMPLEMENTATION ROADMAP</div>
+                <h2 style="color: #1A1A1A;">FY26 Implementation Timeline</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body">
+                <div class="white-card" style="width: 100%;">
+                    <div style="display: flex; justify-content: space-between; gap: 20px; margin-top: 20px;">
+                        <div style="flex: 1; text-align: center; padding: 24px; background: #F8F8F8; border-radius: 12px; border-top: 4px solid #D31334;">
+                            <div style="font-size: 24px; font-weight: 700; color: #D31334; margin-bottom: 12px;">Q1 2026</div>
+                            <div style="font-size: 18px; color: #1A1A1A; font-weight: 600;">Foundation</div>
+                            <div style="font-size: 16px; color: #2D2D2D; margin-top: 8px;">Framework Setup<br>Baseline Assessment<br>Tool Configuration</div>
+                        </div>
+                        <div style="flex: 1; text-align: center; padding: 24px; background: #F8F8F8; border-radius: 12px; border-top: 4px solid #D31334;">
+                            <div style="font-size: 24px; font-weight: 700; color: #D31334; margin-bottom: 12px;">Q2 2026</div>
+                            <div style="font-size: 18px; color: #1A1A1A; font-weight: 600;">Pilot</div>
+                            <div style="font-size: 16px; color: #2D2D2D; margin-top: 8px;">L1 &amp; L2 Teams<br>Dashboard Deployment<br>Training Program</div>
+                        </div>
+                        <div style="flex: 1; text-align: center; padding: 24px; background: #F8F8F8; border-radius: 12px; border-top: 4px solid #D31334;">
+                            <div style="font-size: 24px; font-weight: 700; color: #D31334; margin-bottom: 12px;">Q3 2026</div>
+                            <div style="font-size: 18px; color: #1A1A1A; font-weight: 600;">Expansion</div>
+                            <div style="font-size: 16px; color: #2D2D2D; margin-top: 8px;">All Teams Onboard<br>Integration Complete<br>Process Optimization</div>
+                        </div>
+                        <div style="flex: 1; text-align: center; padding: 24px; background: #F8F8F8; border-radius: 12px; border-top: 4px solid #D31334;">
+                            <div style="font-size: 24px; font-weight: 700; color: #D31334; margin-bottom: 12px;">Q4 2026</div>
+                            <div style="font-size: 18px; color: #1A1A1A; font-weight: 600;">Optimization</div>
+                            <div style="font-size: 16px; color: #2D2D2D; margin-top: 8px;">Full Operations<br>Continuous Improvement<br>FY27 Planning</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="slide" style="background: #ffffff;">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">SUMMARY</div>
+                <h2 style="color: #1A1A1A;">Key Takeaways</h2>
+            </div>
+            <div class="divider"></div>
+            <div class="content-body">
+                <div class="two-col" style="width: 100%;">
+                    <div class="white-card">
+                        <div class="team-badge">🎯 Core Principles</div>
+                        <ul class="kpis-list">
+                            <li>Align ITIL 4 framework with business OKRs</li>
+                            <li>Data-driven performance measurement</li>
+                            <li>Continuous improvement culture</li>
+                            <li>Cross-team collaboration &amp; transparency</li>
+                            <li>Proactive service management approach</li>
+                            <li>Stakeholder-centric value delivery</li>
+                        </ul>
+                    </div>
+                    <div class="white-card">
+                        <div class="team-badge">📈 Success Factors</div>
+                        <ul class="kpis-list">
+                            <li>Executive sponsorship &amp; commitment</li>
+                            <li>Clear accountability &amp; ownership</li>
+                            <li>Regular metric review &amp; adjustment</li>
+                            <li>Investment in training &amp; tools</li>
+                            <li>Vendor partnership excellence</li>
+                            <li>Agile adaptation to business needs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- End -->
+    <div class="slide end-slide">
+        <div class="content-wrapper">
+            <h2>Thank You</h2>
+            <p>Questions &amp; Discussion</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intake Summary Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --background: oklch(0.985 0 0);
+            --foreground: oklch(0.145 0 0);
+            --primary: oklch(0.55 0.18 260);
+            --primary-foreground: oklch(0.985 0 0);
+            --secondary: oklch(0.97 0 0);
+            --muted: oklch(0.97 0 0);
+            --muted-foreground: oklch(0.55 0 0);
+            --border: oklch(0.9 0 0);
+            --ring: oklch(0.55 0.18 260);
+            --radius: 0.75rem;
+            --success: oklch(0.65 0.15 150);
+            --warning: oklch(0.75 0.12 80);
+            --danger: oklch(0.6 0.2 25);
+        }
+        
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(180deg, oklch(0.97 0 0) 0%, oklch(0.99 0 0) 100%);
+            min-height: 100vh;
+        }
+        
+        /* Glassmorphism cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.03);
+        }
+        
+        /* Status badges */
+        .badge-open {
+            background: oklch(0.95 0.05 220);
+            color: oklch(0.5 0.15 220);
+            border: 1px solid oklch(0.9 0.08 220);
+        }
+        .badge-progress {
+            background: oklch(0.95 0.08 80);
+            color: oklch(0.6 0.12 80);
+            border: 1px solid oklch(0.9 0.1 80);
+        }
+        .badge-closed {
+            background: oklch(0.95 0.08 150);
+            color: oklch(0.45 0.12 150);
+            border: 1px solid oklch(0.9 0.1 150);
+        }
+        .badge-cancelled {
+            background: oklch(0.95 0 0);
+            color: oklch(0.5 0 0);
+            border: 1px solid oklch(0.85 0 0);
+        }
+        
+        /* KPI Cards with gradient accents */
+        .kpi-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-color) 0%, transparent 100%);
+        }
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        
+        /* Table styling */
+        .data-table th {
+            background: oklch(0.97 0 0);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            color: oklch(0.5 0 0);
+        }
+        .data-table tr:hover td {
+            background: oklch(0.985 0 0);
+        }
+        
+        /* Custom scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: oklch(0.97 0 0);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: oklch(0.8 0 0);
+            border-radius: 3px;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        /* Filter buttons */
+        .filter-btn {
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active {
+            background: oklch(0.55 0.18 260);
+            color: white;
+            box-shadow: 0 2px 8px oklch(0.55 0.18 260 / 0.3);
+        }
+        
+        /* SLA indicators */
+        .sla-critical {
+            background: oklch(0.95 0.1 25);
+            color: oklch(0.55 0.2 25);
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .sla-warning {
+            background: oklch(0.95 0.08 80);
+            color: oklch(0.6 0.12 80);
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .sla-normal {
+            color: oklch(0.5 0 0);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto space-y-6" id="app">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Intake Summary Dashboard</h1>
+                <p class="text-slate-500 text-sm mt-1">实时监控项目进度、费用及 SLA 风险状态</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="搜索号码/提交人..." 
+                        class="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-64 transition-all text-sm">
+                </div>
+                <button onclick="exportData()" 
+                    class="flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl transition-all font-medium text-sm shadow-lg shadow-slate-800/20">
+                    <i class="fa-solid fa-file-export"></i> 导出 Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Department Filters -->
+        <div class="glass-card p-2 rounded-2xl flex flex-wrap gap-2 animate-fade-in" style="animation-delay: 0.1s">
+            <button onclick="filterDept('All')" class="filter-btn active px-5 py-2 rounded-xl text-sm font-medium transition-all" data-dept="All">All</button>
+            <button onclick="filterDept('EC')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-dept="EC">EC</button>
+            <button onclick="filterDept('Marketing')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-dept="Marketing">Marketing</button>
+            <button onclick="filterDept('Retail')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-dept="Retail">Retail</button>
+            <button onclick="filterDept('SCM')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-dept="SCM">SCM</button>
+            <button onclick="filterDept('MP&A')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-dept="MP&A">MP&A</button>
+            <button onclick="filterDept('Corporate')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-dept="Corporate">Corporate</button>
+            <button onclick="filterDept('Tech')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all" data-dept="Tech">Tech</button>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 animate-fade-in" style="animation-delay: 0.2s">
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: oklch(0.55 0 0)">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">Intake 总数</div>
+                <div class="text-3xl font-black text-slate-800" id="totalCount">0</div>
+                <div class="text-xs text-slate-400 mt-2">全部项目</div>
+            </div>
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: oklch(0.55 0.15 220)">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">未开始</div>
+                <div class="text-3xl font-black text-blue-600" id="openCount">0</div>
+                <div class="text-xs text-blue-400 mt-2">待处理</div>
+            </div>
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: oklch(0.75 0.12 80)">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">进行中</div>
+                <div class="text-3xl font-black text-amber-600" id="progressCount">0</div>
+                <div class="text-xs text-amber-400 mt-2">开发中</div>
+            </div>
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: oklch(0.65 0.15 150)">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">已关闭</div>
+                <div class="text-3xl font-black text-emerald-600" id="closedCount">0</div>
+                <div class="text-xs text-emerald-400 mt-2">已完成</div>
+            </div>
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: oklch(0.5 0 0)">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">已取消</div>
+                <div class="text-3xl font-black text-slate-600" id="cancelledCount">0</div>
+                <div class="text-xs text-slate-400 mt-2">Cancelled</div>
+            </div>
+        </div>
+
+        <!-- Department Distribution Chart (Full Width) -->
+        <div class="glass-card p-6 rounded-2xl animate-fade-in" style="animation-delay: 0.3s">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-slate-800">部门分布</h3>
+                <div class="flex items-center gap-2 text-sm text-slate-500">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>按项目数量统计</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="relative" style="height: 320px;">
+                    <canvas id="deptChart"></canvas>
+                </div>
+                <div class="space-y-4">
+                    <div class="text-sm text-slate-600 mb-4">各部门项目数量及占比</div>
+                    <div id="deptLegend" class="space-y-3">
+                        <!-- 动态生成图例 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Filter & Actions -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in" style="animation-delay: 0.4s">
+            <div class="flex items-center gap-3 glass-card px-4 py-2.5 rounded-xl">
+                <i class="fa-regular fa-calendar-days text-slate-400"></i>
+                <span class="text-sm text-slate-600 font-medium">时间范围:</span>
+                <input type="date" id="dateFrom" class="bg-transparent text-sm focus:outline-none text-slate-700">
+                <span class="text-slate-400">-</span>
+                <input type="date" id="dateEnd" class="bg-transparent text-sm focus:outline-none text-slate-700">
+                <button onclick="applyDateFilter()" class="ml-2 text-blue-600 hover:text-blue-700 text-sm font-medium">
+                    <i class="fa-solid fa-filter"></i> 应用
+                </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-slate-500">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>共 <span id="filteredCount" class="font-semibold text-slate-700">0</span> 条记录</span>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="glass-card rounded-2xl overflow-hidden animate-fade-in" style="animation-delay: 0.5s">
+            <div class="overflow-x-auto custom-scroll">
+                <table class="w-full text-left data-table">
+                    <thead>
+                        <tr class="border-b border-slate-100">
+                            <th class="px-6 py-4">Intake 信息</th>
+                            <th class="px-6 py-4">类型</th>
+                            <th class="px-6 py-4 text-center">Pending</th>
+                            <th class="px-6 py-4">状态</th>
+                            <th class="px-6 py-4">费用</th>
+                            <th class="px-6 py-4">批复人</th>
+                            <th class="px-6 py-4">Scope</th>
+                            <th class="px-6 py-4">关联项</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- JS 动态填充 -->
+                    </tbody>
+                    <tfoot class="bg-slate-50/50 border-t border-slate-100">
+                        <tr class="font-semibold">
+                            <td colspan="4" class="px-6 py-4 text-right text-slate-600">总费用:</td>
+                            <td class="px-6 py-4 text-blue-600 text-lg" id="totalCostDisplay">¥ 0.00</td>
+                            <td colspan="3"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据
+        const rawData = [
+            { id: "INT-2024001", dept: "EC", user: "张三", type: "开发任务", created: "2024-02-15", pending: 18, status: "open", cost: 15000, approver: "Manager A", scope: "电商页面改版", link: "BRD-992" },
+            { id: "INT-2024002", dept: "Marketing", user: "李四", type: "配置任务", created: "2024-02-28", pending: 5, status: "inprogress", cost: 2000, approver: "Manager B", scope: "大促活动配置", link: "BRD-102" },
+            { id: "INT-2024003", dept: "Tech", user: "王五", type: "项目任务", created: "2024-02-20", pending: 12, status: "open", cost: 45000, approver: "Director C", scope: "底层架构升级", link: "BRD-441" },
+            { id: "INT-2024004", dept: "Retail", user: "赵六", type: "额外资金申请", created: "2024-03-01", pending: 2, status: "closed", cost: 8000, approver: "Manager D", scope: "门店设备采购", link: "BRD-322" },
+            { id: "INT-2024005", dept: "SCM", user: "陈七", type: "开发任务", created: "2024-01-10", pending: 54, status: "cancelled", cost: 0, approver: "Manager E", scope: "仓储逻辑优化", link: "BRD-112" },
+            { id: "INT-2024006", dept: "Corporate", user: "孙八", type: "项目任务", created: "2024-02-18", pending: 15, status: "open", cost: 12000, approver: "Manager F", scope: "内部系统升级", link: "BRD-005" },
+            { id: "INT-2024007", dept: "MP&A", user: "周九", type: "开发任务", created: "2024-02-25", pending: 8, status: "inprogress", cost: 28000, approver: "Director G", scope: "财务模块开发", link: "BRD-667" },
+            { id: "INT-2024008", dept: "EC", user: "吴十", type: "配置任务", created: "2024-03-05", pending: 0, status: "closed", cost: 3500, approver: "Manager A", scope: "促销规则配置", link: "BRD-223" },
+        ];
+
+        let currentDept = 'All';
+        let deptChart;
+
+        // 初始化
+        function init() {
+            // 设置默认日期
+            const end = new Date();
+            const start = new Date();
+            start.setDate(end.getDate() - 30);
+            document.getElementById('dateFrom').value = start.toISOString().split('T')[0];
+            document.getElementById('dateEnd').value = end.toISOString().split('T')[0];
+
+            renderTable();
+            initChart();
+            updateKPIs();
+        }
+
+        // 渲染表格
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            const filteredData = getFilteredData();
+            
+            tbody.innerHTML = filteredData.map(item => `
+                <tr class="transition-colors hover:bg-slate-50/50">
+                    <td class="px-6 py-4">
+                        <div class="font-semibold text-slate-800">${item.id}</div>
+                        <div class="text-xs text-slate-500 mt-0.5">
+                            <span class="inline-block px-2 py-0.5 bg-slate-100 rounded text-slate-600 mr-1">${item.dept}</span>
+                            ${item.user}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-slate-600">${item.type}</span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        ${getSLABadge(item.pending)}
+                    </td>
+                    <td class="px-6 py-4">
+                        ${getStatusBadge(item.status)}
+                    </td>
+                    <td class="px-6 py-4 font-medium text-slate-700">
+                        ¥ ${item.cost.toLocaleString()}
+                    </td>
+                    <td class="px-6 py-4 text-slate-600">
+                        ${item.approver}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="max-w-xs truncate text-slate-600" title="${item.scope}">
+                            ${item.scope}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="#" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium">
+                            ${item.link}
+                        </a>
+                    </td>
+                </tr>
+            `).join('');
+
+            // 更新总费用
+            const totalCost = filteredData.reduce((sum, item) => sum + item.cost, 0);
+            document.getElementById('totalCostDisplay').textContent = `¥ ${totalCost.toLocaleString()}`;
+            document.getElementById('filteredCount').textContent = filteredData.length;
+        }
+
+        // 获取 SLA 徽章
+        function getSLABadge(days) {
+            if (days > 30) {
+                return `<span class="sla-critical">${days} 天</span>`;
+            } else if (days > 14) {
+                return `<span class="sla-warning">${days} 天</span>`;
+            }
+            return `<span class="sla-normal text-slate-600">${days} 天</span>`;
+        }
+
+        // 获取状态徽章
+        function getStatusBadge(status) {
+            const badges = {
+                open: '<span class="badge-open px-3 py-1 rounded-full text-xs font-semibold">未开始</span>',
+                inprogress: '<span class="badge-progress px-3 py-1 rounded-full text-xs font-semibold">进行中</span>',
+                closed: '<span class="badge-closed px-3 py-1 rounded-full text-xs font-semibold">已关闭</span>',
+                cancelled: '<span class="badge-cancelled px-3 py-1 rounded-full text-xs font-semibold">已取消</span>'
+            };
+            return badges[status] || status;
+        }
+
+        // 获取过滤后的数据
+        function getFilteredData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            return rawData.filter(item => {
+                const matchDept = currentDept === 'All' || item.dept === currentDept;
+                const matchSearch = !searchTerm || 
+                    item.id.toLowerCase().includes(searchTerm) ||
+                    item.user.toLowerCase().includes(searchTerm) ||
+                    item.scope.toLowerCase().includes(searchTerm);
+                return matchDept && matchSearch;
+            });
+        }
+
+        // 更新 KPI
+        function updateKPIs() {
+            const data = getFilteredData();
+            document.getElementById('totalCount').textContent = data.length;
+            document.getElementById('openCount').textContent = data.filter(d => d.status === 'open').length;
+            document.getElementById('progressCount').textContent = data.filter(d => d.status === 'inprogress').length;
+            document.getElementById('closedCount').textContent = data.filter(d => d.status === 'closed').length;
+            document.getElementById('cancelledCount').textContent = data.filter(d => d.status === 'cancelled').length;
+        }
+
+        // 部门筛选
+        function filterDept(dept) {
+            currentDept = dept;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.dept === dept) {
+                    btn.classList.add('active');
+                    btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+                } else {
+                    btn.classList.remove('active');
+                    btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+                }
+            });
+
+            renderTable();
+            updateKPIs();
+            updateChart();
+        }
+
+        // 搜索
+        document.getElementById('searchInput').addEventListener('input', () => {
+            renderTable();
+            updateKPIs();
+        });
+
+        // 初始化图表
+        function initChart() {
+            const deptCtx = document.getElementById('deptChart').getContext('2d');
+            
+            // 计算部门数据
+            const deptCounts = {};
+            rawData.forEach(item => {
+                deptCounts[item.dept] = (deptCounts[item.dept] || 0) + 1;
+            });
+            
+            const labels = Object.keys(deptCounts);
+            const data = Object.values(deptCounts);
+            const total = data.reduce((a, b) => a + b, 0);
+            
+            // 生成图例
+            const colors = [
+                'oklch(0.55 0.18 260)',
+                'oklch(0.65 0.15 200)',
+                'oklch(0.6 0.12 280)',
+                'oklch(0.7 0.1 160)',
+                'oklch(0.75 0.12 80)',
+                'oklch(0.5 0 0)',
+                'oklch(0.65 0.1 320)',
+                'oklch(0.6 0.08 180)'
+            ];
+            
+            const legendHTML = labels.map((label, i) => {
+                const count = deptCounts[label];
+                const percent = ((count / total) * 100).toFixed(1);
+                return `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-4 h-4 rounded-full" style="background: ${colors[i % colors.length]}"></div>
+                            <span class="font-medium text-slate-700">${label}</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-lg font-bold text-slate-800">${count}</span>
+                            <span class="text-sm text-slate-500 w-14 text-right">${percent}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('deptLegend').innerHTML = legendHTML;
+            
+            deptChart = new Chart(deptCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%',
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        }
+
+        // 更新图表
+        function updateChart() {
+            const data = getFilteredData();
+            const deptCounts = {};
+            data.forEach(item => {
+                deptCounts[item.dept] = (deptCounts[item.dept] || 0) + 1;
+            });
+            
+            deptChart.data.labels = Object.keys(deptCounts);
+            deptChart.data.datasets[0].data = Object.values(deptCounts);
+            deptChart.update();
+        }
+
+        // 导出数据
+        function exportData() {
+            alert('导出功能：将数据导出为 Excel 格式\n\n实际项目中这里会调用后端 API 生成 Excel 文件');
+        }
+
+        // 应用日期筛选
+        function applyDateFilter() {
+            renderTable();
+            updateKPIs();
+        }
+
+        // 启动
+        init();
+    </script>
+</body>
+</html>

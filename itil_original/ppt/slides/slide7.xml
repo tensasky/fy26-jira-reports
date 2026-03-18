@@ -1,0 +1,1602 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld name="Slide 7"><p:bg><p:bgPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:bgPr></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Text 0"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="317500" y="317500"/><a:ext cx="11620500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" b="1" spc="100" kern="0" dirty="0"><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>L2 SERVICE TEAM - KNOWLEDGE MANAGEMENT</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Text 1"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="317500" y="571500"/><a:ext cx="11699875" cy="317500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="90000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="2250" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="Alimama ShuHeiTi" pitchFamily="34" charset="0"/><a:ea typeface="Alimama ShuHeiTi" pitchFamily="34" charset="-122"/><a:cs typeface="Alimama ShuHeiTi" pitchFamily="34" charset="-120"/></a:rPr><a:t>L2 Service: Knowledge Management & Enablement Metrics</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Shape 2"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="317500" y="984250"/><a:ext cx="762000" cy="31750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="762000" h="31750"><a:moveTo><a:pt x="0" y="0" /></a:moveTo><a:lnTo><a:pt x="762000" y="0" /></a:lnTo><a:lnTo><a:pt x="762000" y="31750" /></a:lnTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:lnTo><a:pt x="0" y="0" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="5" name="Shape 3"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="333375" y="1143000"/><a:ext cx="3754438" cy="2032000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3754438" h="2032000"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="3659177" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3711788" y="0" />
+                                        <a:pt x="3754438" y="42649" />
+                                        <a:pt x="3754438" y="95260" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3754438" y="1936740" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3754437" y="1989351" />
+                                        <a:pt x="3711788" y="2032000" />
+                                        <a:pt x="3659177" y="2032000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="31750" y="2032000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="2032000" />
+                                        <a:pt x="0" y="2017773" />
+                                        <a:pt x="0" y="2000250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="F8F8F8"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="6" name="Shape 4"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="333375" y="1143000"/><a:ext cx="31750" cy="2032000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="31750" h="2032000"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="31750" y="0" /></a:lnTo><a:lnTo><a:pt x="31750" y="2032000" /></a:lnTo><a:lnTo><a:pt x="31750" y="2032000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="2032000" />
+                                        <a:pt x="0" y="2017773" />
+                                        <a:pt x="0" y="2000250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="7" name="Shape 5"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="486172" y="1301750"/><a:ext cx="178594" cy="158750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="178594" h="158750"><a:moveTo><a:pt x="95963" y="-5860" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="94692" y="-8341" />
+                                        <a:pt x="92118" y="-9922" />
+                                        <a:pt x="89328" y="-9922" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="86537" y="-9922" />
+                                        <a:pt x="83964" y="-8341" />
+                                        <a:pt x="82693" y="-5860" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="59872" y="38850" /></a:lnTo><a:lnTo><a:pt x="10294" y="46726" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="7534" y="47160" />
+                                        <a:pt x="5240" y="49113" />
+                                        <a:pt x="4372" y="51780" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="3504" y="54446" />
+                                        <a:pt x="4217" y="57361" />
+                                        <a:pt x="6170" y="59345" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="41641" y="94847" /></a:lnTo><a:lnTo><a:pt x="33827" y="144425" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="33393" y="147185" />
+                                        <a:pt x="34541" y="149975" />
+                                        <a:pt x="36804" y="151619" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="39067" y="153262" />
+                                        <a:pt x="42044" y="153510" />
+                                        <a:pt x="44555" y="152239" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="89328" y="129480" /></a:lnTo><a:lnTo><a:pt x="134069" y="152239" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="136550" y="153510" />
+                                        <a:pt x="139557" y="153262" />
+                                        <a:pt x="141821" y="151619" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="144084" y="149975" />
+                                        <a:pt x="145231" y="147216" />
+                                        <a:pt x="144797" y="144425" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="136953" y="94847" /></a:lnTo><a:lnTo><a:pt x="172424" y="59345" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="174408" y="57361" />
+                                        <a:pt x="175090" y="54446" />
+                                        <a:pt x="174222" y="51780" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="173354" y="49113" />
+                                        <a:pt x="171090" y="47160" />
+                                        <a:pt x="168300" y="46726" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="118752" y="38850" /></a:lnTo><a:lnTo><a:pt x="95963" y="-5860" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="8" name="Text 6"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="674688" y="1270000"/><a:ext cx="3365500" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1250" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Knowledge Base Article Quality</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="9" name="Shape 7"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="476250" y="1587500"/><a:ext cx="3484563" cy="1143000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3484563" h="1143000"><a:moveTo><a:pt x="63505" y="0" /></a:moveTo><a:lnTo><a:pt x="3421057" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3456130" y="0" />
+                                        <a:pt x="3484563" y="28432" />
+                                        <a:pt x="3484563" y="63505" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3484563" y="1079495" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3484563" y="1114568" />
+                                        <a:pt x="3456130" y="1143000" />
+                                        <a:pt x="3421057" y="1143000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="63505" y="1143000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="28432" y="1143000" />
+                                        <a:pt x="0" y="1114568" />
+                                        <a:pt x="0" y="1079495" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="63505" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="28456" />
+                                        <a:pt x="28456" y="0" />
+                                        <a:pt x="63505" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="10" name="Text 8"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="571500" y="1682750"/><a:ext cx="3349625" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Quality Scoring Dimensions:</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="11" name="Text 9"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="571500" y="1905000"/><a:ext cx="3349625" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>• 准确性(30%)</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="12" name="Text 10"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="571500" y="2095500"/><a:ext cx="3349625" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>• 完整性(25%)</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="13" name="Text 11"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="571500" y="2286000"/><a:ext cx="3349625" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>• 可读性(25%)</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="14" name="Text 12"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="571500" y="2476500"/><a:ext cx="3349625" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>• 实用性(20%)</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="15" name="Text 13"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="476250" y="2825750"/><a:ext cx="698500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Target均分:</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="16" name="Text 14"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3318991" y="2794000"/><a:ext cx="738188" cy="254000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="110000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1500" b="1" dirty="0"><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>&gt; 4.0/5</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="17" name="Shape 15"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4228021" y="1143000"/><a:ext cx="3754438" cy="2032000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3754438" h="2032000"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="3659177" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3711788" y="0" />
+                                        <a:pt x="3754438" y="42649" />
+                                        <a:pt x="3754438" y="95260" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3754438" y="1936740" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3754437" y="1989351" />
+                                        <a:pt x="3711788" y="2032000" />
+                                        <a:pt x="3659177" y="2032000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="31750" y="2032000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="2032000" />
+                                        <a:pt x="0" y="2017773" />
+                                        <a:pt x="0" y="2000250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="F8F8F8"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="18" name="Shape 16"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4228021" y="1143000"/><a:ext cx="31750" cy="2032000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="31750" h="2032000"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="31750" y="0" /></a:lnTo><a:lnTo><a:pt x="31750" y="2032000" /></a:lnTo><a:lnTo><a:pt x="31750" y="2032000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="2032000" />
+                                        <a:pt x="0" y="2017773" />
+                                        <a:pt x="0" y="2000250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="19" name="Shape 17"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4400662" y="1301750"/><a:ext cx="138906" cy="158750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="138906" h="158750"><a:moveTo><a:pt x="138906" y="91777" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="138906" y="112334" />
+                                        <a:pt x="122256" y="128984" />
+                                        <a:pt x="101699" y="128984" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="99219" y="128984" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="93731" y="128984" />
+                                        <a:pt x="89297" y="124551" />
+                                        <a:pt x="89297" y="119062" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="89297" y="113574" />
+                                        <a:pt x="93731" y="109141" />
+                                        <a:pt x="99219" y="109141" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="101699" y="109141" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="111280" y="109141" />
+                                        <a:pt x="119062" y="101358" />
+                                        <a:pt x="119062" y="91777" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="119062" y="89297" /></a:lnTo><a:lnTo><a:pt x="99219" y="89297" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="88274" y="89297" />
+                                        <a:pt x="79375" y="80398" />
+                                        <a:pt x="79375" y="69453" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="79375" y="49609" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="79375" y="38664" />
+                                        <a:pt x="88274" y="29766" />
+                                        <a:pt x="99219" y="29766" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="119062" y="29766" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="130008" y="29766" />
+                                        <a:pt x="138906" y="38664" />
+                                        <a:pt x="138906" y="49609" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="138906" y="91777" /></a:lnTo><a:close /><a:moveTo><a:pt x="59531" y="91777" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="59531" y="112334" />
+                                        <a:pt x="42881" y="128984" />
+                                        <a:pt x="22324" y="128984" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="19844" y="128984" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14356" y="128984" />
+                                        <a:pt x="9922" y="124551" />
+                                        <a:pt x="9922" y="119062" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="9922" y="113574" />
+                                        <a:pt x="14356" y="109141" />
+                                        <a:pt x="19844" y="109141" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="22324" y="109141" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="31905" y="109141" />
+                                        <a:pt x="39688" y="101358" />
+                                        <a:pt x="39688" y="91777" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="39688" y="89297" /></a:lnTo><a:lnTo><a:pt x="19844" y="89297" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="8899" y="89297" />
+                                        <a:pt x="0" y="80398" />
+                                        <a:pt x="0" y="69453" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="49609" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="38664" />
+                                        <a:pt x="8899" y="29766" />
+                                        <a:pt x="19844" y="29766" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="39688" y="29766" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="50633" y="29766" />
+                                        <a:pt x="59531" y="38664" />
+                                        <a:pt x="59531" y="49609" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="59531" y="91777" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="20" name="Text 18"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4569333" y="1270000"/><a:ext cx="3365500" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1250" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>L1Citation率</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="21" name="Shape 19"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4370896" y="1587500"/><a:ext cx="3484563" cy="730250"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3484563" h="730250"><a:moveTo><a:pt x="63503" y="0" /></a:moveTo><a:lnTo><a:pt x="3421060" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3456131" y="0" />
+                                        <a:pt x="3484563" y="28431" />
+                                        <a:pt x="3484563" y="63503" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3484563" y="666747" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3484563" y="701819" />
+                                        <a:pt x="3456131" y="730250" />
+                                        <a:pt x="3421060" y="730250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="63503" y="730250" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="28431" y="730250" />
+                                        <a:pt x="0" y="701819" />
+                                        <a:pt x="0" y="666747" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="63503" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="28455" />
+                                        <a:pt x="28455" y="0" />
+                                        <a:pt x="63503" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="22" name="Text 20"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4466146" y="1682750"/><a:ext cx="3349625" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Calculation Formula:</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="23" name="Shape 21"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4466146" y="1905000"/><a:ext cx="3294063" cy="317500"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3294063" h="317500"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="3262313" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3279836" y="0" />
+                                        <a:pt x="3294063" y="14227" />
+                                        <a:pt x="3294063" y="31750" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3294063" y="285750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3294063" y="303273" />
+                                        <a:pt x="3279836" y="317500" />
+                                        <a:pt x="3262313" y="317500" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="31750" y="317500" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="317500" />
+                                        <a:pt x="0" y="303273" />
+                                        <a:pt x="0" y="285750" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="F0F0F0"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="24" name="Text 22"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4466146" y="1905000"/><a:ext cx="3357563" cy="317500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="63500" tIns="63500" rIns="63500" bIns="63500" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>L1 Citation of L2 Articles ÷ L1 Total Resolutions × 100%</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="25" name="Text 23"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4370896" y="2444750"/><a:ext cx="571500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Target Value:</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="26" name="Text 24"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="7084095" y="2413000"/><a:ext cx="865188" cy="254000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="110000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1500" b="1" dirty="0"><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Improve30%</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="27" name="Shape 25"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4386771" y="2754313"/><a:ext cx="111125" cy="111125"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="111125" h="111125"><a:moveTo><a:pt x="13891" y="13891" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="13891" y="10049" />
+                                        <a:pt x="10787" y="6945" />
+                                        <a:pt x="6945" y="6945" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="3104" y="6945" />
+                                        <a:pt x="0" y="10049" />
+                                        <a:pt x="0" y="13891" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="86816" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="96410" />
+                                        <a:pt x="7770" y="104180" />
+                                        <a:pt x="17363" y="104180" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="104180" y="104180" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="108021" y="104180" />
+                                        <a:pt x="111125" y="101076" />
+                                        <a:pt x="111125" y="97234" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="111125" y="93393" />
+                                        <a:pt x="108021" y="90289" />
+                                        <a:pt x="104180" y="90289" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="17363" y="90289" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="15453" y="90289" />
+                                        <a:pt x="13891" y="88726" />
+                                        <a:pt x="13891" y="86816" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="13891" y="13891" /></a:lnTo><a:close /><a:moveTo><a:pt x="102140" y="32686" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="104853" y="29973" />
+                                        <a:pt x="104853" y="25567" />
+                                        <a:pt x="102140" y="22854" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="99426" y="20141" />
+                                        <a:pt x="95021" y="20141" />
+                                        <a:pt x="92308" y="22854" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="69453" y="45731" /></a:lnTo><a:lnTo><a:pt x="56995" y="33294" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="54282" y="30581" />
+                                        <a:pt x="49876" y="30581" />
+                                        <a:pt x="47163" y="33294" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="26327" y="54130" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="23614" y="56843" />
+                                        <a:pt x="23614" y="61249" />
+                                        <a:pt x="26327" y="63962" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="29040" y="66675" />
+                                        <a:pt x="33446" y="66675" />
+                                        <a:pt x="36159" y="63962" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="52090" y="48031" /></a:lnTo><a:lnTo><a:pt x="64548" y="60489" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="67261" y="63202" />
+                                        <a:pt x="71667" y="63202" />
+                                        <a:pt x="74380" y="60489" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="102161" y="32708" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="28" name="Text 26"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4533615" y="2730500"/><a:ext cx="3377406" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>衡量知识赋能效果</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="29" name="Shape 27"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="333375" y="3302000"/><a:ext cx="3754438" cy="1936750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3754438" h="1936750"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="3659188" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3711793" y="0" />
+                                        <a:pt x="3754438" y="42645" />
+                                        <a:pt x="3754438" y="95249" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3754438" y="1841501" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3754438" y="1894105" />
+                                        <a:pt x="3711793" y="1936750" />
+                                        <a:pt x="3659188" y="1936750" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="31750" y="1936750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="1936750" />
+                                        <a:pt x="0" y="1922523" />
+                                        <a:pt x="0" y="1905000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="F8F8F8"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="30" name="Shape 28"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="333375" y="3302000"/><a:ext cx="31750" cy="1936750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="31750" h="1936750"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="31750" y="0" /></a:lnTo><a:lnTo><a:pt x="31750" y="1936750" /></a:lnTo><a:lnTo><a:pt x="31750" y="1936750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="1936750" />
+                                        <a:pt x="0" y="1922523" />
+                                        <a:pt x="0" y="1905000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"><a:alpha val="60000"/></a:srgbClr></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="31" name="Shape 29"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="496094" y="3460750"/><a:ext cx="158750" cy="158750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="158750" h="158750"><a:moveTo><a:pt x="148859" y="59531" /></a:moveTo><a:lnTo><a:pt x="151309" y="59531" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="155432" y="59531" />
+                                        <a:pt x="158750" y="56214" />
+                                        <a:pt x="158750" y="52090" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="158750" y="7441" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="158750" y="4434" />
+                                        <a:pt x="156952" y="1705" />
+                                        <a:pt x="154161" y="558" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="151371" y="-589" />
+                                        <a:pt x="148177" y="62" />
+                                        <a:pt x="146038" y="2170" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="130008" y="18231" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="116272" y="6852" />
+                                        <a:pt x="98599" y="0" />
+                                        <a:pt x="79375" y="0" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="39377" y="0" />
+                                        <a:pt x="6294" y="29580" />
+                                        <a:pt x="806" y="68058" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="31" y="73484" />
+                                        <a:pt x="3783" y="78507" />
+                                        <a:pt x="9209" y="79282" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="14635" y="80057" />
+                                        <a:pt x="19658" y="76274" />
+                                        <a:pt x="20433" y="70879" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="24557" y="42013" />
+                                        <a:pt x="49392" y="19844" />
+                                        <a:pt x="79375" y="19844" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="93142" y="19844" />
+                                        <a:pt x="105792" y="24495" />
+                                        <a:pt x="115869" y="32339" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="101389" y="46819" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="99250" y="48958" />
+                                        <a:pt x="98630" y="52152" />
+                                        <a:pt x="99777" y="54942" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="100924" y="57733" />
+                                        <a:pt x="103653" y="59531" />
+                                        <a:pt x="106660" y="59531" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="148859" y="59531" /></a:lnTo><a:close /><a:moveTo><a:pt x="157975" y="90692" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="158750" y="85266" />
+                                        <a:pt x="154967" y="80243" />
+                                        <a:pt x="149572" y="79468" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="144177" y="78693" />
+                                        <a:pt x="139123" y="82476" />
+                                        <a:pt x="138348" y="87871" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="134224" y="116706" />
+                                        <a:pt x="109389" y="138875" />
+                                        <a:pt x="79406" y="138875" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="65639" y="138875" />
+                                        <a:pt x="52989" y="134224" />
+                                        <a:pt x="42912" y="126380" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="57361" y="111931" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="59500" y="109792" />
+                                        <a:pt x="60120" y="106598" />
+                                        <a:pt x="58973" y="103808" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="57826" y="101017" />
+                                        <a:pt x="55097" y="99219" />
+                                        <a:pt x="52090" y="99219" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="7441" y="99219" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3318" y="99219" />
+                                        <a:pt x="0" y="102536" />
+                                        <a:pt x="0" y="106660" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="151309" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="154316" />
+                                        <a:pt x="1798" y="157045" />
+                                        <a:pt x="4589" y="158192" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="7379" y="159339" />
+                                        <a:pt x="10573" y="158688" />
+                                        <a:pt x="12712" y="156580" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="28773" y="140519" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="42478" y="151898" />
+                                        <a:pt x="60151" y="158750" />
+                                        <a:pt x="79375" y="158750" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="119373" y="158750" />
+                                        <a:pt x="152456" y="129170" />
+                                        <a:pt x="157944" y="90692" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="32" name="Text 30"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="674688" y="3429000"/><a:ext cx="3365500" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1250" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Knowledge Update Timeliness</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="33" name="Shape 31"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="476250" y="3746500"/><a:ext cx="3484563" cy="412750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3484563" h="412750"><a:moveTo><a:pt x="63502" y="0" /></a:moveTo><a:lnTo><a:pt x="3421061" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3456132" y="0" />
+                                        <a:pt x="3484563" y="28431" />
+                                        <a:pt x="3484563" y="63502" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3484563" y="349248" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3484563" y="384319" />
+                                        <a:pt x="3456132" y="412750" />
+                                        <a:pt x="3421061" y="412750" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="63502" y="412750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="28431" y="412750" />
+                                        <a:pt x="0" y="384319" />
+                                        <a:pt x="0" y="349248" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="63502" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="28454" />
+                                        <a:pt x="28454" y="0" />
+                                        <a:pt x="63502" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="34" name="Text 32"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="571500" y="3857625"/><a:ext cx="571500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>常规更新</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="35" name="Text 33"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3518669" y="3841750"/><a:ext cx="412750" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1125" b="1" dirty="0"><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>&lt; 7天</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="36" name="Shape 34"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="476250" y="4222750"/><a:ext cx="3484563" cy="412750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3484563" h="412750"><a:moveTo><a:pt x="63502" y="0" /></a:moveTo><a:lnTo><a:pt x="3421061" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3456132" y="0" />
+                                        <a:pt x="3484563" y="28431" />
+                                        <a:pt x="3484563" y="63502" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3484563" y="349248" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3484563" y="384319" />
+                                        <a:pt x="3456132" y="412750" />
+                                        <a:pt x="3421061" y="412750" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="63502" y="412750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="28431" y="412750" />
+                                        <a:pt x="0" y="384319" />
+                                        <a:pt x="0" y="349248" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="63502" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="28454" />
+                                        <a:pt x="28454" y="0" />
+                                        <a:pt x="63502" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="37" name="Text 35"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="571500" y="4333875"/><a:ext cx="571500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>紧急更新</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="38" name="Text 36"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3489089" y="4318000"/><a:ext cx="444500" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1125" b="1" dirty="0"><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>&lt; 24h</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="39" name="Shape 37"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="476250" y="4699000"/><a:ext cx="3484563" cy="412750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3484563" h="412750"><a:moveTo><a:pt x="63502" y="0" /></a:moveTo><a:lnTo><a:pt x="3421061" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3456132" y="0" />
+                                        <a:pt x="3484563" y="28431" />
+                                        <a:pt x="3484563" y="63502" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3484563" y="349248" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3484563" y="384319" />
+                                        <a:pt x="3456132" y="412750" />
+                                        <a:pt x="3421061" y="412750" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="63502" y="412750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="28431" y="412750" />
+                                        <a:pt x="0" y="384319" />
+                                        <a:pt x="0" y="349248" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="63502" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="28454" />
+                                        <a:pt x="28454" y="0" />
+                                        <a:pt x="63502" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="40" name="Text 38"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="571500" y="4810125"/><a:ext cx="825500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>过期文章清理</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="41" name="Text 39"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3577146" y="4794250"/><a:ext cx="357188" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1125" b="1" dirty="0"><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>月度</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="42" name="Shape 40"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4228021" y="3302000"/><a:ext cx="3754438" cy="1936750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3754438" h="1936750"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="3659188" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3711793" y="0" />
+                                        <a:pt x="3754438" y="42645" />
+                                        <a:pt x="3754438" y="95249" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3754438" y="1841501" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3754438" y="1894105" />
+                                        <a:pt x="3711793" y="1936750" />
+                                        <a:pt x="3659188" y="1936750" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="31750" y="1936750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="1936750" />
+                                        <a:pt x="0" y="1922523" />
+                                        <a:pt x="0" y="1905000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="F8F8F8"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="43" name="Shape 41"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4228021" y="3302000"/><a:ext cx="31750" cy="1936750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="31750" h="1936750"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="31750" y="0" /></a:lnTo><a:lnTo><a:pt x="31750" y="1936750" /></a:lnTo><a:lnTo><a:pt x="31750" y="1936750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="1936750" />
+                                        <a:pt x="0" y="1922523" />
+                                        <a:pt x="0" y="1905000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"><a:alpha val="60000"/></a:srgbClr></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="44" name="Shape 42"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4380818" y="3460750"/><a:ext cx="178594" cy="158750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="178594" h="158750"><a:moveTo><a:pt x="14883" y="60709" /></a:moveTo><a:lnTo><a:pt x="79747" y="87406" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="82786" y="88646" />
+                                        <a:pt x="86010" y="89297" />
+                                        <a:pt x="89297" y="89297" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="92583" y="89297" />
+                                        <a:pt x="95808" y="88646" />
+                                        <a:pt x="98847" y="87406" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="174005" y="56462" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="176795" y="55314" />
+                                        <a:pt x="178594" y="52617" />
+                                        <a:pt x="178594" y="49609" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="178594" y="46602" />
+                                        <a:pt x="176795" y="43904" />
+                                        <a:pt x="174005" y="42757" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="98847" y="11813" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="95808" y="10573" />
+                                        <a:pt x="92583" y="9922" />
+                                        <a:pt x="89297" y="9922" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="86010" y="9922" />
+                                        <a:pt x="82786" y="10573" />
+                                        <a:pt x="79747" y="11813" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="4589" y="42757" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="1798" y="43904" />
+                                        <a:pt x="0" y="46602" />
+                                        <a:pt x="0" y="49609" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="141387" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="145510" />
+                                        <a:pt x="3318" y="148828" />
+                                        <a:pt x="7441" y="148828" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="11565" y="148828" />
+                                        <a:pt x="14883" y="145510" />
+                                        <a:pt x="14883" y="141387" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="14883" y="60709" /></a:lnTo><a:close /><a:moveTo><a:pt x="29766" y="82941" /></a:moveTo><a:lnTo><a:pt x="29766" y="119062" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="29766" y="135496" />
+                                        <a:pt x="56431" y="148828" />
+                                        <a:pt x="89297" y="148828" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="122163" y="148828" />
+                                        <a:pt x="148828" y="135496" />
+                                        <a:pt x="148828" y="119062" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="148828" y="82910" /></a:lnTo><a:lnTo><a:pt x="104521" y="101172" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="99684" y="103156" />
+                                        <a:pt x="94537" y="104180" />
+                                        <a:pt x="89297" y="104180" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="84057" y="104180" />
+                                        <a:pt x="78910" y="103156" />
+                                        <a:pt x="74073" y="101172" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="29766" y="82910" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="45" name="Text 43"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4569333" y="3429000"/><a:ext cx="3365500" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1250" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Training Effectiveness Assessment</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="46" name="Shape 44"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4370896" y="3746500"/><a:ext cx="3484563" cy="571500"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3484563" h="571500"><a:moveTo><a:pt x="63499" y="0" /></a:moveTo><a:lnTo><a:pt x="3421063" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3456133" y="0" />
+                                        <a:pt x="3484563" y="28430" />
+                                        <a:pt x="3484563" y="63499" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3484563" y="508001" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3484563" y="543070" />
+                                        <a:pt x="3456133" y="571500" />
+                                        <a:pt x="3421063" y="571500" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="63499" y="571500" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="28430" y="571500" />
+                                        <a:pt x="0" y="543070" />
+                                        <a:pt x="0" y="508001" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="63499" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="28453" />
+                                        <a:pt x="28453" y="0" />
+                                        <a:pt x="63499" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="47" name="Text 45"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4466146" y="3841750"/><a:ext cx="3349625" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>培训after测试Through率</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="48" name="Text 46"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4466146" y="4000500"/><a:ext cx="3373438" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1250" b="1" dirty="0"><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>&gt; 90%</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="49" name="Shape 47"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4370896" y="4381500"/><a:ext cx="3484563" cy="571500"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3484563" h="571500"><a:moveTo><a:pt x="63499" y="0" /></a:moveTo><a:lnTo><a:pt x="3421063" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3456133" y="0" />
+                                        <a:pt x="3484563" y="28430" />
+                                        <a:pt x="3484563" y="63499" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3484563" y="508001" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3484563" y="543070" />
+                                        <a:pt x="3456133" y="571500" />
+                                        <a:pt x="3421063" y="571500" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="63499" y="571500" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="28430" y="571500" />
+                                        <a:pt x="0" y="543070" />
+                                        <a:pt x="0" y="508001" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="63499" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="28453" />
+                                        <a:pt x="28453" y="0" />
+                                        <a:pt x="63499" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="50" name="Text 48"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4466146" y="4476750"/><a:ext cx="3349625" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>技能应用率(30天internal)</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="51" name="Text 49"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4466146" y="4635500"/><a:ext cx="3373438" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1250" b="1" dirty="0"><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>&gt; 75%</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="52" name="Shape 50"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="317500" y="5365750"/><a:ext cx="7659688" cy="1492250"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="7659688" h="1492250"><a:moveTo><a:pt x="95250" y="0" /></a:moveTo><a:lnTo><a:pt x="7564437" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="7617042" y="0" />
+                                        <a:pt x="7659688" y="42645" />
+                                        <a:pt x="7659688" y="95250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="7659688" y="1397000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="7659688" y="1449605" />
+                                        <a:pt x="7617042" y="1492250" />
+                                        <a:pt x="7564437" y="1492250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="95250" y="1492250" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="42645" y="1492250" />
+                                        <a:pt x="0" y="1449605" />
+                                        <a:pt x="0" y="1397000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="95250" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="42645" />
+                                        <a:pt x="42645" y="0" />
+                                        <a:pt x="95250" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="F8F8F8"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="53" name="Shape 51"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="464344" y="5524500"/><a:ext cx="158750" cy="158750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="158750" h="158750"><a:moveTo><a:pt x="47222" y="18604" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="61547" y="-6201" />
+                                        <a:pt x="97358" y="-6201" />
+                                        <a:pt x="111683" y="18604" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="123248" y="38633" /></a:lnTo><a:lnTo><a:pt x="131837" y="33672" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="134441" y="32153" />
+                                        <a:pt x="137697" y="32370" />
+                                        <a:pt x="140084" y="34199" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="142472" y="36029" />
+                                        <a:pt x="143526" y="39129" />
+                                        <a:pt x="142751" y="42044" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="135465" y="69143" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="134410" y="73112" />
+                                        <a:pt x="130318" y="75468" />
+                                        <a:pt x="126349" y="74414" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="99250" y="67159" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="96335" y="66384" />
+                                        <a:pt x="94196" y="63934" />
+                                        <a:pt x="93793" y="60958" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="93390" y="57981" />
+                                        <a:pt x="94847" y="55035" />
+                                        <a:pt x="97451" y="53547" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="106040" y="48586" /></a:lnTo><a:lnTo><a:pt x="94475" y="28556" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="87778" y="16991" />
+                                        <a:pt x="71096" y="16991" />
+                                        <a:pt x="64399" y="28556" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="62756" y="31378" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="60027" y="36122" />
+                                        <a:pt x="53950" y="37734" />
+                                        <a:pt x="49206" y="35006" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="44462" y="32277" />
+                                        <a:pt x="42850" y="26200" />
+                                        <a:pt x="45579" y="21425" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="47222" y="18604" /></a:lnTo><a:close /><a:moveTo><a:pt x="139433" y="86537" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="144177" y="83809" />
+                                        <a:pt x="150254" y="85421" />
+                                        <a:pt x="152983" y="90165" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="154626" y="92987" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="168951" y="117791" />
+                                        <a:pt x="151061" y="148797" />
+                                        <a:pt x="122411" y="148797" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="99281" y="148797" /></a:lnTo><a:lnTo><a:pt x="99281" y="158719" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="99281" y="161727" />
+                                        <a:pt x="97482" y="164455" />
+                                        <a:pt x="94692" y="165602" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="91901" y="166750" />
+                                        <a:pt x="88708" y="166129" />
+                                        <a:pt x="86568" y="163990" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="66725" y="144146" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="63810" y="141232" />
+                                        <a:pt x="63810" y="136519" />
+                                        <a:pt x="66725" y="133635" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="86568" y="113792" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="88708" y="111652" />
+                                        <a:pt x="91901" y="111032" />
+                                        <a:pt x="94692" y="112179" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="97482" y="113326" />
+                                        <a:pt x="99281" y="116055" />
+                                        <a:pt x="99281" y="119062" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="99281" y="128984" /></a:lnTo><a:lnTo><a:pt x="122411" y="128984" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="135775" y="128984" />
+                                        <a:pt x="144146" y="114505" />
+                                        <a:pt x="137449" y="102939" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="135806" y="100118" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="133077" y="95374" />
+                                        <a:pt x="134689" y="89297" />
+                                        <a:pt x="139433" y="86568" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="15813" y="72988" /></a:moveTo><a:lnTo><a:pt x="7224" y="68027" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="4620" y="66508" />
+                                        <a:pt x="3163" y="63593" />
+                                        <a:pt x="3566" y="60616" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="3969" y="57640" />
+                                        <a:pt x="6108" y="55190" />
+                                        <a:pt x="9023" y="54415" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="36122" y="47129" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="40091" y="46075" />
+                                        <a:pt x="44183" y="48431" />
+                                        <a:pt x="45238" y="52400" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="52493" y="79499" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="53268" y="82414" />
+                                        <a:pt x="52214" y="85483" />
+                                        <a:pt x="49826" y="87344" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="47439" y="89204" />
+                                        <a:pt x="44183" y="89390" />
+                                        <a:pt x="41579" y="87871" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="32990" y="82910" /></a:lnTo><a:lnTo><a:pt x="21425" y="102939" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14728" y="114505" />
+                                        <a:pt x="23099" y="128984" />
+                                        <a:pt x="36463" y="128984" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="39750" y="128984" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="45238" y="128984" />
+                                        <a:pt x="49671" y="133418" />
+                                        <a:pt x="49671" y="138906" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="49671" y="144394" />
+                                        <a:pt x="45238" y="148828" />
+                                        <a:pt x="39750" y="148828" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="36463" y="148828" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="7844" y="148828" />
+                                        <a:pt x="-10046" y="117822" />
+                                        <a:pt x="4279" y="93018" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="15813" y="72988" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="54" name="Text 52"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="642938" y="5492750"/><a:ext cx="7286625" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1250" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Knowledge Cycle闭环机制</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="55" name="Shape 53"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="1004900" y="5810250"/><a:ext cx="508000" cy="508000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="508000" h="508000"><a:moveTo><a:pt x="254000" y="0" /></a:moveTo><a:lnTo><a:pt x="254000" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="394186" y="0" />
+                                        <a:pt x="508000" y="113814" />
+                                        <a:pt x="508000" y="254000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="508000" y="254000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="508000" y="394186" />
+                                        <a:pt x="394186" y="508000" />
+                                        <a:pt x="254000" y="508000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="254000" y="508000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="113814" y="508000" />
+                                        <a:pt x="0" y="394186" />
+                                        <a:pt x="0" y="254000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="254000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="113814" />
+                                        <a:pt x="113814" y="0" />
+                                        <a:pt x="254000" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="56" name="Shape 54"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="1187462" y="5969000"/><a:ext cx="142875" cy="190500"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="142875" h="190500"><a:moveTo><a:pt x="108979" y="142875" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="111696" y="134578" />
+                                        <a:pt x="117128" y="127062" />
+                                        <a:pt x="123267" y="120588" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="135434" y="107789" />
+                                        <a:pt x="142875" y="90488" />
+                                        <a:pt x="142875" y="71438" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="142875" y="31998" />
+                                        <a:pt x="110877" y="0" />
+                                        <a:pt x="71437" y="0" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="31998" y="0" />
+                                        <a:pt x="0" y="31998" />
+                                        <a:pt x="0" y="71438" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="0" y="90488" />
+                                        <a:pt x="7441" y="107789" />
+                                        <a:pt x="19608" y="120588" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="25747" y="127062" />
+                                        <a:pt x="31217" y="134578" />
+                                        <a:pt x="33896" y="142875" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="108942" y="142875" /></a:lnTo><a:close /><a:moveTo><a:pt x="107156" y="160734" /></a:moveTo><a:lnTo><a:pt x="35719" y="160734" /></a:lnTo><a:lnTo><a:pt x="35719" y="166688" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="35719" y="183133" />
+                                        <a:pt x="49039" y="196453" />
+                                        <a:pt x="65484" y="196453" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="77391" y="196453" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="93836" y="196453" />
+                                        <a:pt x="107156" y="183133" />
+                                        <a:pt x="107156" y="166688" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="107156" y="160734" /></a:lnTo><a:close /><a:moveTo><a:pt x="68461" y="41672" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="53653" y="41672" />
+                                        <a:pt x="41672" y="53653" />
+                                        <a:pt x="41672" y="68461" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="41672" y="73409" />
+                                        <a:pt x="37691" y="77391" />
+                                        <a:pt x="32742" y="77391" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="27794" y="77391" />
+                                        <a:pt x="23812" y="73409" />
+                                        <a:pt x="23812" y="68461" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="23812" y="43793" />
+                                        <a:pt x="43793" y="23812" />
+                                        <a:pt x="68461" y="23812" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="73409" y="23812" />
+                                        <a:pt x="77391" y="27794" />
+                                        <a:pt x="77391" y="32742" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="77391" y="37691" />
+                                        <a:pt x="73409" y="41672" />
+                                        <a:pt x="68461" y="41672" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="57" name="Text 55"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="412750" y="6381750"/><a:ext cx="1690688" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>问题识别</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="58" name="Text 56"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="416719" y="6572250"/><a:ext cx="1682750" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>L2 Deep Analysis</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="59" name="Shape 57"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="2105050" y="6151563"/><a:ext cx="238125" cy="238125"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="238125" h="238125"><a:moveTo><a:pt x="233753" y="129573" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="239567" y="123760" />
+                                        <a:pt x="239567" y="114319" />
+                                        <a:pt x="233753" y="108505" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="159339" y="34091" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="153526" y="28277" />
+                                        <a:pt x="144084" y="28277" />
+                                        <a:pt x="138271" y="34091" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="132457" y="39905" />
+                                        <a:pt x="132457" y="49346" />
+                                        <a:pt x="138271" y="55159" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="187291" y="104180" /></a:lnTo><a:lnTo><a:pt x="14883" y="104180" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="6651" y="104180" />
+                                        <a:pt x="0" y="110830" />
+                                        <a:pt x="0" y="119062" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="0" y="127295" />
+                                        <a:pt x="6651" y="133945" />
+                                        <a:pt x="14883" y="133945" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="187291" y="133945" /></a:lnTo><a:lnTo><a:pt x="138271" y="182966" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="132457" y="188779" />
+                                        <a:pt x="132457" y="198220" />
+                                        <a:pt x="138271" y="204034" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="144084" y="209848" />
+                                        <a:pt x="153526" y="209848" />
+                                        <a:pt x="159339" y="204034" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="233753" y="129620" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="60" name="Shape 58"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="2931356" y="5810250"/><a:ext cx="508000" cy="508000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="508000" h="508000"><a:moveTo><a:pt x="254000" y="0" /></a:moveTo><a:lnTo><a:pt x="254000" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="394186" y="0" />
+                                        <a:pt x="508000" y="113814" />
+                                        <a:pt x="508000" y="254000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="508000" y="254000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="508000" y="394186" />
+                                        <a:pt x="394186" y="508000" />
+                                        <a:pt x="254000" y="508000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="254000" y="508000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="113814" y="508000" />
+                                        <a:pt x="0" y="394186" />
+                                        <a:pt x="0" y="254000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="254000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="113814" />
+                                        <a:pt x="113814" y="0" />
+                                        <a:pt x="254000" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="61" name="Shape 59"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3090106" y="5969000"/><a:ext cx="190500" cy="190500"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="190500" h="190500"><a:moveTo><a:pt x="131304" y="7888" /></a:moveTo><a:lnTo><a:pt x="114598" y="24594" /></a:lnTo><a:lnTo><a:pt x="165906" y="75902" /></a:lnTo><a:lnTo><a:pt x="182612" y="59196" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="187672" y="54173" />
+                                        <a:pt x="190500" y="47327" />
+                                        <a:pt x="190500" y="40184" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="190500" y="33040" />
+                                        <a:pt x="187672" y="26194" />
+                                        <a:pt x="182612" y="21171" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="169329" y="7888" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="164306" y="2828" />
+                                        <a:pt x="157460" y="0" />
+                                        <a:pt x="150316" y="0" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="143173" y="0" />
+                                        <a:pt x="136327" y="2828" />
+                                        <a:pt x="131304" y="7888" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="101984" y="37207" /></a:moveTo><a:lnTo><a:pt x="21915" y="117239" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="17934" y="121221" />
+                                        <a:pt x="15032" y="126206" />
+                                        <a:pt x="13506" y="131638" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="335" y="179189" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="-521" y="182277" />
+                                        <a:pt x="335" y="185626" />
+                                        <a:pt x="2642" y="187896" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="4949" y="190165" />
+                                        <a:pt x="8260" y="191058" />
+                                        <a:pt x="11348" y="190202" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="58899" y="176994" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="64331" y="175468" />
+                                        <a:pt x="69279" y="172603" />
+                                        <a:pt x="73298" y="168585" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="153293" y="88516" /></a:lnTo><a:lnTo><a:pt x="101984" y="37207" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="62" name="Text 60"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="2339206" y="6381750"/><a:ext cx="1690688" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>知识创建</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="63" name="Text 61"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="2343175" y="6572250"/><a:ext cx="1682750" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>高质量文档</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="64" name="Shape 62"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4031568" y="6151563"/><a:ext cx="238125" cy="238125"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="238125" h="238125"><a:moveTo><a:pt x="233753" y="129573" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="239567" y="123760" />
+                                        <a:pt x="239567" y="114319" />
+                                        <a:pt x="233753" y="108505" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="159339" y="34091" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="153526" y="28277" />
+                                        <a:pt x="144084" y="28277" />
+                                        <a:pt x="138271" y="34091" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="132457" y="39905" />
+                                        <a:pt x="132457" y="49346" />
+                                        <a:pt x="138271" y="55159" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="187291" y="104180" /></a:lnTo><a:lnTo><a:pt x="14883" y="104180" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="6651" y="104180" />
+                                        <a:pt x="0" y="110830" />
+                                        <a:pt x="0" y="119062" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="0" y="127295" />
+                                        <a:pt x="6651" y="133945" />
+                                        <a:pt x="14883" y="133945" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="187291" y="133945" /></a:lnTo><a:lnTo><a:pt x="138271" y="182966" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="132457" y="188779" />
+                                        <a:pt x="132457" y="198220" />
+                                        <a:pt x="138271" y="204034" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="144084" y="209848" />
+                                        <a:pt x="153526" y="209848" />
+                                        <a:pt x="159339" y="204034" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="233753" y="129620" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="65" name="Shape 63"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4857874" y="5810250"/><a:ext cx="508000" cy="508000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="508000" h="508000"><a:moveTo><a:pt x="254000" y="0" /></a:moveTo><a:lnTo><a:pt x="254000" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="394186" y="0" />
+                                        <a:pt x="508000" y="113814" />
+                                        <a:pt x="508000" y="254000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="508000" y="254000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="508000" y="394186" />
+                                        <a:pt x="394186" y="508000" />
+                                        <a:pt x="254000" y="508000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="254000" y="508000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="113814" y="508000" />
+                                        <a:pt x="0" y="394186" />
+                                        <a:pt x="0" y="254000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="254000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="113814" />
+                                        <a:pt x="113814" y="0" />
+                                        <a:pt x="254000" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="66" name="Shape 64"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="5016624" y="5969000"/><a:ext cx="190500" cy="190500"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="190500" h="190500"><a:moveTo><a:pt x="142875" y="71438" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="162595" y="71438" />
+                                        <a:pt x="178594" y="55438" />
+                                        <a:pt x="178594" y="35719" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="178594" y="15999" />
+                                        <a:pt x="162595" y="0" />
+                                        <a:pt x="142875" y="0" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="123155" y="0" />
+                                        <a:pt x="107156" y="15999" />
+                                        <a:pt x="107156" y="35719" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="107156" y="37728" />
+                                        <a:pt x="107342" y="39737" />
+                                        <a:pt x="107640" y="41672" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="59382" y="68498" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="53094" y="62917" />
+                                        <a:pt x="44797" y="59531" />
+                                        <a:pt x="35719" y="59531" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="15999" y="59531" />
+                                        <a:pt x="0" y="75530" />
+                                        <a:pt x="0" y="95250" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="0" y="114970" />
+                                        <a:pt x="15999" y="130969" />
+                                        <a:pt x="35719" y="130969" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="44797" y="130969" />
+                                        <a:pt x="53057" y="127583" />
+                                        <a:pt x="59382" y="122002" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="107640" y="148828" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="107305" y="150763" />
+                                        <a:pt x="107156" y="152735" />
+                                        <a:pt x="107156" y="154781" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="107156" y="174501" />
+                                        <a:pt x="123155" y="190500" />
+                                        <a:pt x="142875" y="190500" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="162595" y="190500" />
+                                        <a:pt x="178594" y="174501" />
+                                        <a:pt x="178594" y="154781" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="178594" y="135062" />
+                                        <a:pt x="162595" y="119063" />
+                                        <a:pt x="142875" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="133796" y="119063" />
+                                        <a:pt x="125537" y="122448" />
+                                        <a:pt x="119211" y="128029" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="70954" y="101203" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="71289" y="99268" />
+                                        <a:pt x="71438" y="97296" />
+                                        <a:pt x="71438" y="95250" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="71438" y="93204" />
+                                        <a:pt x="71251" y="91232" />
+                                        <a:pt x="70954" y="89297" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="119211" y="62471" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="125499" y="68052" />
+                                        <a:pt x="133796" y="71438" />
+                                        <a:pt x="142875" y="71438" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="67" name="Text 65"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4265724" y="6381750"/><a:ext cx="1690688" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>知识共享</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="68" name="Text 66"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="4269693" y="6572250"/><a:ext cx="1682750" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>L1Citation应用</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="69" name="Shape 67"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="5958024" y="6151563"/><a:ext cx="238125" cy="238125"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="238125" h="238125"><a:moveTo><a:pt x="233753" y="129573" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="239567" y="123760" />
+                                        <a:pt x="239567" y="114319" />
+                                        <a:pt x="233753" y="108505" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="159339" y="34091" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="153526" y="28277" />
+                                        <a:pt x="144084" y="28277" />
+                                        <a:pt x="138271" y="34091" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="132457" y="39905" />
+                                        <a:pt x="132457" y="49346" />
+                                        <a:pt x="138271" y="55159" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="187291" y="104180" /></a:lnTo><a:lnTo><a:pt x="14883" y="104180" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="6651" y="104180" />
+                                        <a:pt x="0" y="110830" />
+                                        <a:pt x="0" y="119062" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="0" y="127295" />
+                                        <a:pt x="6651" y="133945" />
+                                        <a:pt x="14883" y="133945" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="187291" y="133945" /></a:lnTo><a:lnTo><a:pt x="138271" y="182966" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="132457" y="188779" />
+                                        <a:pt x="132457" y="198220" />
+                                        <a:pt x="138271" y="204034" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="144084" y="209848" />
+                                        <a:pt x="153526" y="209848" />
+                                        <a:pt x="159339" y="204034" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="233753" y="129620" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="70" name="Shape 68"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="6784330" y="5810250"/><a:ext cx="508000" cy="508000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="508000" h="508000"><a:moveTo><a:pt x="254000" y="0" /></a:moveTo><a:lnTo><a:pt x="254000" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="394186" y="0" />
+                                        <a:pt x="508000" y="113814" />
+                                        <a:pt x="508000" y="254000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="508000" y="254000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="508000" y="394186" />
+                                        <a:pt x="394186" y="508000" />
+                                        <a:pt x="254000" y="508000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="254000" y="508000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="113814" y="508000" />
+                                        <a:pt x="0" y="394186" />
+                                        <a:pt x="0" y="254000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="254000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="113814" />
+                                        <a:pt x="113814" y="0" />
+                                        <a:pt x="254000" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="71" name="Shape 69"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="6943080" y="5969000"/><a:ext cx="190500" cy="190500"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="190500" h="190500"><a:moveTo><a:pt x="11906" y="11906" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="18492" y="11906" />
+                                        <a:pt x="23812" y="17227" />
+                                        <a:pt x="23812" y="23812" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="23812" y="148828" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="23812" y="152102" />
+                                        <a:pt x="26491" y="154781" />
+                                        <a:pt x="29766" y="154781" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="178594" y="154781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="185179" y="154781" />
+                                        <a:pt x="190500" y="160102" />
+                                        <a:pt x="190500" y="166688" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="190500" y="173273" />
+                                        <a:pt x="185179" y="178594" />
+                                        <a:pt x="178594" y="178594" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="29766" y="178594" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="13320" y="178594" />
+                                        <a:pt x="0" y="165274" />
+                                        <a:pt x="0" y="148828" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="23812" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="17227" />
+                                        <a:pt x="5321" y="11906" />
+                                        <a:pt x="11906" y="11906" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="47625" y="35719" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="47625" y="29133" />
+                                        <a:pt x="52946" y="23812" />
+                                        <a:pt x="59531" y="23812" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="130969" y="23812" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="137554" y="23812" />
+                                        <a:pt x="142875" y="29133" />
+                                        <a:pt x="142875" y="35719" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="142875" y="42304" />
+                                        <a:pt x="137554" y="47625" />
+                                        <a:pt x="130969" y="47625" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="59531" y="47625" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="52946" y="47625" />
+                                        <a:pt x="47625" y="42304" />
+                                        <a:pt x="47625" y="35719" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="59531" y="65484" /></a:moveTo><a:lnTo><a:pt x="107156" y="65484" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="113742" y="65484" />
+                                        <a:pt x="119063" y="70805" />
+                                        <a:pt x="119063" y="77391" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="119063" y="83976" />
+                                        <a:pt x="113742" y="89297" />
+                                        <a:pt x="107156" y="89297" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="59531" y="89297" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="52946" y="89297" />
+                                        <a:pt x="47625" y="83976" />
+                                        <a:pt x="47625" y="77391" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="47625" y="70805" />
+                                        <a:pt x="52946" y="65484" />
+                                        <a:pt x="59531" y="65484" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="59531" y="107156" /></a:moveTo><a:lnTo><a:pt x="154781" y="107156" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="161367" y="107156" />
+                                        <a:pt x="166688" y="112477" />
+                                        <a:pt x="166688" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="166688" y="125648" />
+                                        <a:pt x="161367" y="130969" />
+                                        <a:pt x="154781" y="130969" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="59531" y="130969" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="52946" y="130969" />
+                                        <a:pt x="47625" y="125648" />
+                                        <a:pt x="47625" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="47625" y="112477" />
+                                        <a:pt x="52946" y="107156" />
+                                        <a:pt x="59531" y="107156" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="72" name="Text 70"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="6192180" y="6381750"/><a:ext cx="1690688" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>效果评估</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="73" name="Text 71"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="6196149" y="6572250"/><a:ext cx="1682750" cy="158750"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="875" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Count据反馈</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="74" name="Shape 72"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8106792" y="1143000"/><a:ext cx="3770313" cy="3317875"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3770313" h="3317875"><a:moveTo><a:pt x="95256" y="0" /></a:moveTo><a:lnTo><a:pt x="3675056" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3727665" y="0" />
+                                        <a:pt x="3770313" y="42648" />
+                                        <a:pt x="3770313" y="95256" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3770313" y="3222619" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3770313" y="3275227" />
+                                        <a:pt x="3727665" y="3317875" />
+                                        <a:pt x="3675056" y="3317875" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="95256" y="3317875" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="42648" y="3317875" />
+                                        <a:pt x="0" y="3275227" />
+                                        <a:pt x="0" y="3222619" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="95256" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="42683" />
+                                        <a:pt x="42683" y="0" />
+                                        <a:pt x="95256" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="75" name="Shape 73"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8275464" y="1333500"/><a:ext cx="178594" cy="158750"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="178594" h="158750"><a:moveTo><a:pt x="158874" y="74414" /></a:moveTo><a:lnTo><a:pt x="104304" y="74414" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="98816" y="74414" />
+                                        <a:pt x="94382" y="69980" />
+                                        <a:pt x="94382" y="64492" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="94382" y="9922" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="94382" y="4434" />
+                                        <a:pt x="98847" y="-62" />
+                                        <a:pt x="104273" y="651" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="137449" y="5054" />
+                                        <a:pt x="163742" y="31347" />
+                                        <a:pt x="168145" y="64523" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="168858" y="69949" />
+                                        <a:pt x="164362" y="74414" />
+                                        <a:pt x="158874" y="74414" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="69019" y="11534" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="74631" y="10356" />
+                                        <a:pt x="79499" y="14945" />
+                                        <a:pt x="79499" y="20681" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="79499" y="81855" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="79499" y="83592" />
+                                        <a:pt x="80119" y="85266" />
+                                        <a:pt x="81204" y="86599" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="122163" y="136023" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="125791" y="140395" />
+                                        <a:pt x="125016" y="146999" />
+                                        <a:pt x="120024" y="149696" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="109451" y="155463" />
+                                        <a:pt x="97327" y="158750" />
+                                        <a:pt x="84460" y="158750" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="43377" y="158750" />
+                                        <a:pt x="10046" y="125419" />
+                                        <a:pt x="10046" y="84336" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="10046" y="48524" />
+                                        <a:pt x="35316" y="18635" />
+                                        <a:pt x="69019" y="11534" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="148146" y="89297" /></a:moveTo><a:lnTo><a:pt x="167990" y="89297" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="173726" y="89297" />
+                                        <a:pt x="178315" y="94165" />
+                                        <a:pt x="177136" y="99777" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="173974" y="114784" />
+                                        <a:pt x="166284" y="128116" />
+                                        <a:pt x="155556" y="138286" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="151743" y="141914" />
+                                        <a:pt x="145759" y="141139" />
+                                        <a:pt x="142410" y="137077" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="116241" y="105544" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="110877" y="99064" />
+                                        <a:pt x="115497" y="89297" />
+                                        <a:pt x="123868" y="89297" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="148115" y="89297" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="76" name="Text 74"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8463979" y="1301750"/><a:ext cx="3333750" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="120000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1250" b="1" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Knowledge Base使用Metrics</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="77" name="Text 75"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="1651000"/><a:ext cx="3524250" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1125" b="1" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>月均访问量</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="78" name="Text 76"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="1873250"/><a:ext cx="3516313" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"><a:alpha val="90000"/></a:srgbClr></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Knowledge BaseTotal访问次Count</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="79" name="Text 77"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="2127250"/><a:ext cx="3548063" cy="254000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="110000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1500" b="1" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Target:&gt; 3,000</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="80" name="Shape 78"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="2512219"/><a:ext cx="3452813" cy="7938"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3452813" h="7938"><a:moveTo><a:pt x="0" y="0" /></a:moveTo><a:lnTo><a:pt x="3452813" y="0" /></a:lnTo><a:lnTo><a:pt x="3452813" y="7938" /></a:lnTo><a:lnTo><a:pt x="0" y="7938" /></a:lnTo><a:lnTo><a:pt x="0" y="0" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"><a:alpha val="30196"/></a:srgbClr></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="81" name="Text 79"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="2611438"/><a:ext cx="3524250" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1125" b="1" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Solution Reuse Rate</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="82" name="Text 80"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="2833688"/><a:ext cx="3516313" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"><a:alpha val="90000"/></a:srgbClr></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>同一方案多次应用</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="83" name="Text 81"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="3087688"/><a:ext cx="3548063" cy="254000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="110000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1500" b="1" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Target:&gt; 60%</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="84" name="Shape 82"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="3472656"/><a:ext cx="3452813" cy="7938"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3452813" h="7938"><a:moveTo><a:pt x="0" y="0" /></a:moveTo><a:lnTo><a:pt x="3452813" y="0" /></a:lnTo><a:lnTo><a:pt x="3452813" y="7938" /></a:lnTo><a:lnTo><a:pt x="0" y="7938" /></a:lnTo><a:lnTo><a:pt x="0" y="0" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FFFFFF"><a:alpha val="30196"/></a:srgbClr></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="85" name="Text 83"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="3571875"/><a:ext cx="3524250" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1125" b="1" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>搜索成功率</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="86" name="Text 84"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="3794125"/><a:ext cx="3516313" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"><a:alpha val="90000"/></a:srgbClr></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>用户找to所需信息</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="87" name="Text 85"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8265542" y="4048125"/><a:ext cx="3548063" cy="254000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="110000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1500" b="1" dirty="0"><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>Target:&gt; 85%</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="88" name="Shape 86"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8106792" y="4587875"/><a:ext cx="3770313" cy="1524000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3770313" h="1524000"><a:moveTo><a:pt x="95250" y="0" /></a:moveTo><a:lnTo><a:pt x="3675063" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3727632" y="0" />
+                                        <a:pt x="3770313" y="42680" />
+                                        <a:pt x="3770313" y="95250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3770313" y="1428750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3770313" y="1481320" />
+                                        <a:pt x="3727632" y="1524000" />
+                                        <a:pt x="3675063" y="1524000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="95250" y="1524000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="42680" y="1524000" />
+                                        <a:pt x="0" y="1481320" />
+                                        <a:pt x="0" y="1428750" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="95250" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="42680" />
+                                        <a:pt x="42680" y="0" />
+                                        <a:pt x="95250" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="F8F8F8"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="89" name="Shape 87"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8262565" y="4754563"/><a:ext cx="125016" cy="142875"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="125016" h="142875"><a:moveTo><a:pt x="68619" y="-7227" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="64880" y="-9516" />
+                                        <a:pt x="60164" y="-9516" />
+                                        <a:pt x="56424" y="-7227" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="49616" y="-3070" />
+                                        <a:pt x="45402" y="-1953" />
+                                        <a:pt x="37421" y="-2121" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="33040" y="-2232" />
+                                        <a:pt x="28966" y="140" />
+                                        <a:pt x="26845" y="3990" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="23022" y="10995" />
+                                        <a:pt x="19924" y="14092" />
+                                        <a:pt x="12920" y="17915" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="9069" y="20008" />
+                                        <a:pt x="6725" y="24110" />
+                                        <a:pt x="6809" y="28491" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="7004" y="36472" />
+                                        <a:pt x="5860" y="40686" />
+                                        <a:pt x="1702" y="47495" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="-586" y="51234" />
+                                        <a:pt x="-586" y="55950" />
+                                        <a:pt x="1702" y="59689" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="5860" y="66498" />
+                                        <a:pt x="6976" y="70712" />
+                                        <a:pt x="6809" y="78693" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="6697" y="83074" />
+                                        <a:pt x="9069" y="87148" />
+                                        <a:pt x="12920" y="89269" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="19087" y="92646" />
+                                        <a:pt x="22213" y="95436" />
+                                        <a:pt x="25505" y="100850" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="11916" y="127946" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="10269" y="131266" />
+                                        <a:pt x="11609" y="135285" />
+                                        <a:pt x="14901" y="136931" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="38900" y="148930" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="42109" y="150521" />
+                                        <a:pt x="46016" y="149321" />
+                                        <a:pt x="47746" y="146196" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="62480" y="119658" /></a:lnTo><a:lnTo><a:pt x="77214" y="146196" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="78944" y="149321" />
+                                        <a:pt x="82851" y="150549" />
+                                        <a:pt x="86060" y="148930" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="110058" y="136931" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="113379" y="135285" />
+                                        <a:pt x="114719" y="131266" />
+                                        <a:pt x="113044" y="127946" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="99482" y="100822" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="102747" y="95408" />
+                                        <a:pt x="105901" y="92618" />
+                                        <a:pt x="112068" y="89241" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="115919" y="87148" />
+                                        <a:pt x="118263" y="83046" />
+                                        <a:pt x="118179" y="78665" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="117983" y="70684" />
+                                        <a:pt x="119128" y="66470" />
+                                        <a:pt x="123285" y="59661" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="125574" y="55922" />
+                                        <a:pt x="125574" y="51206" />
+                                        <a:pt x="123285" y="47467" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="119128" y="40658" />
+                                        <a:pt x="118011" y="36444" />
+                                        <a:pt x="118179" y="28463" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="118290" y="24082" />
+                                        <a:pt x="115919" y="20008" />
+                                        <a:pt x="112068" y="17887" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="105063" y="14064" />
+                                        <a:pt x="101966" y="10967" />
+                                        <a:pt x="98143" y="3963" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="96050" y="112" />
+                                        <a:pt x="91948" y="-2232" />
+                                        <a:pt x="87567" y="-2149" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="79586" y="-1953" />
+                                        <a:pt x="75372" y="-3097" />
+                                        <a:pt x="68563" y="-7255" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="62508" y="26789" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="77293" y="26789" />
+                                        <a:pt x="89297" y="38793" />
+                                        <a:pt x="89297" y="53578" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="89297" y="68363" />
+                                        <a:pt x="77293" y="80367" />
+                                        <a:pt x="62508" y="80367" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="47723" y="80367" />
+                                        <a:pt x="35719" y="68363" />
+                                        <a:pt x="35719" y="53578" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="35719" y="38793" />
+                                        <a:pt x="47723" y="26789" />
+                                        <a:pt x="62508" y="26789" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="90" name="Text 88"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8416354" y="4714875"/><a:ext cx="3405188" cy="222250"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1125" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>激励机制</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="91" name="Shape 89"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8249667" y="5064125"/><a:ext cx="127000" cy="127000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="127000" h="127000"><a:moveTo><a:pt x="35793" y="0" /></a:moveTo><a:lnTo><a:pt x="91356" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="97929" y="0" />
+                                        <a:pt x="103287" y="5407" />
+                                        <a:pt x="103039" y="11956" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="102989" y="13271" />
+                                        <a:pt x="102939" y="14585" />
+                                        <a:pt x="102865" y="15875" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="115168" y="15875" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="121642" y="15875" />
+                                        <a:pt x="127347" y="21233" />
+                                        <a:pt x="126851" y="28228" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="124991" y="53950" />
+                                        <a:pt x="111844" y="68089" />
+                                        <a:pt x="97582" y="75481" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="93663" y="77515" />
+                                        <a:pt x="89669" y="79028" />
+                                        <a:pt x="85874" y="80144" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="80863" y="87238" />
+                                        <a:pt x="75654" y="90984" />
+                                        <a:pt x="71512" y="92993" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="71512" y="111125" /></a:lnTo><a:lnTo><a:pt x="87387" y="111125" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="91777" y="111125" />
+                                        <a:pt x="95324" y="114672" />
+                                        <a:pt x="95324" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="95324" y="123453" />
+                                        <a:pt x="91777" y="127000" />
+                                        <a:pt x="87387" y="127000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="39762" y="127000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="35371" y="127000" />
+                                        <a:pt x="31824" y="123453" />
+                                        <a:pt x="31824" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="31824" y="114672" />
+                                        <a:pt x="35371" y="111125" />
+                                        <a:pt x="39762" y="111125" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="55637" y="111125" /></a:lnTo><a:lnTo><a:pt x="55637" y="92993" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="51668" y="91083" />
+                                        <a:pt x="46732" y="87536" />
+                                        <a:pt x="41920" y="81012" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="37356" y="79821" />
+                                        <a:pt x="32395" y="78011" />
+                                        <a:pt x="27558" y="75282" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="14139" y="67766" />
+                                        <a:pt x="2034" y="53603" />
+                                        <a:pt x="298" y="28178" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="-174" y="21208" />
+                                        <a:pt x="5507" y="15850" />
+                                        <a:pt x="11981" y="15850" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="24284" y="15850" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="24209" y="14560" />
+                                        <a:pt x="24160" y="13271" />
+                                        <a:pt x="24110" y="11931" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="23862" y="5358" />
+                                        <a:pt x="29220" y="-25" />
+                                        <a:pt x="35793" y="-25" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="25177" y="27781" /></a:moveTo><a:lnTo><a:pt x="12179" y="27781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="13717" y="48791" />
+                                        <a:pt x="23366" y="59308" />
+                                        <a:pt x="33313" y="64889" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="29741" y="55637" />
+                                        <a:pt x="26789" y="43557" />
+                                        <a:pt x="25177" y="27781" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="94258" y="63698" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="104304" y="57795" />
+                                        <a:pt x="113382" y="47303" />
+                                        <a:pt x="114920" y="27781" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="101947" y="27781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="100409" y="42887" />
+                                        <a:pt x="97631" y="54620" />
+                                        <a:pt x="94258" y="63698" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="92" name="Text 90"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8456042" y="5032375"/><a:ext cx="1079500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>月度知识贡献之星</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="93" name="Shape 91"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8249667" y="5318125"/><a:ext cx="127000" cy="127000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="127000" h="127000"><a:moveTo><a:pt x="35793" y="0" /></a:moveTo><a:lnTo><a:pt x="91356" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="97929" y="0" />
+                                        <a:pt x="103287" y="5407" />
+                                        <a:pt x="103039" y="11956" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="102989" y="13271" />
+                                        <a:pt x="102939" y="14585" />
+                                        <a:pt x="102865" y="15875" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="115168" y="15875" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="121642" y="15875" />
+                                        <a:pt x="127347" y="21233" />
+                                        <a:pt x="126851" y="28228" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="124991" y="53950" />
+                                        <a:pt x="111844" y="68089" />
+                                        <a:pt x="97582" y="75481" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="93663" y="77515" />
+                                        <a:pt x="89669" y="79028" />
+                                        <a:pt x="85874" y="80144" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="80863" y="87238" />
+                                        <a:pt x="75654" y="90984" />
+                                        <a:pt x="71512" y="92993" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="71512" y="111125" /></a:lnTo><a:lnTo><a:pt x="87387" y="111125" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="91777" y="111125" />
+                                        <a:pt x="95324" y="114672" />
+                                        <a:pt x="95324" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="95324" y="123453" />
+                                        <a:pt x="91777" y="127000" />
+                                        <a:pt x="87387" y="127000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="39762" y="127000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="35371" y="127000" />
+                                        <a:pt x="31824" y="123453" />
+                                        <a:pt x="31824" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="31824" y="114672" />
+                                        <a:pt x="35371" y="111125" />
+                                        <a:pt x="39762" y="111125" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="55637" y="111125" /></a:lnTo><a:lnTo><a:pt x="55637" y="92993" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="51668" y="91083" />
+                                        <a:pt x="46732" y="87536" />
+                                        <a:pt x="41920" y="81012" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="37356" y="79821" />
+                                        <a:pt x="32395" y="78011" />
+                                        <a:pt x="27558" y="75282" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="14139" y="67766" />
+                                        <a:pt x="2034" y="53603" />
+                                        <a:pt x="298" y="28178" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="-174" y="21208" />
+                                        <a:pt x="5507" y="15850" />
+                                        <a:pt x="11981" y="15850" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="24284" y="15850" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="24209" y="14560" />
+                                        <a:pt x="24160" y="13271" />
+                                        <a:pt x="24110" y="11931" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="23862" y="5358" />
+                                        <a:pt x="29220" y="-25" />
+                                        <a:pt x="35793" y="-25" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="25177" y="27781" /></a:moveTo><a:lnTo><a:pt x="12179" y="27781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="13717" y="48791" />
+                                        <a:pt x="23366" y="59308" />
+                                        <a:pt x="33313" y="64889" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="29741" y="55637" />
+                                        <a:pt x="26789" y="43557" />
+                                        <a:pt x="25177" y="27781" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="94258" y="63698" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="104304" y="57795" />
+                                        <a:pt x="113382" y="47303" />
+                                        <a:pt x="114920" y="27781" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="101947" y="27781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="100409" y="42887" />
+                                        <a:pt x="97631" y="54620" />
+                                        <a:pt x="94258" y="63698" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="94" name="Text 92"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8456042" y="5286375"/><a:ext cx="952500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>高质量文章奖励</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="95" name="Shape 93"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8249667" y="5572125"/><a:ext cx="127000" cy="127000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="127000" h="127000"><a:moveTo><a:pt x="35793" y="0" /></a:moveTo><a:lnTo><a:pt x="91356" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="97929" y="0" />
+                                        <a:pt x="103287" y="5407" />
+                                        <a:pt x="103039" y="11956" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="102989" y="13271" />
+                                        <a:pt x="102939" y="14585" />
+                                        <a:pt x="102865" y="15875" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="115168" y="15875" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="121642" y="15875" />
+                                        <a:pt x="127347" y="21233" />
+                                        <a:pt x="126851" y="28228" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="124991" y="53950" />
+                                        <a:pt x="111844" y="68089" />
+                                        <a:pt x="97582" y="75481" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="93663" y="77515" />
+                                        <a:pt x="89669" y="79028" />
+                                        <a:pt x="85874" y="80144" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="80863" y="87238" />
+                                        <a:pt x="75654" y="90984" />
+                                        <a:pt x="71512" y="92993" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="71512" y="111125" /></a:lnTo><a:lnTo><a:pt x="87387" y="111125" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="91777" y="111125" />
+                                        <a:pt x="95324" y="114672" />
+                                        <a:pt x="95324" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="95324" y="123453" />
+                                        <a:pt x="91777" y="127000" />
+                                        <a:pt x="87387" y="127000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="39762" y="127000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="35371" y="127000" />
+                                        <a:pt x="31824" y="123453" />
+                                        <a:pt x="31824" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="31824" y="114672" />
+                                        <a:pt x="35371" y="111125" />
+                                        <a:pt x="39762" y="111125" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="55637" y="111125" /></a:lnTo><a:lnTo><a:pt x="55637" y="92993" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="51668" y="91083" />
+                                        <a:pt x="46732" y="87536" />
+                                        <a:pt x="41920" y="81012" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="37356" y="79821" />
+                                        <a:pt x="32395" y="78011" />
+                                        <a:pt x="27558" y="75282" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="14139" y="67766" />
+                                        <a:pt x="2034" y="53603" />
+                                        <a:pt x="298" y="28178" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="-174" y="21208" />
+                                        <a:pt x="5507" y="15850" />
+                                        <a:pt x="11981" y="15850" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="24284" y="15850" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="24209" y="14560" />
+                                        <a:pt x="24160" y="13271" />
+                                        <a:pt x="24110" y="11931" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="23862" y="5358" />
+                                        <a:pt x="29220" y="-25" />
+                                        <a:pt x="35793" y="-25" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="25177" y="27781" /></a:moveTo><a:lnTo><a:pt x="12179" y="27781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="13717" y="48791" />
+                                        <a:pt x="23366" y="59308" />
+                                        <a:pt x="33313" y="64889" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="29741" y="55637" />
+                                        <a:pt x="26789" y="43557" />
+                                        <a:pt x="25177" y="27781" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="94258" y="63698" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="104304" y="57795" />
+                                        <a:pt x="113382" y="47303" />
+                                        <a:pt x="114920" y="27781" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="101947" y="27781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="100409" y="42887" />
+                                        <a:pt x="97631" y="54620" />
+                                        <a:pt x="94258" y="63698" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="96" name="Text 94"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8456042" y="5540375"/><a:ext cx="817563" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>L1满意度反馈</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="97" name="Shape 95"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8249667" y="5826125"/><a:ext cx="127000" cy="127000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="127000" h="127000"><a:moveTo><a:pt x="35793" y="0" /></a:moveTo><a:lnTo><a:pt x="91356" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="97929" y="0" />
+                                        <a:pt x="103287" y="5407" />
+                                        <a:pt x="103039" y="11956" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="102989" y="13271" />
+                                        <a:pt x="102939" y="14585" />
+                                        <a:pt x="102865" y="15875" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="115168" y="15875" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="121642" y="15875" />
+                                        <a:pt x="127347" y="21233" />
+                                        <a:pt x="126851" y="28228" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="124991" y="53950" />
+                                        <a:pt x="111844" y="68089" />
+                                        <a:pt x="97582" y="75481" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="93663" y="77515" />
+                                        <a:pt x="89669" y="79028" />
+                                        <a:pt x="85874" y="80144" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="80863" y="87238" />
+                                        <a:pt x="75654" y="90984" />
+                                        <a:pt x="71512" y="92993" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="71512" y="111125" /></a:lnTo><a:lnTo><a:pt x="87387" y="111125" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="91777" y="111125" />
+                                        <a:pt x="95324" y="114672" />
+                                        <a:pt x="95324" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="95324" y="123453" />
+                                        <a:pt x="91777" y="127000" />
+                                        <a:pt x="87387" y="127000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="39762" y="127000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="35371" y="127000" />
+                                        <a:pt x="31824" y="123453" />
+                                        <a:pt x="31824" y="119063" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="31824" y="114672" />
+                                        <a:pt x="35371" y="111125" />
+                                        <a:pt x="39762" y="111125" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="55637" y="111125" /></a:lnTo><a:lnTo><a:pt x="55637" y="92993" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="51668" y="91083" />
+                                        <a:pt x="46732" y="87536" />
+                                        <a:pt x="41920" y="81012" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="37356" y="79821" />
+                                        <a:pt x="32395" y="78011" />
+                                        <a:pt x="27558" y="75282" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="14139" y="67766" />
+                                        <a:pt x="2034" y="53603" />
+                                        <a:pt x="298" y="28178" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="-174" y="21208" />
+                                        <a:pt x="5507" y="15850" />
+                                        <a:pt x="11981" y="15850" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="24284" y="15850" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="24209" y="14560" />
+                                        <a:pt x="24160" y="13271" />
+                                        <a:pt x="24110" y="11931" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="23862" y="5358" />
+                                        <a:pt x="29220" y="-25" />
+                                        <a:pt x="35793" y="-25" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="25177" y="27781" /></a:moveTo><a:lnTo><a:pt x="12179" y="27781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="13717" y="48791" />
+                                        <a:pt x="23366" y="59308" />
+                                        <a:pt x="33313" y="64889" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="29741" y="55637" />
+                                        <a:pt x="26789" y="43557" />
+                                        <a:pt x="25177" y="27781" />
+                                        </a:cubicBezTo><a:close /><a:moveTo><a:pt x="94258" y="63698" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="104304" y="57795" />
+                                        <a:pt x="113382" y="47303" />
+                                        <a:pt x="114920" y="27781" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="101947" y="27781" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="100409" y="42887" />
+                                        <a:pt x="97631" y="54620" />
+                                        <a:pt x="94258" y="63698" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="98" name="Text 96"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8456042" y="5794375"/><a:ext cx="825500" cy="190500"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="2D2D2D"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>知识Citation排名</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="99" name="Shape 97"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8122667" y="6238875"/><a:ext cx="3754438" cy="635000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="3754438" h="635000"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="3659187" y="0" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3711757" y="0" />
+                                        <a:pt x="3754438" y="42680" />
+                                        <a:pt x="3754438" y="95250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="3754438" y="539750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="3754438" y="592320" />
+                                        <a:pt x="3711757" y="635000" />
+                                        <a:pt x="3659187" y="635000" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="31750" y="635000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="635000" />
+                                        <a:pt x="0" y="620773" />
+                                        <a:pt x="0" y="603250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"><a:alpha val="10196"/></a:srgbClr></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="100" name="Shape 98"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8122667" y="6238875"/><a:ext cx="31750" cy="635000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="31750" h="635000"><a:moveTo><a:pt x="31750" y="0" /></a:moveTo><a:lnTo><a:pt x="31750" y="0" /></a:lnTo><a:lnTo><a:pt x="31750" y="635000" /></a:lnTo><a:lnTo><a:pt x="31750" y="635000" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="14227" y="635000" />
+                                        <a:pt x="0" y="620773" />
+                                        <a:pt x="0" y="603250" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="31750" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="0" y="14227" />
+                                        <a:pt x="14227" y="0" />
+                                        <a:pt x="31750" y="0" />
+                                        </a:cubicBezTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="101" name="Shape 99"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8289354" y="6401594"/><a:ext cx="111125" cy="127000"/></a:xfrm><a:custGeom><a:avLst /><a:gdLst></a:gdLst><a:ahLst /><a:cxnLst></a:cxnLst><a:rect l="l" t="t" r="r" b="b" /><a:pathLst><a:path w="111125" h="127000"><a:moveTo><a:pt x="0" y="53578" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="0" y="37133" />
+                                        <a:pt x="13320" y="23812" />
+                                        <a:pt x="29766" y="23812" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="31750" y="23812" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="36140" y="23812" />
+                                        <a:pt x="39688" y="27360" />
+                                        <a:pt x="39688" y="31750" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="39688" y="36140" />
+                                        <a:pt x="36140" y="39688" />
+                                        <a:pt x="31750" y="39688" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="29766" y="39688" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="22101" y="39688" />
+                                        <a:pt x="15875" y="45913" />
+                                        <a:pt x="15875" y="53578" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="15875" y="55563" /></a:lnTo><a:lnTo><a:pt x="31750" y="55563" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="40506" y="55563" />
+                                        <a:pt x="47625" y="62681" />
+                                        <a:pt x="47625" y="71438" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="47625" y="87313" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="47625" y="96069" />
+                                        <a:pt x="40506" y="103188" />
+                                        <a:pt x="31750" y="103188" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="15875" y="103188" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="7119" y="103188" />
+                                        <a:pt x="0" y="96069" />
+                                        <a:pt x="0" y="87313" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="0" y="53578" /></a:lnTo><a:close /><a:moveTo><a:pt x="63500" y="53578" /></a:moveTo><a:cubicBezTo>
+                                        <a:pt x="63500" y="37133" />
+                                        <a:pt x="76820" y="23812" />
+                                        <a:pt x="93266" y="23812" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="95250" y="23812" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="99640" y="23812" />
+                                        <a:pt x="103188" y="27360" />
+                                        <a:pt x="103188" y="31750" />
+                                        </a:cubicBezTo><a:cubicBezTo>
+                                        <a:pt x="103188" y="36140" />
+                                        <a:pt x="99640" y="39688" />
+                                        <a:pt x="95250" y="39688" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="93266" y="39688" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="85601" y="39688" />
+                                        <a:pt x="79375" y="45913" />
+                                        <a:pt x="79375" y="53578" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="79375" y="55563" /></a:lnTo><a:lnTo><a:pt x="95250" y="55563" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="104006" y="55563" />
+                                        <a:pt x="111125" y="62681" />
+                                        <a:pt x="111125" y="71438" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="111125" y="87313" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="111125" y="96069" />
+                                        <a:pt x="104006" y="103188" />
+                                        <a:pt x="95250" y="103188" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="79375" y="103188" /></a:lnTo><a:cubicBezTo>
+                                        <a:pt x="70619" y="103188" />
+                                        <a:pt x="63500" y="96069" />
+                                        <a:pt x="63500" y="87313" />
+                                        </a:cubicBezTo><a:lnTo><a:pt x="63500" y="53578" /></a:lnTo><a:close /></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="D31334"/></a:solidFill><a:ln></a:ln></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="102" name="Text 100"></p:cNvPr><p:cNvSpPr/><p:nvPr></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="8463979" y="6365875"/><a:ext cx="3349625" cy="381000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom><a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/><a:p><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" b="1" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>知识即力量:</a:t></a:r><a:pPr><a:lnSpc><a:spcPct val="130000"/></a:lnSpc></a:pPr><a:r><a:rPr lang="en-US" sz="1000" dirty="0"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill><a:latin typeface="MiSans" pitchFamily="34" charset="0"/><a:ea typeface="MiSans" pitchFamily="34" charset="-122"/><a:cs typeface="MiSans" pitchFamily="34" charset="-120"/></a:rPr><a:t>L2 deep knowledge transformed into L1 resolution capability through systematic management & sharing</a:t></a:r><a:endParaRPr lang="en-US" sz="1600" dirty="0"/></a:p></p:txBody></p:sp></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr><p:transition><p:fade/><p:spd val="med"/></p:transition></p:sld>

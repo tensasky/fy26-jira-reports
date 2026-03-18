@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intake Summary Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { font-family: 'Inter', system-ui, sans-serif; }
+        body { background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); min-height: 100vh; }
+        .glass-card { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .badge-open { background: #dbeafe; color: #1d4ed8; }
+        .badge-progress { background: #fef3c7; color: #d97706; }
+        .badge-closed { background: #d1fae5; color: #059669; }
+        .badge-cancelled { background: #f3f4f6; color: #6b7280; }
+        .kpi-card { position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-color) 0%, transparent 100%); }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .data-table th { background: #f9fafb; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; color: #6b7280; }
+        .data-table tr:hover td { background: #f9fafb; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f3f4f6; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .filter-btn { transition: all 0.2s ease; }
+        .filter-btn.active { background: #3b82f6; color: white; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); }
+        .sla-critical { background: #fee2e2; color: #dc2626; font-weight: 600; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; }
+        .sla-warning { background: #fef3c7; color: #d97706; font-weight: 600; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; }
+        .collapsible-section { display: none; }
+        .collapsible-section.show { display: block; animation: fadeIn 0.3s ease-out; }
+        .pagination-btn { transition: all 0.2s ease; }
+        .pagination-btn:hover:not(:disabled):not(.active) { background: #f3f4f6; }
+        .pagination-btn.active { background: #3b82f6; color: white; }
+        .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .tbd-badge { background: #f3f4f6; color: #6b7280; font-style: italic; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; border: 1px dashed #d1d5db; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Intake Summary Dashboard</h1>
+                <p class="text-slate-500 text-sm mt-1">实时监控项目进度、费用及 SLA 风险状态</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="搜索号码/提交人..." class="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl w-64 text-sm">
+                </div>
+                <button class="flex items-center gap-2 bg-slate-800 text-white px-4 py-2.5 rounded-xl text-sm"><i class="fa-solid fa-file-export"></i> 导出 Excel</button>
+            </div>
+        </div>
+
+        <!-- Department Filters -->
+        <div class="glass-card p-2 rounded-2xl flex flex-wrap gap-2">
+            <button onclick="filterByDept('All')" class="filter-btn active px-5 py-2 rounded-xl text-sm font-medium" data-dept="All">All</button>
+            <button onclick="filterByDept('EC')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100" data-dept="EC">EC</button>
+            <button onclick="filterByDept('Marketing')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100" data-dept="Marketing">Marketing</button>
+            <button onclick="filterByDept('Retail')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100" data-dept="Retail">Retail</button>
+            <button onclick="filterByDept('SCM')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100" data-dept="SCM">SCM</button>
+            <button onclick="filterByDept('MP&A')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100" data-dept="MP&A">MP&A</button>
+            <button onclick="filterByDept('Corporate')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100" data-dept="Corporate">Corporate</button>
+            <button onclick="filterByDept('Tech')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100" data-dept="Tech">Tech</button>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: #6b7280">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">Intake 总数</div>
+                <div class="text-3xl font-black text-slate-800" id="kpi-total">60</div>
+            </div>
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: #3b82f6">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">未开始</div>
+                <div class="text-3xl font-black text-blue-600" id="kpi-open">15</div>
+            </div>
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: #f59e0b">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">进行中</div>
+                <div class="text-3xl font-black text-amber-600" id="kpi-progress">18</div>
+            </div>
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: #10b981">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">已关闭</div>
+                <div class="text-3xl font-black text-emerald-600" id="kpi-closed">18</div>
+            </div>
+            <div class="kpi-card glass-card p-5 rounded-2xl" style="--accent-color: #6b7280">
+                <div class="text-slate-500 text-xs font-semibold uppercase mb-1">已取消</div>
+                <div class="text-3xl font-black text-slate-600" id="kpi-cancelled">9</div>
+            </div>
+        </div>
+
+        <!-- Collapsible Charts -->
+        <div>
+            <button onclick="toggleCharts()" class="w-full flex items-center justify-between p-4 glass-card rounded-xl hover:bg-white/80 transition-all">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center"><i class="fa-solid fa-chart-pie text-blue-600"></i></div>
+                    <div class="text-left">
+                        <div class="font-semibold text-slate-800">状态分布统计</div>
+                        <div class="text-xs text-slate-500">点击查看各状态项目数量及占比</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-slate-500" id="toggleText">展开</span>
+                    <i class="fa-solid fa-chevron-down text-slate-400 transition-transform" id="toggleIcon"></i>
+                </div>
+            </button>
+            <div id="chartsSection" class="collapsible-section mt-4">
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="relative" style="height: 300px;"><canvas id="statusChart"></canvas></div>
+                        <div class="space-y-3" id="statusLegend"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Count -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3 glass-card px-4 py-2.5 rounded-xl">
+                <i class="fa-regular fa-calendar-days text-slate-400"></i>
+                <span class="text-sm text-slate-600 font-medium">时间范围:</span>
+                <input type="date" id="dateFrom" value="2024-01-01" class="bg-transparent text-sm text-slate-700">
+                <span class="text-slate-400">-</span>
+                <input type="date" id="dateEnd" value="2024-12-31" class="bg-transparent text-sm text-slate-700">
+                <button onclick="applyFilter()" class="ml-2 text-blue-600 text-sm font-medium"><i class="fa-solid fa-filter"></i> 应用</button>
+            </div>
+            <div class="flex items-center gap-4 text-sm text-slate-500">
+                <span>共 <span id="recordCount" class="font-semibold text-slate-700">60</span> 条</span>
+                <span>第 <span id="currentPageNum" class="font-semibold text-slate-700">1</span> / <span id="totalPageNum">3</span> 页</span>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="overflow-x-auto custom-scroll">
+                <table class="w-full text-left data-table">
+                    <thead>
+                        <tr class="border-b border-slate-100">
+                            <th class="px-6 py-4">Intake 信息</th>
+                            <th class="px-6 py-4">类型</th>
+                            <th class="px-6 py-4 text-center">Pending</th>
+                            <th class="px-6 py-4">状态</th>
+                            <th class="px-6 py-4">费用</th>
+                            <th class="px-6 py-4">批复人</th>
+                            <th class="px-6 py-4">Scope</th>
+                            <th class="px-6 py-4">关联项</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                    <tfoot class="bg-slate-50/50 border-t border-slate-100">
+                        <tr class="font-semibold">
+                            <td colspan="4" class="px-6 py-4 text-right text-slate-600">实际费用总计 (仅 Closed):</td>
+                            <td class="px-6 py-4 text-emerald-600 text-lg" id="summaryCost">¥ 0</td>
+                            <td colspan="3"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex items-center justify-between px-6 py-4 border-t border-slate-100">
+                <button onclick="prevPage()" id="btnPrev" class="pagination-btn flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-600 border border-slate-200"><i class="fa-solid fa-chevron-left"></i> 上一页</button>
+                <div class="flex items-center gap-1" id="paginationNumbers"></div>
+                <button onclick="nextPage()" id="btnNext" class="pagination-btn flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-600 border border-slate-200">下一页 <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 60条 Mockup 数据
+        const allData = [];
+        const depts = ['EC', 'Marketing', 'Retail', 'SCM', 'MP&A', 'Corporate', 'Tech'];
+        const types = ['开发任务', '配置任务', '项目任务', '额外资金申请', '数据任务', '分析任务'];
+        const statuses = ['open', 'inprogress', 'closed', 'cancelled'];
+        const scopes = ['电商页面改版', '大促活动配置', '底层架构升级', '门店设备采购', '仓储逻辑优化', '内部系统升级', '财务模块开发', '促销规则配置', '数据分析平台', '用户画像系统', '库存管理系统', '物流跟踪系统', '会员系统重构', '审批流程优化', '报表系统升级', '移动端适配', 'API接口改造', '推荐算法优化', '客服工作台', '支付渠道接入'];
+        
+        for (let i = 1; i <= 60; i++) {
+            const dept = depts[Math.floor(Math.random() * depts.length)];
+            const status = statuses[Math.floor(Math.random() * statuses.length)];
+            let cost = 0;
+            if (status === 'closed') cost = Math.floor(Math.random() * 50000) + 5000;
+            else if (status === 'open' || status === 'inprogress') cost = null;
+            
+            allData.push({
+                id: `INT-2024${String(i).padStart(3, '0')}`,
+                dept: dept,
+                user: `User${i}`,
+                type: types[Math.floor(Math.random() * types.length)],
+                pending: Math.floor(Math.random() * 50),
+                status: status,
+                cost: cost,
+                approver: `Manager ${String.fromCharCode(65 + Math.floor(Math.random() * 8))}`,
+                scope: scopes[Math.floor(Math.random() * scopes.length)],
+                link: `BRD-${Math.floor(Math.random() * 900) + 100}`
+            });
+        }
+
+        let currentDept = 'All';
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let filteredData = [...allData];
+        let chartInstance = null;
+
+        function init() {
+            renderTable();
+            updateKPIs();
+            renderPagination();
+            initChart();
+        }
+
+        function filterByDept(dept) {
+            currentDept = dept;
+            currentPage = 1;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.dept === dept) {
+                    btn.classList.add('active');
+                    btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+                } else {
+                    btn.classList.remove('active');
+                    btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+                }
+            });
+            applyFilter();
+        }
+
+        function applyFilter() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredData = allData.filter(item => {
+                const matchDept = currentDept === 'All' || item.dept === currentDept;
+                const matchSearch = !searchTerm || item.id.toLowerCase().includes(searchTerm) || item.user.toLowerCase().includes(searchTerm);
+                return matchDept && matchSearch;
+            });
+            currentPage = 1;
+            renderTable();
+            updateKPIs();
+            renderPagination();
+            updateChart();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', applyFilter);
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            const start = (currentPage - 1) * itemsPerPage;
+            const pageData = filteredData.slice(start, start + itemsPerPage);
+            
+            tbody.innerHTML = pageData.map(item => {
+                let pendingBadge = item.pending > 30 ? `<span class="sla-critical">${item.pending} 天</span>` : item.pending > 14 ? `<span class="sla-warning">${item.pending} 天</span>` : `<span class="text-slate-600">${item.pending} 天</span>`;
+                let statusBadge = item.status === 'open' ? '<span class="badge-open px-3 py-1 rounded-full text-xs font-semibold">未开始</span>' : item.status === 'inprogress' ? '<span class="badge-progress px-3 py-1 rounded-full text-xs font-semibold">进行中</span>' : item.status === 'closed' ? '<span class="badge-closed px-3 py-1 rounded-full text-xs font-semibold">已关闭</span>' : '<span class="badge-cancelled px-3 py-1 rounded-full text-xs font-semibold">已取消</span>';
+                let costDisplay = item.cost === null ? '<span class="tbd-badge">TBD</span>' : item.cost === 0 ? '<span class="text-slate-400">-</span>' : `<span class="text-slate-700">¥ ${item.cost.toLocaleString()}</span>`;
+                
+                return `<tr class="hover:bg-slate-50 transition-colors"><td class="px-6 py-4"><div class="font-semibold text-slate-800">${item.id}</div><div class="text-xs text-slate-500 mt-0.5"><span class="inline-block px-2 py-0.5 bg-slate-100 rounded text-slate-600 mr-1">${item.dept}</span>${item.user}</div></td><td class="px-6 py-4 text-slate-600">${item.type}</td><td class="px-6 py-4 text-center">${pendingBadge}</td><td class="px-6 py-4">${statusBadge}</td><td class="px-6 py-4 font-medium">${costDisplay}</td><td class="px-6 py-4 text-slate-600">${item.approver}</td><td class="px-6 py-4"><div class="max-w-xs truncate text-slate-600" title="${item.scope}">${item.scope}</div></td><td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline text-sm font-medium">${item.link}</a></td></tr>`;
+            }).join('');
+            
+            const closedTotal = filteredData.filter(item => item.status === 'closed').reduce((sum, item) => sum + (item.cost || 0), 0);
+            document.getElementById('summaryCost').textContent = `¥ ${closedTotal.toLocaleString()}`;
+            document.getElementById('recordCount').textContent = filteredData.length;
+        }
+
+        function updateKPIs() {
+            document.getElementById('kpi-total').textContent = filteredData.length;
+            document.getElementById('kpi-open').textContent = filteredData.filter(d => d.status === 'open').length;
+            document.getElementById('kpi-progress').textContent = filteredData.filter(d => d.status === 'inprogress').length;
+            document.getElementById('kpi-closed').textContent = filteredData.filter(d => d.status === 'closed').length;
+            document.getElementById('kpi-cancelled').textContent = filteredData.filter(d => d.status === 'cancelled').length;
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            document.getElementById('currentPageNum').textContent = currentPage;
+            document.getElementById('totalPageNum').textContent = totalPages;
+            
+            let html = '';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button onclick="goToPage(${i})" class="pagination-btn w-9 h-9 rounded-lg text-sm font-medium ${i === currentPage ? 'active' : 'text-slate-600 border border-slate-200'}">${i}</button>`;
+            }
+            document.getElementById('paginationNumbers').innerHTML = html;
+            document.getElementById('btnPrev').disabled = currentPage === 1;
+            document.getElementById('btnNext').disabled = currentPage === totalPages;
+        }
+
+        function prevPage() { if (currentPage > 1) { currentPage--; renderTable(); renderPagination(); } }
+        function nextPage() { const totalPages = Math.ceil(filteredData.length / itemsPerPage); if (currentPage < totalPages) { currentPage++; renderTable(); renderPagination(); } }
+        function goToPage(page) { currentPage = page; renderTable(); renderPagination(); }
+
+        function toggleCharts() {
+            const section = document.getElementById('chartsSection');
+            const icon = document.getElementById('toggleIcon');
+            const text = document.getElementById('toggleText');
+            if (section.classList.contains('show')) {
+                section.classList.remove('show');
+                icon.style.transform = 'rotate(0deg)';
+                text.textContent = '展开';
+            } else {
+                section.classList.add('show');
+                icon.style.transform = 'rotate(180deg)';
+                text.textContent = '收起';
+            }
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            updateChart();
+        }
+
+        function updateChart() {
+            const statusCounts = {
+                open: filteredData.filter(d => d.status === 'open').length,
+                inprogress: filteredData.filter(d => d.status === 'inprogress').length,
+                closed: filteredData.filter(d => d.status === 'closed').length,
+                cancelled: filteredData.filter(d => d.status === 'cancelled').length
+            };
+            const total = filteredData.length;
+            
+            const legendData = [
+                { label: '未开始 (Open)', count: statusCounts.open, color: '#3b82f6', bg: 'bg-blue-50' },
+                { label: '进行中 (In Progress)', count: statusCounts.inprogress, color: '#f59e0b', bg: 'bg-amber-50' },
+                { label: '已关闭 (Closed)', count: statusCounts.closed, color: '#10b981', bg: 'bg-emerald-50' },
+                { label: '已取消 (Cancelled)', count: statusCounts.cancelled, color: '#9ca3af', bg: 'bg-gray-50' }
+            ];
+            
+            document.getElementById('statusLegend').innerHTML = legendData.map(item => `
+                <div class="flex items-center justify-between p-3 ${item.bg} rounded-lg">
+                    <div class="flex items-center gap-3"><div class="w-4 h-4 rounded-full" style="background: ${item.color}"></div><span class="font-medium text-slate-700">${item.label}</span></div>
+                    <div class="flex items-center gap-4"><span class="text-lg font-bold text-slate-800">${item.count}</span><span class="text-sm text-slate-500 w-14 text-right">${total > 0 ? ((item.count/total)*100).toFixed(1) : '0.0'}%</span></div>
+                </div>
+            `).join('');
+            
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(document.getElementById('statusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['未开始', '进行中', '已关闭', '已取消'],
+                    datasets: [{ data: [statusCounts.open, statusCounts.inprogress, statusCounts.closed, statusCounts.cancelled], backgroundColor: ['#3b82f6', '#f59e0b', '#10b981', '#9ca3af'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '60%' }
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

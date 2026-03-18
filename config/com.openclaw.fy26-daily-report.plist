@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.openclaw.fy26-daily-report</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/admin/.openclaw/workspace/scripts/fy26_daily_report.sh</string>
+    </array>
+    
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>18</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/admin/.openclaw/workspace/logs/fy26_daily_report.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/admin/.openclaw/workspace/logs/fy26_daily_report_error.log</string>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/admin/.openclaw/workspace</string>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>QQ_EMAIL_PASSWORD</key>
+        <string>aqcstretdofvcefi</string>
+        <key>QQ_EMAIL_SENDER</key>
+        <string>3823810468@qq.com</string>
+    </dict>
+</dict>
+</plist>

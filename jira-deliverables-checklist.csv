@@ -1,0 +1,20 @@
+| 阶段 | 交付物 | 质量标准 | 检查项 | 验收标准 | 负责人 | 验收人 | 存储位置 |
+|------|--------|----------|--------|----------|--------|--------|----------|
+| 项目启动 | Epic创建 | 符合INVEST原则 | □ 有明确业务目标<br>□ 有可衡量成功标准<br>□ 有起止日期<br>□ 有关联业务价值<br>□ 工作量≤2个Sprint | 所有检查项通过 | PO/PM | 技术负责人 | Jira Epic |
+| 项目启动 | 项目配置 | 配置完整 | □ 问题类型配置<br>□ 工作流配置<br>□ 字段配置<br>□ 权限配置<br>□ 通知配置<br>□ 组件设置<br>□ 版本设置 | 配置清单100%完成 | Jira管理员 | 项目经理 | Jira项目 |
+| 需求分析 | 用户故事 | 符合格式规范 | □ 遵循As-a格式<br>□ 有业务上下文<br>□ 有3+验收标准<br>□ 有Story Points<br>□ 关联Epic<br>□ 有优先级 | 所有Story通过评审 | PO/PM | 开发团队 | Jira Story |
+| 需求分析 | 技术方案 | 经过评审 | □ 架构设计<br>□ 接口设计<br>□ 数据库设计<br>□ 技术选型说明<br>□ 风险评估<br>□ 经过技术评审 | 评审通过 | 架构师 | 技术委员会 | Confluence |
+| 需求分析 | UI设计 | 高保真 | □ 覆盖所有功能<br>□ 有交互说明<br>□ 标注完整<br>□ 经过UI评审<br>□ 响应式设计 | 设计评审通过 | UI设计师 | PM+开发 | Figma/蓝湖 |
+| Sprint规划 | Sprint创建 | 信息完整 | □ 有Sprint Goal<br>□ 有起止日期<br>□ 工作量≤团队容量<br>□ 所有Story有验收标准<br>□ 预留20% Buffer | Sprint规划会议通过 | Scrum Master | 团队全员 | Jira Sprint |
+| Sprint规划 | Task分解 | 粒度合适 | □ 每个Task≤8小时<br>□ 有明确验收标准<br>□ 标注任务类型<br>□ 指定负责人<br>□ 标注依赖关系 | Task分配完成 | 开发负责人 | Tech Lead | Jira Sub-task |
+| 开发执行 | 代码提交 | 符合规范 | □ Commit含Jira ID<br>□ 分支命名规范<br>□ 通过CI检查<br>□ 单元测试≥80%<br>□ 无安全漏洞 | PR通过 | 开发人员 | Code Reviewer | Git仓库 |
+| 开发执行 | Code Review | 检查完整 | □ 代码规范<br>□ 单元测试<br>□ 性能问题<br>□ 安全漏洞<br>□ 日志处理<br>□ 设计模式 | Review通过 | Reviewer | Tech Lead | Git PR |
+| 开发执行 | 文档更新 | 及时准确 | □ API文档更新<br>□ 技术文档更新<br>□ 部署文档更新<br>□ README更新 | 文档评审通过 | 开发人员 | Tech Lead | Confluence/Git |
+| 测试QA | 测试用例 | 覆盖完整 | □ 覆盖所有Story<br>□ 有前置条件<br>□ 步骤清晰<br>□ 预期结果明确<br>□ 已评审 | 用例评审通过 | QA | QA Lead | Jira/Zephyr |
+| 测试QA | Bug创建 | 信息完整 | □ 有重现步骤<br>□ 有期望/实际结果<br>□ 有环境信息<br>□ 有严重程度<br>□ 有截图/日志 | Bug确认通过 | QA | 开发人员 | Jira Bug |
+| 测试QA | 测试报告 | 数据完整 | □ 测试覆盖率<br>□ Bug统计<br>□ 遗留问题<br>□ 风险评估<br>□ 发布建议 | 报告评审通过 | QA Lead | PM+Tech Lead | Confluence |
+| 发布 | Release Notes | 内容完整 | □ 新功能列表<br>□ Bug修复列表<br>□ 已知问题<br>□ 破坏性变更<br>□ 回滚方案 | PM确认 | PM | 所有相关方 | Jira版本 |
+| 发布 | 部署文档 | 步骤详细 | □ 详细步骤<br>□ 配置变更<br>□ 数据库脚本<br>□ 回滚方案<br>□ 验证步骤 | 部署验证通过 | 运维+开发 | SRE | Confluence |
+| 发布 | 监控配置 | 告警就绪 | □ 关键指标监控<br>□ 告警规则<br>□ Dashboard<br>□ 值班安排 | 监控测试通过 | SRE | 运维负责人 | Grafana |
+| 收尾 | Sprint回顾 | 有改进项 | □ 数据指标<br>□ 做得好的<br>□ 需改进的<br>□ 行动计划<br>□ 责任人明确 | 回顾会议完成 | Scrum Master | 团队全员 | Confluence |
+| 收尾 | 项目归档 | 归档完整 | □ 所有Issue关闭<br>□ 未完成项处理<br>□ 文档归档<br>□ 权限调整<br>□ 经验教训 | 归档检查通过 | PM | 管理层 | Confluence/Jira |

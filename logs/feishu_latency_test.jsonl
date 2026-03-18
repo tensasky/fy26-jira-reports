@@ -1,0 +1,2 @@
+{"timestamp": 1771039877644, "direction": "sent", "latency_ms": null, "note": "Test message initiated", "datetime": "2026-02-14T11:31:17.644307"}
+{"test_id": "TEST-1771039877644", "sent_time": "11:31:17.644", "received_time": "11:35:40.869", "latency_ms": 210000, "rating": "\u26ab \u5f88\u5dee (> 10\u79d2)", "timestamp": 1771040140869, "latency_sec": 210}

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FY26 Jira Epic Management Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        @page {
+            size: 1920px 1080px;
+            margin: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .slide {
+            width: 1920px;
+            height: 1080px;
+            margin: 0 auto 40px;
+            background: linear-gradient(135deg, #C41230 0%, #9B0F28 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            page-break-after: always;
+        }
+        
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+        
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            padding: 80px 120px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 封面样式 */
+        .cover .content-wrapper {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .cover h1 {
+            font-size: 96px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+        
+        .cover .subtitle {
+            font-size: 48px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 300;
+            margin-bottom: 80px;
+        }
+        
+        .cover .meta {
+            font-size: 28px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .lulu-logo {
+            width: 120px;
+            height: 120px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 60px;
+            font-size: 48px;
+            font-weight: 700;
+            color: #C41230;
+        }
+        
+        /* 内容页样式 */
+        .content-slide .header {
+            margin-bottom: 60px;
+        }
+        
+        .content-slide h2 {
+            font-size: 64px;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .content-slide .section-num {
+            font-size: 28px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+            letter-spacing: 4px;
+        }
+        
+        .content-body {
+            flex: 1;
+            display: flex;
+            gap: 80px;
+        }
+        
+        .left-col, .right-col {
+            flex: 1;
+        }
+        
+        .full-width {
+            width: 100%;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .card h3 {
+            font-size: 32px;
+            color: #C41230;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+        
+        .card p, .card li {
+            font-size: 24px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .card li {
+            padding-left: 32px;
+            position: relative;
+        }
+        
+        .card li::before {
+            content: '•';
+            color: #C41230;
+            font-weight: bold;
+            position: absolute;
+            left: 8px;
+            font-size: 28px;
+        }
+        
+        /* 层级展示 */
+        .hierarchy {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            align-items: center;
+            padding: 40px 0;
+        }
+        
+        .level {
+            background: #ffffff;
+            color: #C41230;
+            padding: 24px 64px;
+            border-radius: 12px;
+            font-size: 36px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            width: 600px;
+            text-align: center;
+        }
+        
+        .level-arrow {
+            color: rgba(255,255,255,0.8);
+            font-size: 48px;
+        }
+        
+        /* 表格样式 */
+        .table-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .table-card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table-card th {
+            background: #C41230;
+            color: #ffffff;
+            padding: 24px 32px;
+            text-align: left;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .table-card td {
+            padding: 20px 32px;
+            font-size: 22px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .table-card tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table-card tr:nth-child(even) {
+            background: #fafafa;
+        }
+        
+        /* 标签样式 */
+        .tag {
+            display: inline-block;
+            background: #C41230;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .tag-outline {
+            background: transparent;
+            border: 2px solid #C41230;
+            color: #C41230;
+        }
+        
+        /* 状态颜色 */
+        .status-gray {
+            color: #999;
+        }
+        
+        .status-blue {
+            color: #0066CC;
+        }
+        
+        .status-green {
+            color: #00AA44;
+        }
+        
+        /* 两列布局 */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        /* 图标 */
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: #C41230;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 40px;
+            margin-bottom: 24px;
+        }
+        
+        /* 强调文本 */
+        .highlight {
+            background: linear-gradient(transparent 60%, rgba(255,255,255,0.3) 60%);
+            padding: 0 8px;
+        }
+        
+        /* 步骤 */
+        .steps {
+            display: flex;
+            gap: 32px;
+            margin-top: 40px;
+        }
+        
+        .step {
+            flex: 1;
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .step-num {
+            width: 64px;
+            height: 64px;
+            background: #C41230;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 auto 24px;
+        }
+        
+        .step h4 {
+            font-size: 28px;
+            color: #C41230;
+            margin-bottom: 16px;
+        }
+        
+        .step p {
+            font-size: 20px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* 结束页 */
+        .end .content-wrapper {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .end h2 {
+            font-size: 80px;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+        
+        .end p {
+            font-size: 36px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* 小提示 */
+        .tip {
+            background: rgba(255,255,255,0.15);
+            border-left: 4px solid #ffffff;
+            padding: 24px 32px;
+            margin-top: 32px;
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .tip-title {
+            font-size: 22px;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .tip-content {
+            font-size: 20px;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面 -->
+    <div class="slide cover">
+        <div class="content-wrapper">
+            <div class="lulu-logo">lulu</div>
+            <h1>Jira Epic Management<br>Training</h1>
+            <p class="subtitle">FY26 标准规范培训</p>
+            <p class="meta">China Technology Team</p>
+        </div>
+    </div>
+
+    <!-- 目录 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">CONTENTS</div>
+                <h2>培训内容</h2>
+            </div>
+            <div class="content-body">
+                <div class="full-width">
+                    <div class="card">
+                        <h3>📋 今日议程</h3>
+                        <div class="two-col">
+                            <div>
+                                <p><strong>01.</strong> Jira层级结构概述</p>
+                                <p><strong>02.</strong> Epic类型与命名规范</p>
+                                <p><strong>03.</strong> Epic必填字段详解</p>
+                                <p><strong>04.</strong> Story/Task字段要求</p>
+                            </div>
+                            <div>
+                                <p><strong>05.</strong> 状态工作流说明</p>
+                                <p><strong>06.</strong> 父子关系管理</p>
+                                <p><strong>07.</strong> 最佳实践与FAQ</p>
+                                <p><strong>08.</strong> Q&A</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 层级结构 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">01 / STRUCTURE</div>
+                <h2>Jira层级结构</h2>
+            </div>
+            <div class="content-body" style="justify-content: center;">
+                <div class="hierarchy">
+                    <div class="level">🏢 Initiative (项目集)</div>
+                    <div class="level-arrow">↓</div>
+                    <div class="level">📁 Feature (子项目)</div>
+                    <div class="level-arrow">↓</div>
+                    <div class="level">📦 Epic (任务包)</div>
+                    <div class="level-arrow">↓</div>
+                    <div class="level">📝 Story / Task</div>
+                </div>
+            </div>
+            <div class="tip">
+                <div class="tip-title">💡 关键概念</div>
+                <div class="tip-content">当Intake进入Delivery阶段时，必须通过Jira进行管理。Goal-Initiative-Feature是固定的父子关系，Epic及以下在各自团队Space中管理。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Epic类型 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">02 / EPIC TYPES</div>
+                <h2>Epic类型与命名</h2>
+            </div>
+            <div class="content-body">
+                <div class="left-col">
+                    <div class="card">
+                        <div class="icon-box">1</div>
+                        <h3>Dev Delivery</h3>
+                        <p><strong>命名规范：</strong></p>
+                        <p style="font-size: 28px; color: #C41230; font-weight: 600; margin: 16px 0;">
+                            Dev & SIT - Application Name
+                        </p>
+                        <ul>
+                            <li>每个Epic为实际部署交付的最小单位</li>
+                            <li>Application级别，对应PBN中的B</li>
+                            <li>Epic工单号需与CAB变更工单号关联</li>
+                            <li>多个部署团队会有多个Epic，以后缀区分</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <div class="card">
+                        <div class="icon-box">2</div>
+                        <h3>Project Management</h3>
+                        <p><strong>文档类前缀：</strong></p>
+                        <p>
+                            <span class="tag">BRD</span>
+                            <span class="tag">PRD</span>
+                            <span class="tag">ISD</span>
+                            <span class="tag">FSD</span>
+                            <span class="tag">CSBD</span>
+                            <span class="tag">SRE</span>
+                            <span class="tag">Solution</span>
+                        </p>
+                        <p style="margin-top: 20px;"><strong>里程碑类前缀：</strong></p>
+                        <p>
+                            <span class="tag tag-outline">TUAT</span>
+                            <span class="tag tag-outline">BUAT</span>
+                            <span class="tag tag-outline">Penetration Test</span>
+                            <span class="tag tag-outline">Cutover Plan</span>
+                            <span class="tag tag-outline">Hypercare</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Epic必填字段 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">03 / EPIC FIELDS</div>
+                <h2>Epic必填字段 (13项)</h2>
+            </div>
+            <div class="content-body">
+                <div class="full-width">
+                    <div class="table-card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">No</th>
+                                    <th style="width: 20%;">字段名称</th>
+                                    <th style="width: 15%;">负责人</th>
+                                    <th style="width: 57%;">填写说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><strong>Space</strong></td>
+                                    <td>系统</td>
+                                    <td>Jira空间名字。常用名：板子、Space。每个Space都有字母缩写如CNTIN、CNTD、CNDIN等</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><strong>Parent No</strong></td>
+                                    <td>PM</td>
+                                    <td>当前Ticket的Parent（父项）。Feature-Epic是固定的父子关系，请勿随意修改</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><strong>Jira No</strong></td>
+                                    <td>系统</td>
+                                    <td>由Space缩写+数字组成，如CNTIN-1234</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><strong>Summary</strong></td>
+                                    <td>PM</td>
+                                    <td>参考Epic Breakdown中的建议前缀+个性化自定义命名</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td><strong>Assignee</strong></td>
+                                    <td>PM</td>
+                                    <td>实际管理人和操作人，对于Feature来说是项目的PM。请勿随意修改</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Epic字段续 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">03 / EPIC FIELDS (续)</div>
+                <h2>Epic关键字段详解</h2>
+            </div>
+            <div class="content-body">
+                <div class="left-col">
+                    <div class="card">
+                        <h3>📄 Description 描述</h3>
+                        <p><strong>格式固定：</strong></p>
+                        <ul>
+                            <li>1. Risk log 表格</li>
+                            <li>2. 项目文档存储地址</li>
+                        </ul>
+                        <p style="margin-top: 20px; font-size: 20px; color: #666;">文件的确认版需要存档至Epic父项Feature的Description内</p>
+                    </div>
+                    <div class="card">
+                        <h3>📅 日期字段</h3>
+                        <p><strong>Start date</strong> - 计划开始时间</p>
+                        <p><strong>Due date</strong> - 计划结束时间</p>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <div class="card">
+                        <h3>🔗 Linked work items</h3>
+                        <p><strong>涵盖所有非父子关系的关联Ticket：</strong></p>
+                        <ul>
+                            <li><strong>Related to:</strong> 用来表示Intake，由TPMO管理</li>
+                            <li><strong>Dependency:</strong> 用来表示依赖项，由PM管理</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 Status & Status Trend</h3>
+                        <p><strong>Status（状态）：</strong></p>
+                        <p>New → In Progress → Done</p>
+                        <p style="margin-top: 16px;"><strong>Status Trend（趋势）：</strong></p>
+                        <p>根据项目实际状态选择，由Program Manager维护</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Story/Task字段 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">04 / STORY FIELDS</div>
+                <h2>Story/Task字段要求</h2>
+            </div>
+            <div class="content-body">
+                <div class="full-width">
+                    <div class="table-card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">No</th>
+                                    <th style="width: 18%;">字段名称</th>
+                                    <th style="width: 12%;">必填</th>
+                                    <th style="width: 62%;">填写说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><strong>Space</strong></td>
+                                    <td>系统</td>
+                                    <td>Jira空间名字</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><strong>Parent No</strong></td>
+                                    <td>是</td>
+                                    <td>Epic-Story/Task是固定的父子关系，在Parent字段进行关联，请勿随意修改</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><strong>Summary</strong></td>
+                                    <td>是</td>
+                                    <td>根据任务实际需要自定义命名</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><strong>Assignee</strong></td>
+                                    <td>是</td>
+                                    <td>实际管理人和操作人，对于Feature来说是项目的PM</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td><strong>Description</strong></td>
+                                    <td>是</td>
+                                    <td>格式固定：1. Risk log表格 2. 项目文档存储地址</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td><strong>Start/Due date</strong></td>
+                                    <td>是</td>
+                                    <td>计划开始和结束时间</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td><strong>Status</strong></td>
+                                    <td>是</td>
+                                    <td>New(未启动) → In Progress(进行中) → Done(业务上线)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 状态工作流 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">05 / WORKFLOW</div>
+                <h2>状态工作流</h2>
+            </div>
+            <div class="content-body" style="align-items: center;">
+                <div class="full-width">
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <h4>📋 To Do</h4>
+                            <p>灰色标签<br>New<br>未启动状态<br>待开始工作</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <h4>🔄 In Progress</h4>
+                            <p>蓝色标签<br>进行中状态<br>开发/测试执行<br>活跃工作状态</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <h4>✅ Done</h4>
+                            <p>绿色标签<br>项目已业务上线<br>交付物：business sign-off for go-live<br>完成状态</p>
+                        </div>
+                    </div>
+                    <div class="tip" style="margin-top: 60px;">
+                        <div class="tip-title">⚠️ 重要提示</div>
+                        <div class="tip-content">Done状态表示项目已业务上线，不是开发完成。此阶段的交付物为business sign-off for go-live。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 父子关系 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">06 / RELATIONSHIPS</div>
+                <h2>父子关系管理</h2>
+            </div>
+            <div class="content-body">
+                <div class="left-col">
+                    <div class="card">
+                        <h3>🔗 固定父子关系</h3>
+                        <p><strong>Goal → Initiative → Feature</strong></p>
+                        <p style="margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 8px; font-family: monospace; font-size: 22px;">
+                            Goal<br>
+                            └─ Initiative<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;└─ Feature<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Epic<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Story/Task
+                        </p>
+                        <p style="color: #C41230; font-weight: 600;">⚠️ 请勿随意修改Parent字段！</p>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <div class="card">
+                        <h3>📌 空间分布</h3>
+                        <p><strong>China Technology Initiatives (CNTIN)</strong></p>
+                        <ul>
+                            <li>所有Initiative（项目集）</li>
+                            <li>所有Feature（子项目）</li>
+                        </ul>
+                        <p style="margin-top: 24px;"><strong>各团队Space</strong></p>
+                        <ul>
+                            <li>Epic及以下层级</li>
+                            <li>各自团队独立管理</li>
+                            <li>如：CNTD、CNDIN等</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 最佳实践 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">07 / BEST PRACTICES</div>
+                <h2>最佳实践与FAQ</h2>
+            </div>
+            <div class="content-body">
+                <div class="left-col">
+                    <div class="card">
+                        <h3>✅ Do's - 应该做</h3>
+                        <ul>
+                            <li>及时更新Status状态</li>
+                            <li>准确填写开始/结束日期</li>
+                            <li>Description中包含Risk log</li>
+                            <li>关联正确的Parent工单</li>
+                            <li>CAB变更工单号关联到Epic</li>
+                            <li>文档确认版存档至Feature</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <div class="card">
+                        <h3>❌ Don'ts - 不要做</h3>
+                        <ul>
+                            <li>不要随意修改Parent字段</li>
+                            <li>不要遗漏必填字段</li>
+                            <li>不要在Epic下直接创建Task（应先建Story）</li>
+                            <li>不要将不相关的Ticket链接为Dependency</li>
+                            <li>不要延迟更新Done状态</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="margin-top: 24px;">
+                        <h3>🛠️ 字段设置</h3>
+                        <p><strong>Space Manager可通过以下路径设置：</strong></p>
+                        <p style="font-family: monospace; background: #f5f5f5; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                            Space settings → Work items → Layout<br>
+                            → Edit work item layout
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 总结 -->
+    <div class="slide content-slide">
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="section-num">SUMMARY</div>
+                <h2>要点总结</h2>
+            </div>
+            <div class="content-body">
+                <div class="full-width">
+                    <div class="two-col">
+                        <div class="card">
+                            <h3>🎯 核心原则</h3>
+                            <ul>
+                                <li><strong>层级清晰：</strong>Initiative-Feature-Epic-Story/Task</li>
+                                <li><strong>命名规范：</strong>统一前缀，一目了然</li>
+                                <li><strong>字段完整：</strong>13个必填项不遗漏</li>
+                                <li><strong>状态及时：</strong>随进度更新状态</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>📞 支持渠道</h3>
+                            <ul>
+                                <li>Confluence文档：<br>FY26 Jira Epic Management Standard</li>
+                                <li>Space Manager协助字段配置</li>
+                                <li>TPMO管理Intake关联</li>
+                                <li>PM管理Dependency依赖</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tip" style="margin-top: 40px;">
+                        <div class="tip-title">🎓 记住这个公式</div>
+                        <div class="tip-content" style="font-size: 28px; text-align: center; margin-top: 20px;">
+                            规范的Jira管理 = 清晰的层级 + 准确的字段 + 及时的状态更新
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结束页 -->
+    <div class="slide end">
+        <div class="content-wrapper">
+            <div class="lulu-logo">lulu</div>
+            <h2>Thank You</h2>
+            <p>Questions & Discussion</p>
+        </div>
+    </div>
+</body>
+</html>
