@@ -1,0 +1,74 @@
+# Dependencies
+node_modules/
+package-lock.json
+package.json
+
+# Chrome user data
+chrome_user_data/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Reports and data (generated files)
+jira-reports/*.json
+jira-reports/*.html
+jira-reports/*.csv
+reports/*.html
+!reports/.gitkeep
+
+# Cache
+/tmp/
+*.cache
+
+# Secrets
+.env
+*.env
+.jira-config
+confluence_auth.json
+
+# Large files
+*.zip
+*.tar.gz
+*.mp4
+*.mov
+
+# Novels (too many files)
+novels/
+
+# Confluence exports (temporary)
+confluence_export/
+confluence_export.zip
+
+# Node modules in skills
+skills/**/node_modules/
+
+# Output files
+output/
