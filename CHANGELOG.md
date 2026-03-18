@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-03-18
+
+### Performance - AI Summary Optimization
+- **Semantic Hash Cache**: MD5-based content caching instead of Issue Key
+  - Cache key = hash(summary + description)
+  - Auto-invalidation on content change
+  - Cross-issue content reuse
+  - Persistent index with TTL support
+- **Asyncio Processing**: Replaced ThreadPoolExecutor with asyncio + aiohttp
+  - Concurrency: 5 threads → 30 async workers (6x improvement)
+  - Rate limiting: 0.1s between requests
+  - Real-time progress tracking
+- **Prompt Pre-cleaning**: Strip ADF/HTML before AI processing
+  - Recursive ADF text extraction
+  - HTML tag removal
+  - Content limit reduced: 1000 → 800 chars (20% token reduction)
+  
+### Expected Performance
+- Before: ~10 min for 100 initiatives
+- After: ~3-5 min for 100 initiatives (with caching)
+
 ## [1.1.0] - 2026-03-18
 
 ### Added
