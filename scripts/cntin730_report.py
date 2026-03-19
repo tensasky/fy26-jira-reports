@@ -283,7 +283,7 @@ def generate_html(issues, status_counts, label_counts, assignee_counts):
             data-has-sla="{'true' if issue['has_sla'] else 'false'}"
             onclick="toggleRow(this)">
             <td class="col-key-summary">
-                <span class="issue-key">{issue['key']}{sla_icon}</span>
+                <span class="issue-key"><a href="https://lululemon.atlassian.net/browse/{issue['key']}" target="_blank" onclick="event.stopPropagation();">{issue['key']}</a>{sla_icon}</span>
                 <span class="issue-summary" title="{summary_escaped}">{summary_escaped[:80]}{'...' if len(issue['summary']) > 80 else ''}</span>
             </td>
             <td class="col-status">
@@ -551,10 +551,19 @@ def generate_html(issues, status_counts, label_counts, assignee_counts):
         
         .issue-key {{
             font-size: 12px;
-            color: #0052CC;
             font-weight: 600;
             display: block;
             margin-bottom: 4px;
+        }}
+        
+        .issue-key a {{
+            color: #0052CC;
+            text-decoration: none;
+        }}
+        
+        .issue-key a:hover {{
+            text-decoration: underline;
+            color: #0747A6;
         }}
         
         .issue-summary {{

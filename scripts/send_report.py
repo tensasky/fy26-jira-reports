@@ -6,11 +6,10 @@ CNTIN-730 报告邮件发送脚本
 
 import smtplib
 import os
+import ssl
 from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
 from datetime import datetime
 
 def send_report():
@@ -20,6 +19,10 @@ def send_report():
     recipient = "chinatechpmo@lululemon.com"
     cc = "rcheng2@lululemon.com"
     
+    print(f"📧 发件人: {sender_email}")
+    print(f"📧 收件人: {recipient}")
+    print(f"📧 抄送: {cc}")
+    
     # 找到最新报告
     workspace = Path.home() / ".openclaw" / "workspace"
     report_file = workspace / "reports" / "CNTIN-730_FY26_Intakes_Report_Latest.html"
@@ -27,6 +30,9 @@ def send_report():
     if not report_file.exists():
         print(f"❌ 报告文件不存在: {report_file}")
         return False
+    
+    print(f"📄 报告文件: {report_file}")
+    print(f"📄 文件大小: {report_file.stat().st_size / 1024:.1f} KB")
     
     # 读取报告内容
     with open(report_file, 'r', encoding='utf-8') as f:
@@ -44,14 +50,23 @@ def send_report():
     
     # 发送邮件
     try:
-        with smtplib.SMTP('smtp.qq.com', 587) as server:
-            server.starttls()
+        print("🔌 连接 SMTP 服务器...")
+        context = ssl.create_default_context()
+        
+        with smtplib.SMTP_SSL('smtp.qq.com', 465, context=context) as server:
+            print("✅ 连接成功")
+            print("🔑 登录中...")
             server.login(sender_email, sender_password)
+            print("✅ 登录成功")
+            print("📤 发送邮件...")
             server.send_message(msg)
+        
         print(f"✅ 邮件发送成功: {recipient}")
         return True
     except Exception as e:
         print(f"❌ 邮件发送失败: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 if __name__ == '__main__':
