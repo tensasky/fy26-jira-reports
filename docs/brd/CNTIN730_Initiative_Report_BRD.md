@@ -1,7 +1,8 @@
 # CNTIN-730 Initiative 周报 - 业务需求文档 (BRD)
 
-**文档版本**: v1.1.0  
+**文档版本**: v1.2.0  
 **创建日期**: 2026-03-18  
+**更新日期**: 2026-03-19  
 **作者**: OpenClaw  
 **状态**: 已发布
 
@@ -17,6 +18,7 @@ China Technology PMO 团队需要每周跟踪 CNTIN-730 下的所有 Initiative 
 - **缺乏标准化解释**: 没有统一的 What/Why 解释框架
 - **手动汇总耗时**: 人工整理周报需要 2-3 小时
 - **分发渠道单一**: 仅支持邮件发送，缺少即时通讯集成
+- **API 分页变更**: Jira API 升级到 `nextPageToken` 分页机制
 
 ### 1.2 业务目标
 
@@ -27,6 +29,7 @@ China Technology PMO 团队需要每周跟踪 CNTIN-730 下的所有 Initiative 
 | 提升效率 | 减少 PMO 手动整理时间 | 节省 95% 的周报制作时间 |
 | 增强可见性 | 提供统一的 Initiative 视图 | 覆盖 100% CNTIN-730 Initiatives |
 | 多渠道分发 | 支持邮件 + 飞书双渠道 | 飞书文件发送成功率 > 95% |
+| API 兼容性 | 适配 Jira API 新分页机制 | 100% 数据完整性 |
 
 ### 1.3 利益相关者
 
@@ -43,12 +46,14 @@ China Technology PMO 团队需要每周跟踪 CNTIN-730 下的所有 Initiative 
 
 ### 2.1 功能需求
 
-#### FR-001: 全量 Initiative 抓取
+#### FR-001: 全量 Initiative 抓取 (v1.2.0 更新)
 - **描述**: 从 CNTIN-730 下抓取所有 Initiative 数据
 - **优先级**: 高
 - **验收标准**: 
   - 抓取所有 CNTIN-730 子 Initiative
   - 包含完整描述、状态、负责人信息
+  - **适配 Jira API `nextPageToken` 分页机制**
+  - **排除 Cancelled 状态的 Initiative**
   - 抓取时间 < 2 分钟
 
 #### FR-002: AI 智能摘要 (v1.1.0 优化)
@@ -72,16 +77,43 @@ China Technology PMO 团队需要每周跟踪 CNTIN-730 下的所有 Initiative 
   - Assignee 列固定
   - 其他列可横向滚动
 
-#### FR-004: 交互式筛选
-- **描述**: 支持按状态、Label 筛选和搜索
+#### FR-004: 交互式筛选 (v1.2.0 更新)
+- **描述**: 支持按状态、Label、Assignee 筛选和搜索
 - **优先级**: 中
 - **验收标准**:
   - 状态筛选按钮
+  - **Assignee 筛选按钮** (v1.2.0 新增)
   - Label 筛选
+  - **Missing SLA 筛选** (v1.2.0 新增)
   - 关键词搜索
   - 实时过滤
 
-#### FR-005: 多渠道发送 (v1.1.0 新增)
+#### FR-005: 统计卡片 (v1.2.0 新增)
+- **描述**: 顶部显示关键统计指标卡片
+- **优先级**: 中
+- **验收标准**:
+  - Total Initiatives 卡片
+  - Done 卡片 (绿色)
+  - Discovery 卡片 (紫色)
+  - Missing SLA 卡片 (橙色警示)
+
+#### FR-006: 行展开功能 (v1.2.0 新增)
+- **描述**: 单击行展开/收起完整内容
+- **优先级**: 中
+- **验收标准**:
+  - 单击任意行切换展开状态
+  - 展开时显示完整 Description
+  - 展开时显示完整 AI Summary
+
+#### FR-007: Excel 导出 (v1.2.0 新增)
+- **描述**: 导出筛选后的数据为 CSV
+- **优先级**: 中
+- **验收标准**:
+  - 右下角浮动导出按钮
+  - 仅导出当前可见（筛选后）的数据
+  - CSV 格式，包含所有字段
+
+#### FR-008: 多渠道发送 (v1.1.0 新增)
 - **描述**: 支持邮件 + 飞书文件双渠道发送
 - **优先级**: 高
 - **验收标准**:
@@ -99,150 +131,155 @@ China Technology PMO 团队需要每周跟踪 CNTIN-730 下的所有 Initiative 
 
 #### NFR-002: 性能
 - 数据抓取 < 2 分钟
-- 报告生成 < 1 分钟
-- 邮件发送 < 10 秒
-- 飞书文件发送 < 30 秒
+- HTML 生成 < 5 秒
+- 邮件发送 < 30 秒
+- 页面加载 < 3 秒（100+ 行数据）
 
-#### NFR-003: 可靠性
-- 系统可用性 > 95%
-- AI 摘要成功率 > 95%
-- 邮件发送成功率 > 95%
-- 飞书发送成功率 > 95%
-
----
-
-## 3. 业务流程
-
-### 3.1 周报生成流程 (v1.1.0)
-
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  手动/定时  │───▶│  检查缓存   │───▶│  Jira抓取   │───▶│  AI摘要生成 │───▶│  生成报告   │
-│  触发执行   │    │ (语义哈希)  │    │ (CNTIN-730) │    │(30 async)   │    │  (HTML)     │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-                                                                                          │
-                                                                                          ▼
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐                                   ┌─────────────┐
-│  完成通知   │◀───│  飞书发送   │◀───│  邮件发送   │◀──────────────────────────────────│  本地保存   │
-│             │    │(文件 API)  │    │(QQ Mail)   │                                   │             │
-└─────────────┘    └─────────────┘    └─────────────┘                                   └─────────────┘
-```
-
-### 3.2 AI 摘要流程 (v1.1.0 优化)
-
-```
-Initiative Data
-      │
-      ▼
-┌─────────────────────┐
-│ Prompt Pre-clean    │  ◀── 清理 ADF/HTML 标签
-│ (减少 20% tokens)   │
-└─────────────────────┘
-      │
-      ▼
-Compute Content MD5
-      │
-      ▼
-Check Semantic Cache ──Cache hit?──┬──Yes──▶ Return cached
-      │                            │
-      No                           │
-      │                            │
-      ▼                            │
-┌─────────────────────┐            │
-│ Async AI API Call   │            │
-│ (30 concurrent)     │            │
-└─────────────────────┘            │
-      │                            │
-      ▼                            │
-Save to Cache (MD5 key) ◀──────────┘
-      │
-      ▼
-Return result
-```
+#### NFR-003: 可用性
+- 报告必须可离线查看
+- 支持主流浏览器（Chrome, Safari, Edge）
+- 移动端可查看（响应式）
 
 ---
 
-## 4. AI 摘要规范 (v1.1.0)
+## 3. 报表规格
 
-### 4.1 Prompt 预精简
+### 3.1 数据源
 
-**预处理逻辑**:
-```python
-def pre_clean_description(description):
-    """
-    清理描述内容，减少 Token 消耗
-    - 移除 ADF/HTML 标签
-    - 提取纯文本
-    - 限制长度 1000 字符
-    """
-    # 移除 HTML 标签
-    text = re.sub(r'<[^>]+>', '', description)
-    # 移除多余空白
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text[:1000]
+```
+JQL: project = CNTIN AND issuetype = Initiative AND parent = CNTIN-730 AND status != Cancelled
 ```
 
-### 4.2 语义缓存
+**字段需求:**
+- key: Initiative 编号
+- summary: 标题
+- status: 状态
+- assignee: 负责人
+- priority: 优先级
+- created: 创建日期
+- updated: 更新日期
+- duedate: 截止日期
+- description: 描述（ADF 格式）
+- labels: 标签
 
-**缓存策略**:
-- 基于内容 MD5 哈希而非 Issue Key
-- 内容变化自动失效
-- 相同内容不同 Issue 可以复用
-- TTL: 7 天
+### 3.2 数据转换
 
-### 4.3 异步并发
+| 源字段 | 目标字段 | 转换规则 |
+|--------|----------|----------|
+| fields.summary | summary | 直接存储 |
+| fields.status.name | status | 直接存储 |
+| fields.assignee.displayName | assignee | Unassigned 处理 |
+| fields.priority.name | priority | 直接存储 |
+| fields.created | created | ISO 8601 → YYYY-MM-DD |
+| fields.updated | updated | ISO 8601 → YYYY-MM-DD |
+| fields.duedate | duedate | 直接存储 |
+| fields.description | description | ADF 提取文本 |
+| fields.labels | labels | 数组 → 逗号分隔 |
 
-**并发配置**:
-```python
-AI_MAX_CONCURRENT = 30  # 异步并发数
-AI_RATE_LIMIT = 0.1     # 每请求间隔 0.1 秒
-```
+### 3.3 Missing SLA 规则
+
+**条件:**
+- 状态 ≠ Done
+- 更新时间 > 当前时间 - 14 天
+
+**标识:**
+- Key 后显示 ⚠️ 图标
+- 整行背景色高亮（#FFFAF5）
 
 ---
 
-## 5. 报表内容
+## 4. 用户界面
 
-### 5.1 表头设计
+### 4.1 页面布局
 
-| 列 | 说明 | 宽度 | 冻结 |
-|---|------|------|------|
-| Key / Summary | Initiative 编号和标题 | 280-350px | 是 |
-| Status | 状态 | 90px | 是 |
-| Assignee | 负责人 | 110px | 是 |
-| Priority | 优先级 | 80px | 否 |
-| Created | 创建日期 | 90px | 否 |
-| Updated | 更新日期 | 90px | 否 |
-| Due Date | 截止日期 | 80px | 否 |
-| Description | 原始描述 | 400-500px | 否 |
-| AI Summary | What/Why 摘要 | 350-450px | 否 |
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ Header                                                              │
+│ - Title: CNTIN-730 FY26 Intakes                                     │
+│ - Subtitle: Parent = CNTIN-730 | Status ≠ Cancelled                 │
+│ - Timestamp: Generated: 2026-03-19 12:00                           │
+├─────────────────────────────────────────────────────────────────────┤
+│ Stats Cards                                                         │
+│ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                │
+│ │ 143      │ │ 34       │ │ 96       │ │ 30       │                │
+│ │ Total    │ │ Done     │ │ Discovery│ │ Missing  │                │
+│ └──────────┘ └──────────┘ └──────────┘ └──────────┘                │
+├─────────────────────────────────────────────────────────────────────┤
+│ Filter Section                                                      │
+│ - Search Input                                                      │
+│ - Status Filter (All, Discovery, Done, Execution, New, Strategy)   │
+│ - Assignee Filter (Top 20 assignees)                                │
+│ - Label Filter (Top 10 labels)                                      │
+│ - Missing SLA Filter                                                │
+├─────────────────────────────────────────────────────────────────────┤
+│ Legend: Missing SLA: 状态 ≠ Done 且更新时间超过2周                   │
+├─────────────────────────────────────────────────────────────────────┤
+│ Issues Table                                                        │
+│ - Frozen columns: Key/Summary, Status, Assignee                     │
+│ - Scrollable columns: Priority, Created, Updated, Due Date         │
+│                     Description, AI Summary                         │
+│ - Click row to expand                                               │
+├─────────────────────────────────────────────────────────────────────┤
+│ Export Button (Fixed bottom-right)                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│ Footer                                                              │
+│ - Generated by OpenClaw | Source: Jira API                          │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
-### 5.2 统计概览
+### 4.2 表格设计
 
-- 总 Initiatives 数量
-- 状态分布（Discovery, Done, Execution, New, Strategy）
-- Label 分布统计
-- SLA Alert 数量
-- 缓存命中率（v1.1.0 新增）
+| 列 | 说明 | 宽度 | 冻结 | 展开行为 |
+|---|------|------|------|----------|
+| Key / Summary | Initiative 编号和标题 | 280-350px | 是 | Summary 展开显示完整 |
+| Status | 状态 | 90px | 是 | - |
+| Assignee | 负责人 | 110px | 是 | - |
+| Priority | 优先级 | 80px | 否 | - |
+| Created | 创建日期 | 90px | 否 | - |
+| Updated | 更新日期 | 90px | 否 | - |
+| Due Date | 截止日期 | 80px | 否 | - |
+| Description | 原始描述 | 400-500px | 否 | 展开显示完整描述 |
+| AI Summary | What/Why 摘要 | 350-450px | 否 | 展开显示完整摘要 |
 
 ---
 
-## 6. 成功指标
+## 5. 成功指标
 
-### 6.1 定量指标 (v1.1.0)
+### 5.1 定量指标
 
-| 指标 | 目标 | v1.0.0 | v1.1.0 |
-|------|------|--------|--------|
-| 数据完整率 | 100% | 100% | 100% |
-| AI 摘要成功率 | > 95% | 98% | 98% |
-| 平均生成时间 | < 10 分钟 | ~10 分钟 | **~5 分钟** |
-| 缓存命中率 | > 50% | N/A | **~60%** |
-| Token 消耗 | 基准 | 100% | **~80%** |
-| 飞书发送成功率 | > 95% | N/A | > 95% |
+| 指标 | 目标 | v1.0.0 | v1.1.0 | v1.2.0 |
+|------|------|--------|--------|--------|
+| 数据完整率 | 100% | 100% | 100% | **100%** |
+| AI 摘要成功率 | > 95% | 98% | 98% | 98% |
+| 平均生成时间 | < 10 分钟 | ~10 分钟 | ~5 分钟 | **~5 分钟** |
+| 缓存命中率 | > 50% | N/A | ~60% | ~60% |
+| Token 消耗 | 基准 | 100% | ~80% | ~80% |
+| 飞书发送成功率 | > 95% | N/A | > 95% | > 95% |
+| **API 分页正确率** | 100% | N/A | N/A | **100%** |
 
-### 6.2 定性指标
+### 5.2 定性指标
 - PMO 团队理解一致性提升
 - 会议讨论效率提升
 - Initiative 上下文切换成本降低
+
+---
+
+## 6. 定时任务
+
+### 6.1 执行计划
+
+- **频率**: 工作日（周一至周五）
+- **时间**: 中午 12:00
+- **时区**: Asia/Shanghai (GMT+8)
+
+### 6.2 任务流程
+
+1. 清空历史缓存
+2. 从 Jira API 全量抓取数据（适配 nextPageToken）
+3. 生成 AI Summary（语义缓存优先）
+4. 生成 HTML 报告
+5. 发送邮件给 chinatechpmo@lululemon.com
+6. 抄送 rcheng2@lululemon.com
 
 ---
 
@@ -251,7 +288,7 @@ AI_RATE_LIMIT = 0.1     # 每请求间隔 0.1 秒
 | 风险 | 影响 | 可能性 | 缓解措施 |
 |------|------|--------|----------|
 | AI API 限流/故障 | 高 | 中 | 语义缓存机制，失败时显示占位符 |
-| Jira API 变更 | 中 | 低 | 监控 API 版本，及时适配 |
+| Jira API 变更 | 中 | 低 | **已适配 nextPageToken 分页**，监控 API 版本 |
 | 描述质量差 | 中 | 中 | Prompt 预精简，标注"信息不足" |
 | 邮件发送失败 | 中 | 低 | 双模式 SMTP，失败告警 |
 | 飞书 API 变更 | 中 | 低 | 监控飞书开放平台更新 |
@@ -262,7 +299,8 @@ AI_RATE_LIMIT = 0.1     # 每请求间隔 0.1 秒
 
 | 版本 | 日期 | 变更内容 |
 |------|------|----------|
-| v1.1.0 | 2026-03-18 | **优化版本**: 语义缓存、30 异步并发、Prompt 预精简、飞书文件发送 |
+| **v1.2.0** | **2026-03-19** | **重大更新**: 适配 Jira API 分页、新增统计卡片、Assignee 筛选、Missing SLA 筛选、行展开、Excel 导出 |
+| v1.1.0 | 2026-03-18 | 优化版本: 语义缓存、30 异步并发、Prompt 预精简、飞书文件发送 |
 | v1.0.0 | 2026-03-18 | 初始版本: AI 摘要、冻结列、基础缓存 |
 
 ---
@@ -280,9 +318,10 @@ AI_RATE_LIMIT = 0.1     # 每请求间隔 0.1 秒
 | Frozen Column | 表格中固定不随滚动移动的列 |
 | Semantic Cache | 基于内容 MD5 哈希的智能缓存 |
 | ADF | Atlassian Document Format，Jira 富文本格式 |
+| nextPageToken | Jira API v3 新分页机制令牌 |
 
 ### 9.2 参考资料
 
-- [GitHub Release](https://github.com/tensasky/fy26-jira-releases)
-- [Jira REST API v3](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)
-- [飞书开放平台](https://open.feishu.cn/)
+- [Jira REST API v3 - Search](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-jql-get)
+- [CHANGELOG.md](./CHANGELOG.md)
+- [VERSION.md](./VERSION.md)

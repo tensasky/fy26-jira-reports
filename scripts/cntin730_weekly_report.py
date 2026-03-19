@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-CNTIN-730 Initiative 周报自动化脚本 - v1.1.0 (Optimized)
-优化内容：
-1. 语义哈希缓存 (Semantic Cache) - 基于内容 MD5 而非 Issue Key
-2. 异步流式处理 (Asyncio) - 支持 20-50 并发，替代 ThreadPoolExecutor
-3. Prompt 预精简 - 清理 ADF/HTML 标签，减少 Token 消耗
-
-作者: OpenClaw
-版本: v1.1.0
-日期: 2026-03-18
+CNTIN-730 Initiative 周报自动化脚本 - v5.1 (Final)
+格式要求：
+- Key/Summary 合并列
+- 移除 Creator 和 Reporter
+- Description 列宽 500-700px
+- Alerts 图标显示在 Key 后
 """
 
 import json
@@ -20,6 +17,7 @@ import time
 import shutil
 import asyncio
 import aiohttp
+import requests
 import hashlib
 import re
 from datetime import datetime, timezone
@@ -31,7 +29,6 @@ from email import encoders
 import smtplib
 
 # ==================== 配置 ====================
-# Jira 配置
 JIRA_URL = "https://lululemon.atlassian.net"
 JIRA_EMAIL = "rcheng2@lululemon.com"
 JIRA_API_TOKEN = os.environ.get("JIRA_API_TOKEN", "")
@@ -40,8 +37,8 @@ JIRA_API_TOKEN = os.environ.get("JIRA_API_TOKEN", "")
 AI_API_KEY = os.environ.get("AI_API_KEY", "sk-5tLeZUj3QbkSlHPRJrPRXObQtI1JcDYNLtA2cnvq6heP5kxs")
 AI_BASE_URL = os.environ.get("AI_BASE_URL", "http://newapi.200m.997555.xyz/v1")
 AI_MODEL = os.environ.get("AI_MODEL", "claude-sonnet-4-6")
-AI_MAX_CONCURRENT = 30  # 异步并发数 (原 ThreadPool 5 -> 现在 30)
-AI_RATE_LIMIT = 0.1     # 每请求间隔 (秒)
+AI_MAX_CONCURRENT = 30
+AI_RATE_LIMIT = 0.1
 
 # 邮件配置
 SMTP_SERVER = "smtp.qq.com"
@@ -52,38 +49,27 @@ RECIPIENTS = ["chinatechpmo@lululemon.com"]
 CC_RECIPIENTS = ["rcheng2@lululemon.com"]
 
 # 路径配置
-CACHE_DIR = Path("/tmp/ai_summary_cache_semantic")  # 新缓存目录
-CACHE_INDEX = CACHE_DIR / "index.json"  # 缓存索引文件
+CACHE_DIR = Path("/tmp/ai_summary_cache_semantic")
+CACHE_INDEX = CACHE_DIR / "index.json"
 REPORTS_DIR = Path("/Users/admin/.openclaw/workspace/reports")
 JIRA_DATA_FILE = Path("/tmp/cntin_initiatives.json")
 
 # ==================== 日志 ====================
 def log(message):
-    """打印带时间戳的日志"""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] {message}")
 
 # ==================== 语义哈希缓存 ====================
 class SemanticCache:
-    """
-    语义哈希缓存 - 基于内容 MD5 而非 Issue Key
-    
-    优势：
-    1. 内容变化自动失效，无需手动清理
-    2. 相同内容不同 Issue 可以复用
-    3. 支持缓存索引快速查找
-    """
-    
     def __init__(self, cache_dir, ttl_days=7):
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.index_file = self.cache_dir / "index.json"
         self.index = self._load_index()
-        self.ttl = ttl_days * 24 * 3600  # 秒
+        self.ttl = ttl_days * 24 * 3600
         self.stats = {"hits": 0, "misses": 0, "saves": 0}
     
     def _load_index(self):
-        """加载缓存索引"""
         if self.index_file.exists():
             try:
                 with open(self.index_file, 'r', encoding='utf-8') as f:
@@ -93,416 +79,270 @@ class SemanticCache:
         return {}
     
     def _save_index(self):
-        """保存缓存索引"""
         with open(self.index_file, 'w', encoding='utf-8') as f:
             json.dump(self.index, f, ensure_ascii=False, indent=2)
     
     def _compute_hash(self, summary, description):
-        """
-        计算内容的语义哈希
-        
-        Args:
-            summary: Initiative 标题
-            description: Initiative 描述（已清理的纯文本）
-        
-        Returns:
-            MD5 哈希值 (32位字符串)
-        """
-        # 组合关键内容
-        content = f"{summary.strip()}|{description.strip()}"
+        content = f"{summary}:{description}"
         return hashlib.md5(content.encode('utf-8')).hexdigest()
     
     def get(self, summary, description):
-        """
-        获取缓存的 AI Summary
-        
-        Returns:
-            (cached_summary, content_hash) 或 (None, content_hash)
-        """
         content_hash = self._compute_hash(summary, description)
+        if content_hash not in self.index:
+            self.stats["misses"] += 1
+            return None
         
-        # 检查索引
-        if content_hash in self.index:
-            cache_entry = self.index[content_hash]
-            cache_file = self.cache_dir / f"{content_hash}.json"
-            
-            # 检查文件是否存在且未过期
-            if cache_file.exists():
-                mtime = cache_file.stat().st_mtime
-                if time.time() - mtime < self.ttl:
-                    try:
-                        with open(cache_file, 'r', encoding='utf-8') as f:
-                            data = json.load(f)
-                            self.stats["hits"] += 1
-                            log(f"   💾 缓存命中: {content_hash[:8]}... (总计命中: {self.stats['hits']})")
-                            return data.get('ai_summary'), content_hash
-                    except:
-                        pass
-                else:
-                    # 过期清理
-                    cache_file.unlink(missing_ok=True)
-                    del self.index[content_hash]
+        cache_entry = self.index[content_hash]
+        cache_file = self.cache_dir / cache_entry['file']
         
-        self.stats["misses"] += 1
-        return None, content_hash
+        if not cache_file.exists():
+            del self.index[content_hash]
+            self._save_index()
+            self.stats["misses"] += 1
+            return None
+        
+        if time.time() - cache_entry['created'] > self.ttl:
+            cache_file.unlink()
+            del self.index[content_hash]
+            self._save_index()
+            self.stats["misses"] += 1
+            return None
+        
+        with open(cache_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            self.stats["hits"] += 1
+            return data.get('ai_summary')
     
-    def set(self, content_hash, ai_summary, issue_key=None):
-        """
-        保存 AI Summary 到缓存
-        
-        Args:
-            content_hash: 内容哈希值
-            ai_summary: AI 生成的摘要
-            issue_key: 可选，用于日志记录
-        """
-        cache_file = self.cache_dir / f"{content_hash}.json"
+    def set(self, summary, description, ai_summary):
+        content_hash = self._compute_hash(summary, description)
+        cache_file = self.cache_dir / f"{content_hash[:8]}.json"
         
         with open(cache_file, 'w', encoding='utf-8') as f:
             json.dump({
                 'ai_summary': ai_summary,
-                'cached_at': datetime.now().isoformat(),
-                'issue_key': issue_key
+                'hash': content_hash,
+                'cached_at': datetime.now().isoformat()
             }, f, ensure_ascii=False)
         
-        # 更新索引
         self.index[content_hash] = {
-            'cached_at': datetime.now().isoformat(),
-            'issue_key': issue_key
+            'file': cache_file.name,
+            'created': time.time(),
+            'ttl': self.ttl
         }
         self._save_index()
-        
         self.stats["saves"] += 1
     
     def get_stats(self):
-        """获取缓存统计"""
         total = self.stats["hits"] + self.stats["misses"]
         hit_rate = (self.stats["hits"] / total * 100) if total > 0 else 0
         return {
             **self.stats,
             "total": total,
-            "hit_rate": f"{hit_rate:.1f}%",
-            "cached_items": len(self.index)
+            "hit_rate": f"{hit_rate:.1f}%"
         }
 
-# ==================== Prompt 预精简 ====================
-def clean_jira_description(description_content):
-    """
-    清理 Jira Description，移除 ADF/HTML 格式，保留纯文本
-    
-    优化点：
-    1. 提取 ADF 格式中的文本内容
-    2. 移除 HTML 标签
-    3. 清理多余空白
-    4. 限制长度，减少 Token 消耗
-    
-    Args:
-        description_content: Jira description (可能是 dict 或 string)
-    
-    Returns:
-        清理后的纯文本字符串
-    """
-    if not description_content:
-        return ""
-    
-    texts = []
-    
-    # 处理 ADF (Atlassian Document Format)
-    if isinstance(description_content, dict):
-        def extract_text(node):
-            """递归提取 ADF 中的文本"""
-            if not node:
-                return
-            
-            node_type = node.get('type', '')
-            
-            # 文本节点
-            if node_type == 'text':
-                text = node.get('text', '')
-                if text:
-                    texts.append(text)
-            
-            # 包含内容的节点
-            content = node.get('content', [])
-            if isinstance(content, list):
-                for child in content:
-                    extract_text(child)
-        
-        extract_text(description_content)
-    
-    # 处理字符串（可能是 HTML 或纯文本）
-    elif isinstance(description_content, str):
-        # 移除 HTML 标签
-        text = re.sub(r'<[^>]+>', ' ', description_content)
-        texts.append(text)
-    
-    # 合并并清理
-    full_text = ' '.join(texts)
-    
-    # 清理多余空白
-    full_text = re.sub(r'\s+', ' ', full_text)
-    
-    # 清理特殊字符
-    full_text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', full_text)
-    
-    # 限制长度 (最大 800 字符，减少 Token 消耗)
-    if len(full_text) > 800:
-        full_text = full_text[:800] + "..."
-    
-    return full_text.strip()
-
-# ==================== 步骤 1: 清空历史缓存 ====================
+# ==================== 步骤 1: 清空缓存 ====================
 def clear_cache():
-    """清空 AI Summary 缓存和历史数据"""
     log("🧹 步骤 1: 清空历史缓存...")
-    
-    # 清空旧版缓存（如果存在）
-    old_cache = Path("/tmp/ai_summary_cache")
-    if old_cache.exists():
-        shutil.rmtree(old_cache)
-        log(f"   ✅ 已清空旧版缓存")
-    
-    # 清空新版语义缓存
-    if CACHE_DIR.exists():
-        shutil.rmtree(CACHE_DIR)
-        log(f"   ✅ 已清空语义缓存目录")
-    
-    # 清空 Jira 数据文件
-    if JIRA_DATA_FILE.exists():
-        JIRA_DATA_FILE.unlink()
-        log(f"   ✅ 已清空 Jira 数据文件")
-    
-    # 重建缓存目录
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    log("   ✅ 语义缓存目录已重建")
+    try:
+        if CACHE_DIR.exists():
+            shutil.rmtree(CACHE_DIR)
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        log("   ✅ 已清空语义缓存目录")
+        return True
+    except Exception as e:
+        log(f"   ❌ 清空缓存失败: {e}")
+        return False
 
-# ==================== 步骤 2: 全量从 Jira 获取数据 ====================
+# ==================== 步骤 2: 从 Jira 获取数据 ====================
 def fetch_jira_data():
-    """从 Jira 全量获取 CNTIN-730 下的所有 Initiatives"""
     log("📥 步骤 2: 从 Jira 全量获取数据...")
     
     if not JIRA_API_TOKEN:
         log("   ❌ 错误: 未设置 JIRA_API_TOKEN 环境变量")
-        sys.exit(1)
+        return None
     
-    auth_str = f"{JIRA_EMAIL}:{JIRA_API_TOKEN}"
-    auth_bytes = auth_str.encode('ascii')
+    jql = 'project = CNTIN AND issuetype = Initiative AND parent = CNTIN-730 AND status != Cancelled'
+    
+    # Jira Cloud 使用 Basic Auth
     import base64
-    auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
-    
+    auth_str = f"{JIRA_EMAIL}:{JIRA_API_TOKEN}"
+    auth_b64 = base64.b64encode(auth_str.encode()).decode()
     headers = {
-        "Authorization": f"Basic {auth_b64}",
-        "Content-Type": "application/json"
+        'Authorization': f'Basic {auth_b64}',
+        'Content-Type': 'application/json'
     }
     
-    # 获取 CNTIN-730 下的所有 Initiatives
-    jql = 'project = CNTIN AND issuetype = Initiative AND "Parent Link" = CNTIN-730'
-    
     all_issues = []
-    start_at = 0
     max_results = 100
-    total = None
+    next_page_token = None
+    page_count = 0
     
-    while total is None or start_at < total:
-        url = f"{JIRA_URL}/rest/api/3/search/jql"
-        params = {
-            "jql": jql,
-            "startAt": start_at,
-            "maxResults": max_results,
-            "fields": "summary,status,assignee,priority,created,updated,duedate,description,labels"
-        }
-        
-        try:
+    try:
+        while True:
+            url = f"{JIRA_URL}/rest/api/3/search/jql"
+            params = {
+                "jql": jql,
+                "maxResults": max_results,
+                "fields": "summary,status,assignee,priority,created,updated,duedate,description,labels"
+            }
+            
+            # 如果有 nextPageToken，添加到请求参数
+            if next_page_token:
+                params["nextPageToken"] = next_page_token
+            
             response = requests.get(url, headers=headers, params=params, timeout=60)
             response.raise_for_status()
             data = response.json()
             
             issues = data.get('issues', [])
             all_issues.extend(issues)
+            page_count += 1
             
-            if total is None:
-                total = data.get('total', 0)
-                log(f"   📊 总共 {total} 个 Initiative 需要获取")
+            log(f"   ✅ 第 {page_count} 页: 获取 {len(issues)} 条，累计 {len(all_issues)} 条")
             
-            start_at += len(issues)
-            log(f"   ✅ 已获取 {len(all_issues)}/{total} 个")
+            # 检查是否还有更多数据
+            is_last = data.get('isLast', True)
+            if is_last:
+                break
             
-        except Exception as e:
-            log(f"   ❌ 获取数据失败: {e}")
-            sys.exit(1)
-    
-    # 保存到本地文件
-    result_data = {
-        "issues": all_issues,
-        "total": len(all_issues),
-        "fetched_at": datetime.now().isoformat()
-    }
-    
-    with open(JIRA_DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(result_data, f, ensure_ascii=False, indent=2)
-    
-    log(f"   ✅ 数据已保存到: {JIRA_DATA_FILE}")
-    return result_data
+            # 获取下一页的 token
+            next_page_token = data.get('nextPageToken')
+            if not next_page_token:
+                break
+        
+        log(f"   📊 总共获取 {len(all_issues)} 个 Initiative")
+        
+        result_data = {
+            'issues': all_issues,
+            'total': len(all_issues),
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        with open(JIRA_DATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(result_data, f, ensure_ascii=False, indent=2)
+        
+        log(f"   ✅ 数据已保存到: {JIRA_DATA_FILE}")
+        return result_data
+        
+    except Exception as e:
+        log(f"   ❌ 获取数据失败: {e}")
+        import traceback
+        log(f"   错误详情: {traceback.format_exc()}")
+        return None
 
-# ==================== 步骤 3: 异步 AI 摘要生成 ====================
-async def generate_ai_summary_async(session, semaphore, issue_data, cache):
-    """
-    异步生成单个 AI Summary
+# ==================== 步骤 3: 生成 AI Summary ====================
+def pre_clean_description(description):
+    """预清理描述内容"""
+    if not description:
+        return ""
+    if isinstance(description, str):
+        text = re.sub(r'<[^>]+>', ' ', description)
+        text = re.sub(r'\s+', ' ', text).strip()
+        return text[:1000]
+    return str(description)[:1000]
+
+async def generate_ai_summary_async(session, semaphore, issue, cache):
+    """异步生成单个 AI Summary"""
+    key = issue.get('key', '')
+    fields = issue.get('fields', {})
+    summary = fields.get('summary', '')
+    description = pre_clean_description(fields.get('description', ''))
     
-    Args:
-        session: aiohttp ClientSession
-        semaphore: 并发控制信号量
-        issue_data: Initiative 数据字典
-        cache: SemanticCache 实例
+    cached = cache.get(summary, description)
+    if cached:
+        return key, cached
     
-    Returns:
-        (key, ai_summary) 元组
-    """
-    key = issue_data['key']
-    summary = issue_data['summary']
-    description = issue_data.get('clean_description', '')
-    
-    # 检查缓存
-    cached_result, content_hash = cache.get(summary, description)
-    if cached_result:
-        return key, cached_result
-    
-    # 如果描述为空或太短，直接返回
-    if not description or len(description) < 10:
-        placeholder = "<span class='ai-summary-missing'>暂无足够描述</span>"
-        cache.set(content_hash, placeholder, key)
-        return key, placeholder
-    
-    # 构建 Prompt
-    prompt = f"""请根据以下 Initiative 的标题和描述，用简洁自然的语言总结 What 和 Why。
+    async with semaphore:
+        prompt = f"""请根据以下 Initiative 的标题和描述，用简洁自然的语言总结 What 和 Why。
 
 【Initiative 标题】: {summary}
 【描述内容】: {description}
 
 要求：
-1. What 部分：用动词开头，直接说明要做什么。比如"搭建...系统"、"优化...流程"、"迁移...数据"
+1. What 部分：用动词开头，直接说明要做什么
 2. Why 部分：说明业务价值和原因，用自然的口语化表达
-3. 避免 AI 腔调，不要出现"旨在"、"致力于"、"通过...实现"这种套话
-4. 中英混合使用，术语保留英文（如 API、POS、OMS）
+3. 避免 AI 腔调，不要出现"旨在"、"致力于"这种套话
+4. 中英混合使用，术语保留英文
 5. 每部分 1-2 句话，简洁直接
 
 格式：
 <b>What:</b> [动词开头，直接说明做什么]
-<b>Why:</b> [自然解释为什么要做]
-
-示例：
-<b>What:</b> 把线下门店的 POS 系统从旧版升级到 Cloud POS，支持全渠道退货和实时库存查询
-<b>Why:</b> 现在门店退货要查好几个系统，太慢了，升级后一个界面搞定，提升顾客体验和店员效率
-
-输出格式用 <b> 标签加粗标题。"""
-    
-    async with semaphore:  # 控制并发
+<b>Why:</b> [自然解释为什么要做]"""
+        
         try:
+            headers = {
+                'Authorization': f'Bearer {AI_API_KEY}',
+                'Content-Type': 'application/json'
+            }
             payload = {
-                "model": AI_MODEL,
-                "messages": [
-                    {"role": "system", "content": "你是一个专业的业务分析师，擅长将技术描述转化为清晰的业务语言。"},
-                    {"role": "user", "content": prompt}
+                'model': AI_MODEL,
+                'messages': [
+                    {'role': 'system', 'content': '你是专业的业务分析师'},
+                    {'role': 'user', 'content': prompt}
                 ],
-                "temperature": 0.3,
-                "max_tokens": 300
+                'temperature': 0.3,
+                'max_tokens': 300
             }
             
-            async with session.post(
-                f"{AI_BASE_URL}/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {AI_API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                json=payload,
-                timeout=aiohttp.ClientTimeout(total=60)
-            ) as response:
-                
-                if response.status != 200:
+            async with session.post(f'{AI_BASE_URL}/chat/completions', headers=headers, json=payload) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    ai_summary = data['choices'][0]['message']['content'].strip()
+                    cache.set(summary, description, ai_summary)
+                    return key, ai_summary
+                else:
                     error_text = await response.text()
-                    raise Exception(f"API Error {response.status}: {error_text}")
-                
-                result = await response.json()
-                ai_summary = result['choices'][0]['message']['content'].strip()
-                
-                # 保存到缓存
-                cache.set(content_hash, ai_summary, key)
-                
-                # 速率限制
-                await asyncio.sleep(AI_RATE_LIMIT)
-                
-                return key, ai_summary
-                
+                    return key, f"<span class='error'>API Error {response.status}</span>"
+                    
         except Exception as e:
-            log(f"   ⚠️ AI 汇总失败 ({key}): {e}")
-            error_msg = f"<span class='ai-summary-error'>AI 汇总生成失败</span>"
-            cache.set(content_hash, error_msg, key)
-            return key, error_msg
+            return key, f"<span class='error'>{str(e)[:50]}</span>"
+        
+        finally:
+            await asyncio.sleep(AI_RATE_LIMIT)
 
-async def batch_generate_ai_summaries_async(issues_data):
-    """
-    批量异步生成 AI Summary
-    
-    优化点：
-    - 使用 asyncio + aiohttp 替代 ThreadPoolExecutor
-    - 支持 30 并发（原 5 线程）
-    - 使用信号量控制并发，避免 API 限流
-    
-    Args:
-        issues_data: Initiative 数据列表
-    
-    Returns:
-        Dict[str, str]: {issue_key: ai_summary}
-    """
+async def batch_generate_ai_summaries(issues_data):
+    """批量生成 AI Summary"""
     log("🤖 步骤 3: 批量异步生成 AI Summary...")
     log(f"   ⚙️ 并发数: {AI_MAX_CONCURRENT}, 速率限制: {AI_RATE_LIMIT}s/请求")
     
-    # 初始化语义缓存
     cache = SemanticCache(CACHE_DIR)
     
-    # 预清理所有描述
-    log("   📝 预清理 Description 内容...")
-    for issue in issues_data:
-        raw_desc = issue.get('description', '')
-        issue['clean_description'] = clean_jira_description(raw_desc)
+    issues_with_desc = []
+    for issue in issues_data.get('issues', []):
+        fields = issue.get('fields', {})
+        summary = fields.get('summary', '')
+        description = pre_clean_description(fields.get('description', ''))
+        if summary or description:
+            issues_with_desc.append(issue)
     
-    # 筛选需要生成摘要的 issues
-    issues_with_desc = [
-        issue for issue in issues_data
-        if issue.get('clean_description') and len(issue['clean_description']) >= 10
-    ]
-    
-    # 检查缓存命中率
     cached_count = 0
     for issue in issues_with_desc:
-        summary = issue['summary']
-        description = issue.get('clean_description', '')
-        cached, _ = cache.get(summary, description)
+        fields = issue.get('fields', {})
+        summary = fields.get('summary', '')
+        description = pre_clean_description(fields.get('description', ''))
+        cached = cache.get(summary, description)
         if cached:
             cached_count += 1
     
     need_generation = len(issues_with_desc) - cached_count
     log(f"   📊 需要生成 AI Summary: {need_generation} 个 (已缓存: {cached_count})")
     
-    # 创建 aiohttp session
     connector = aiohttp.TCPConnector(limit=AI_MAX_CONCURRENT)
     timeout = aiohttp.ClientTimeout(total=300)
     
     async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
-        # 信号量控制并发
         semaphore = asyncio.Semaphore(AI_MAX_CONCURRENT)
         
-        # 创建所有任务
         tasks = [
             generate_ai_summary_async(session, semaphore, issue, cache)
             for issue in issues_with_desc
         ]
         
-        # 执行所有任务并收集结果
         results = {}
         completed = 0
         failed = 0
         
-        # 使用 as_completed 实时显示进度
         for coro in asyncio.as_completed(tasks):
             key, summary = await coro
             results[key] = summary
@@ -514,19 +354,45 @@ async def batch_generate_ai_summaries_async(issues_data):
             if completed % 10 == 0 or completed == len(tasks):
                 log(f"   ✅ 进度: {completed}/{len(tasks)} ({failed} 失败)")
     
-    # 输出缓存统计
     stats = cache.get_stats()
     log(f"   📈 缓存统计: 命中 {stats['hits']}, 未命中 {stats['misses']}, 命中率 {stats['hit_rate']}")
     
     return results
 
-# ==================== 步骤 4: 生成 HTML 报告 ====================
+# ==================== 步骤 4: 生成 HTML 报告 (v5.1 格式) ====================
+def check_sla_alert(fields):
+    """检查是否需要 SLA Alert"""
+    status = fields.get('status', {})
+    status_name = status.get('name', '')
+    
+    if status_name in ['Done', 'Closed', 'Resolved']:
+        return False
+    
+    updated_str = fields.get('updated')
+    if updated_str:
+        try:
+            updated = datetime.fromisoformat(updated_str.replace('Z', '+00:00').replace('+00:00', ''))
+            if updated:
+                days_since = (datetime.now(timezone.utc) - updated).days
+                return days_since > 14
+        except:
+            pass
+    return False
+
+def parse_date(date_str):
+    """解析日期字符串"""
+    if not date_str:
+        return None
+    try:
+        return datetime.fromisoformat(date_str.replace('Z', '+00:00').replace('+00:00', ''))
+    except:
+        return None
+
 def generate_html_report(data, ai_summary_results):
-    """生成 HTML 报告"""
-    log("📄 步骤 4: 生成 HTML 报告...")
+    """生成 v5.1 格式的 HTML 报告"""
+    log("📄 步骤 4: 生成 HTML 报告 (v5.1 格式)...")
     
     issues = data.get('issues', [])
-    now = datetime.now(timezone.utc)
     
     # 统计
     status_counts = {}
@@ -547,33 +413,207 @@ def generate_html_report(data, ai_summary_results):
     
     sorted_labels = sorted(label_counts.items(), key=lambda x: x[1], reverse=True)
     
-    # HTML 头部（简化版，完整版与原文件相同）
+    # 生成状态筛选按钮
+    status_buttons = []
+    for status, count in sorted(status_counts.items()):
+        status_buttons.append(f'<button class="filter-btn" data-status="{status}" onclick="filterByStatus(\'{status}\')">{status}<span class="count-badge">{count}</span></button>')
+    
+    # 生成 Label 筛选按钮
+    label_buttons = []
+    for label, count in sorted_labels[:10]:
+        label_buttons.append(f'<button class="filter-btn" data-label="{label}" onclick="filterByLabel(\'{label}\')">{label}<span class="count-badge">{count}</span></button>')
+    
+    # 构建数据表格行
+    table_rows = []
+    for issue in issues:
+        fields = issue.get('fields', {})
+        key = issue.get('key', '')
+        summary = html.escape(fields.get('summary', ''))
+        status = fields.get('status', {}).get('name', 'Unknown')
+        assignee = fields.get('assignee', {}).get('displayName', 'Unassigned') if fields.get('assignee') else 'Unassigned'
+        priority = fields.get('priority', {}).get('name', '')
+        created = fields.get('created', '')[:10] if fields.get('created') else ''
+        updated = fields.get('updated', '')[:10] if fields.get('updated') else ''
+        due_date = fields.get('duedate', '') or '-'
+        labels = fields.get('labels', [])
+        
+        # 获取 AI Summary
+        ai_summary = ai_summary_results.get(key, '')
+        
+        # 清理描述 - 处理 ADF 格式
+        description = fields.get('description', '')
+        if isinstance(description, dict):
+            desc_text = extract_text_from_adf(description)
+        elif isinstance(description, str):
+            desc_text = re.sub(r'<[^>]+>', ' ', description)
+            desc_text = re.sub(r'\s+', ' ', desc_text).strip()
+        else:
+            desc_text = str(description)
+        
+        # SLA Alert - 图标显示在 Key 后
+        has_sla = check_sla_alert(fields)
+        sla_icon = '⚠️ ' if has_sla else ''
+        row_class = 'has-sla-alert' if has_sla else ''
+        
+        # Label tags
+        label_tags = ''.join([f'<span class="label-tag">{html.escape(l)}</span>' for l in labels[:3]])
+        
+        row = f'''<tr class="{row_class}" data-status="{status}" data-key="{key.lower()}" data-summary="{summary.lower()}" data-labels="{','.join(labels)}" onclick="toggleRow(this)">
+            <td class="col-key-summary">
+                <span class="issue-key">{sla_icon}{key}</span>
+                <span class="issue-summary" title="{summary}">{summary}</span>
+                <div class="labels-list">{label_tags}</div>
+            </td>
+            <td class="col-status"><span class="status-badge" style="background: {get_status_color(status)}">{status}</span></td>
+            <td class="col-assignee"><span class="field-text">{assignee}</span></td>
+            <td class="col-priority"><span class="field-text">{priority}</span></td>
+            <td class="col-date"><span class="field-text">{created}</span></td>
+            <td class="col-date"><span class="field-text">{updated}</span></td>
+            <td class="col-due"><span class="field-text">{due_date}</span></td>
+            <td class="col-desc"><div class="description-cell">{html.escape(desc_text[:500])}</div></td>
+            <td class="col-ai-summary"><div class="ai-summary-cell">{ai_summary}</div></td>
+        </tr>'''
+        table_rows.append(row)
+    
+    # HTML 内容 - v5.1 格式
     html_content = f'''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CNTIN-730 Initiative Report</title>
+    <title>CNTIN-730 FY26 Intakes - Initiative 报告</title>
     <style>
-        /* 样式与原文件相同，省略以节省空间 */
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F4F5F7; padding: 20px; color: #172B4D; }}
-        .container {{ max-width: 1800px; margin: 0 auto; }}
-        /* ... 更多样式 ... */
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F4F5F7; color: #172B4D; line-height: 1.6; padding: 20px; }}
+        .header {{ background: linear-gradient(135deg, #0052CC 0%, #0747A6 100%); color: white; padding: 25px 30px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
+        .header h1 {{ font-size: 24px; margin-bottom: 8px; }}
+        .header .subtitle {{ font-size: 13px; opacity: 0.9; }}
+        .filter-section {{ background: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
+        .filter-row {{ display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }}
+        .filter-row:last-child {{ margin-bottom: 0; }}
+        .filter-row input {{ padding: 8px 12px; border: 1px solid #DFE1E6; border-radius: 4px; font-size: 14px; flex: 1; min-width: 200px; }}
+        .filter-label {{ font-size: 13px; color: #5E6C84; font-weight: 500; min-width: 60px; }}
+        .filter-group {{ display: flex; gap: 8px; flex-wrap: wrap; align-items: center; flex: 1; }}
+        .filter-btn {{ padding: 6px 14px; border: 1px solid #DFE1E6; border-radius: 16px; font-size: 12px; font-weight: 500; cursor: pointer; background: white; color: #5E6C84; transition: all 0.2s; }}
+        .filter-btn:hover {{ border-color: #0052CC; color: #0052CC; }}
+        .filter-btn.active {{ background: #0052CC; color: white; border-color: #0052CC; }}
+        .count-badge {{ background: #EBECF0; color: #172B4D; padding: 2px 6px; border-radius: 10px; font-size: 11px; margin-left: 4px; }}
+        .filter-btn.active .count-badge {{ background: rgba(255,255,255,0.3); color: white; }}
+        .issues-table {{ background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto; }}
+        table {{ width: 100%; border-collapse: collapse; min-width: 1400px; }}
+        th {{ padding: 12px 16px; background: #FAFBFC; border-bottom: 1px solid #EBECF0; font-size: 11px; font-weight: 600; color: #5E6C84; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; white-space: nowrap; }}
+        td {{ padding: 14px 16px; border-bottom: 1px solid #EBECF0; vertical-align: top; }}
+        tr {{ cursor: pointer; transition: background 0.2s; }}
+        tr:hover td {{ background: #F4F5F7; }}
+        tr.has-sla-alert td {{ background: #FFFAF5; }}
+        tr.has-sla-alert:hover td {{ background: #FFF0E0; }}
+        .col-key-summary {{ min-width: 280px; max-width: 350px; }}
+        .col-status {{ width: 90px; }}
+        .col-assignee {{ width: 110px; }}
+        .col-priority, .col-due {{ width: 80px; }}
+        .col-date {{ width: 90px; }}
+        .col-desc {{ min-width: 500px; max-width: 700px; }}
+        .col-ai-summary {{ min-width: 350px; max-width: 450px; }}
+        .issue-key {{ display: block; color: #0052CC; font-weight: 600; font-size: 13px; margin-bottom: 4px; }}
+        .issue-summary {{ display: block; font-size: 14px; color: #172B4D; line-height: 1.4; word-break: break-word; }}
+        .status-badge {{ display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; color: white; text-transform: uppercase; }}
+        .field-text {{ font-size: 13px; color: #172B4D; }}
+        .description-cell {{ font-size: 12px; color: #5E6C84; line-height: 1.5; max-height: 80px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; word-break: break-word; }}
+        .ai-summary-cell {{ font-size: 12px; color: #172B4D; line-height: 1.6; max-height: 100px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; word-break: break-word; background: #F6F8FA; padding: 10px; border-radius: 6px; border-left: 3px solid #0052CC; }}
+        .ai-summary-cell b {{ color: #0052CC; }}
+        .labels-list {{ display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }}
+        .label-tag {{ background: #E9F2FF; color: #0052CC; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }}
+        .legend {{ background: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-size: 12px; color: #5E6C84; }}
+        .hidden {{ display: none !important; }}
     </style>
 </head>
 <body>
-<div class="container">
     <div class="header">
-        <h1>🏢 CNTIN-730 Initiative Report</h1>
-        <div class="subtitle">
-            📊 共 {len(issues)} 个 Initiative | 
-            🏷️ {len(label_counts)} 个 Labels | 
-            ⏰ 生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+        <h1>🎯 CNTIN-730 FY26 Intakes</h1>
+        <div class="subtitle">Parent = CNTIN-730 | Status ≠ Cancelled | Type = Initiative</div>
+        <div class="subtitle">生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}</div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-row">
+            <input type="text" id="searchInput" placeholder="🔍 搜索 Key、Summary、Description..." onkeyup="filterIssues()">
+        </div>
+        <div class="filter-row">
+            <span class="filter-label">状态:</span>
+            <div class="filter-group">
+                <button class="filter-btn active" data-status="all" onclick="filterByStatus('all')">全部<span class="count-badge">{len(issues)}</span></button>
+                {''.join(status_buttons)}
+            </div>
+        </div>
+        <div class="filter-row">
+            <span class="filter-label">Label:</span>
+            <div class="filter-group">
+                {''.join(label_buttons)}
+            </div>
         </div>
     </div>
-    <!-- 更多 HTML 内容 ... -->
-</div>
+
+    <div class="legend">
+        ⚠️ Missing SLA: 状态 ≠ Done 且更新时间超过2周
+    </div>
+
+    <div class="issues-table">
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-key-summary">Key / Summary</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-assignee">Assignee</th>
+                    <th class="col-priority">Priority</th>
+                    <th class="col-date">Created</th>
+                    <th class="col-date">Updated</th>
+                    <th class="col-due">Due Date</th>
+                    <th class="col-desc">Description</th>
+                    <th class="col-ai-summary">🤖 AI Summary</th>
+                </tr>
+            </thead>
+            <tbody id="issuesContainer">
+                {''.join(table_rows)}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function filterByStatus(status) {{
+            document.querySelectorAll('.filter-btn[data-status]').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.filter-btn[data-status="${{status}}"]`).classList.add('active');
+            filterIssues();
+        }}
+        
+        function filterByLabel(label) {{
+            const btn = document.querySelector(`.filter-btn[data-label="${{label}}"]`);
+            btn.classList.toggle('active');
+            filterIssues();
+        }}
+        
+        function filterIssues() {{
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const activeStatus = document.querySelector('.filter-btn[data-status].active')?.dataset.status || 'all';
+            const activeLabels = Array.from(document.querySelectorAll('.filter-btn[data-label].active')).map(btn => btn.dataset.label);
+            
+            document.querySelectorAll('tbody tr').forEach(row => {{
+                const key = row.dataset.key;
+                const summary = row.dataset.summary;
+                const status = row.dataset.status;
+                const labels = row.dataset.labels.split(',');
+                
+                const matchSearch = key.includes(search) || summary.includes(search);
+                const matchStatus = activeStatus === 'all' || status === activeStatus;
+                const matchLabel = activeLabels.length === 0 || activeLabels.some(l => labels.includes(l));
+                
+                row.classList.toggle('hidden', !(matchSearch && matchStatus && matchLabel));
+            }});
+        }}
+        
+        function toggleRow(row) {{
+            row.classList.toggle('expanded');
+        }}
+    </script>
 </body>
 </html>'''
     
@@ -587,38 +627,42 @@ def generate_html_report(data, ai_summary_results):
     log(f"   ✅ HTML 报告已保存: {output_file}")
     return output_file
 
-# ==================== 辅助函数 ====================
-def check_sla_alert(fields):
-    """检查是否需要 SLA Alert"""
-    status = fields.get('status', {})
-    status_name = status.get('name', '')
-    
-    if status_name in ['Done', 'Closed', 'Resolved']:
-        return False
-    
-    updated_str = fields.get('updated')
-    if updated_str:
-        try:
-            updated = parse_date(updated_str)
-            if updated:
-                days_since = (datetime.now(timezone.utc) - updated).days
-                return days_since > 14
-        except:
-            pass
-    return False
+def get_status_color(status):
+    """获取状态颜色"""
+    colors = {
+        'Done': '#36B37E',
+        'In Progress': '#FF8B00',
+        'Discovery': '#6554C0',
+        'New': '#0052CC',
+        'Strategy': '#00B8D9',
+        'Closed': '#626F86',
+        'Resolved': '#36B37E'
+    }
+    return colors.get(status, '#97A0AF')
 
-def parse_date(date_str):
-    """解析日期字符串"""
-    if not date_str:
-        return None
-    try:
-        return datetime.fromisoformat(date_str.replace('Z', '+00:00').replace('+00:00', ''))
-    except:
-        return None
+def extract_text_from_adf(adf):
+    """从 ADF 格式提取文本"""
+    if not isinstance(adf, dict):
+        return str(adf)
+    
+    texts = []
+    def extract(node):
+        if isinstance(node, dict):
+            if 'text' in node:
+                texts.append(node['text'])
+            for key in ['content', 'marks', 'attrs']:
+                if key in node:
+                    extract(node[key])
+        elif isinstance(node, list):
+            for item in node:
+                extract(item)
+    
+    extract(adf)
+    return ' '.join(texts)[:500]
 
 # ==================== 步骤 5: 发送邮件 ====================
 def send_email(html_file):
-    """发送邮件到指定邮箱"""
+    """发送邮件"""
     log("📧 步骤 5: 发送邮件...")
     
     if not SENDER_PASSWORD:
@@ -626,34 +670,26 @@ def send_email(html_file):
         return False
     
     try:
-        # 读取 HTML 内容
         with open(html_file, 'r', encoding='utf-8') as f:
             html_content = f.read()
         
-        # 创建邮件
         msg = MIMEMultipart('alternative')
         msg['From'] = SENDER_EMAIL
         msg['To'] = ', '.join(RECIPIENTS)
         msg['Cc'] = ', '.join(CC_RECIPIENTS)
         msg['Subject'] = f"[CNTIN-730 Initiative Report] {datetime.now().strftime('%Y-%m-%d %H:%M')}"
         
-        # 添加 HTML 内容
         html_part = MIMEText(html_content, 'html', 'utf-8')
         msg.attach(html_part)
         
-        # 添加附件
         with open(html_file, 'rb') as f:
             attachment = MIMEBase('application', 'octet-stream')
             attachment.set_payload(f.read())
         
         encoders.encode_base64(attachment)
-        attachment.add_header(
-            'Content-Disposition',
-            f'attachment; filename="{html_file.name}"'
-        )
+        attachment.add_header('Content-Disposition', f'attachment; filename="{html_file.name}"')
         msg.attach(attachment)
         
-        # 尝试使用 SSL 连接
         try:
             log("   🔄 尝试 SSL 连接...")
             with smtplib.SMTP_SSL(SMTP_SERVER, 465) as server:
@@ -662,8 +698,7 @@ def send_email(html_file):
                 server.sendmail(SENDER_EMAIL, all_recipients, msg.as_string())
             log("   ✅ SSL 连接发送成功")
         except Exception as ssl_error:
-            log(f"   ⚠️ SSL 连接失败: {ssl_error}")
-            log("   🔄 尝试 STARTTLS 连接...")
+            log(f"   ⚠️ SSL 连接失败，尝试 STARTTLS...")
             with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
                 server.starttls()
                 server.login(SENDER_EMAIL, SENDER_PASSWORD)
@@ -672,7 +707,6 @@ def send_email(html_file):
             log("   ✅ STARTTLS 连接发送成功")
         
         log(f"   ✅ 邮件已发送至: {', '.join(RECIPIENTS)}")
-        log(f"   📋 抄送: {', '.join(CC_RECIPIENTS)}")
         return True
         
     except Exception as e:
@@ -681,45 +715,37 @@ def send_email(html_file):
 
 # ==================== 主函数 ====================
 def main():
-    """主函数"""
     log("=" * 60)
-    log("🚀 CNTIN-730 Initiative 周报生成工具 v1.1.0 (Optimized)")
+    log("🚀 CNTIN-730 Initiative 周报生成工具 v5.1")
     log("=" * 60)
     
     start_time = time.time()
     
-    # 步骤 1: 清空历史缓存
-    clear_cache()
+    # 步骤 1: 清空缓存
+    if not clear_cache():
+        return 1
     
-    # 步骤 2: 全量从 Jira 获取数据
+    # 步骤 2: 获取 Jira 数据
     data = fetch_jira_data()
+    if not data:
+        return 1
     
-    # 准备数据
-    issues_data = []
-    for issue in data.get('issues', []):
-        fields = issue.get('fields', {})
-        description = fields.get('description', {})
-        issues_data.append({
-            'key': issue.get('key', ''),
-            'summary': fields.get('summary', ''),
-            'description': description
-        })
-    
-    # 步骤 3: 异步批量生成 AI Summary
-    ai_summary_results = asyncio.run(batch_generate_ai_summaries_async(issues_data))
+    # 步骤 3: 生成 AI Summary
+    ai_results = asyncio.run(batch_generate_ai_summaries(data))
     
     # 步骤 4: 生成 HTML 报告
-    html_file = generate_html_report(data, ai_summary_results)
+    html_file = generate_html_report(data, ai_results)
     
     # 步骤 5: 发送邮件
     send_email(html_file)
     
-    # 完成
     elapsed = time.time() - start_time
     log("=" * 60)
     log(f"✅ 全部完成! 耗时: {elapsed:.1f} 秒")
     log(f"📄 报告文件: {html_file}")
     log("=" * 60)
+    
+    return 0
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
