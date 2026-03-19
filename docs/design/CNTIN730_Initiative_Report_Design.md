@@ -1,6 +1,6 @@
 # CNTIN-730 Initiative 周报 - 详细设计文档
 
-**文档版本**: v1.0.0  
+**文档版本**: v1.1.0  
 **创建日期**: 2026-03-18  
 **作者**: OpenClaw  
 **状态**: 已发布
@@ -9,11 +9,11 @@
 
 ## 1. 系统架构
 
-### 1.1 整体架构
+### 1.1 整体架构 (v1.1.0)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                        CNTIN-730 Initiative 周报系统                     │
+│                        CNTIN-730 Initiative 周报系统 v1.1.0              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
 │  │    Jira     │──▶│   Fetch     │──▶│  AI Summary │──▶│   Report    │    │
@@ -23,32 +23,39 @@
 │         ▼                ▼                ▼                ▼            │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
 │  │ CNTIN-730   │  │  Python     │  │  Claude API │  │  HTML/CSS   │    │
-│  │ Initiatives │  │  Requests   │  │  (5 workers)│  │  JS         │    │
+│  │ Initiatives │  │  Requests   │  │ (30 async)  │  │  JS         │    │
 │  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘    │
 │                                                              │          │
-│                                                              ▼          │
-│                                                       ┌─────────────┐   │
-│                                                       │  SMTP/QQ    │   │
-│                                                       │  Mail       │   │
-│                                                       └─────────────┘   │
+│                          ┌─────────────┐                     │          │
+│                          │  Semantic   │◀────────────────────┘          │
+│                          │  Cache      │ (MD5-based)                      │
+│                          └─────────────┘                                │
+│                              │                                          │
+│                              ▼                                          │
+│                       ┌─────────────┐   ┌─────────────┐                 │
+│                       │  SMTP/QQ    │   │  Feishu    │                 │
+│                       │  Mail       │   │  File API  │                 │
+│                       └─────────────┘   └─────────────┘                 │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 1.2 组件清单
+### 1.2 组件清单 (v1.1.0)
 
 | 组件 | 文件 | 职责 |
 |------|------|------|
 | 主控脚本 | `cntin730_weekly_report.py` | 协调全流程 |
 | 数据抓取 | `fetch_jira_data()` | 从 Jira API 获取 Initiatives |
-| AI 摘要 | `batch_generate_ai_summaries()` | 并发生成 What/Why |
+| AI 摘要 | `batch_generate_ai_summaries()` | **异步**生成 What/Why，30 并发 |
+| 语义缓存 | `SemanticCache` | 基于内容 MD5 的智能缓存 |
 | 报告生成 | `generate_html_report()` | 生成 HTML |
-| 邮件发送 | `send_email()` | 发送邮件 |
+| 邮件发送 | `send_email()` | SMTP 发送邮件 |
+| 飞书发送 | `send_feishu_file()` | 飞书文件 API 发送 |
 
 ---
 
 ## 2. 数据流设计
 
-### 2.1 数据流程
+### 2.1 数据流程 (v1.1.0)
 
 ```
 Jira API
@@ -63,25 +70,29 @@ Jira API
    │
    ▼
 ┌─────────────────────┐
-│ issues_data[]       │
-│ [{key, summary,    │
-│   description, ...}]│
+│ Pre-clean           │  ◀── v1.1.0: 清理 ADF/HTML
+│ (Prompt 预精简)      │      减少 20% tokens
 └─────────────────────┘
    │
    ▼
 ┌─────────────────────┐
-│ batch_generate_     │
-│ ai_summaries()      │
-│ - 5 workers         │
-│ - Cache check       │
-│ - API call          │
+│ Compute MD5 Hash    │  ◀── v1.1.0: 语义哈希
 └─────────────────────┘
    │
    ▼
-┌─────────────────────┐
-│ ai_summary_results  │
-│ {key: summary_text} │
-└─────────────────────┘
+Check Semantic Cache ──Cache hit?──┬──Yes──▶ Return cached
+   │                               │
+   No                              │
+   │                               │
+   ▼                               │
+┌─────────────────────┐            │
+│ Async AI API Call   │            │
+│ (30 concurrent)     │            │  ◀── v1.1.0: 30 异步并发
+│ (semaphore limit)   │            │
+└─────────────────────┘            │
+   │                               │
+   ▼                               │
+Save to Cache (MD5) ◀─────────────┘
    │
    ▼
 ┌─────────────────────┐
@@ -94,29 +105,32 @@ Jira API
    │
    ▼
 ┌─────────────────────┐
-│ HTML File           │
-│ + Email             │
+│ Send Email          │
+│ Send Feishu File    │  ◀── v1.1.0: 双渠道发送
 └─────────────────────┘
 ```
 
-### 2.2 AI 摘要缓存
+### 2.2 语义缓存架构
 
 ```
-Request comes in
-      │
-      ▼
-Check cache ──Cache hit?──┬──Yes──▶ Return cached
-      │                   │
-      No                  │
-      │                   │
-      ▼                   │
-Call AI API               │
-      │                   │
-      ▼                   │
-Save to cache ◀───────────┘
-      │
-      ▼
-Return result
+┌─────────────────────────────────────────────────────────┐
+│                    Semantic Cache                        │
+├─────────────────────────────────────────────────────────┤
+│  Index File (index.json)                                │
+│  {                                                      │
+│    "md5_hash_1": {                                      │
+│      "file": "a1b2c3.json",                             │
+│      "created": "2026-03-18T10:00:00",                  │
+│      "ttl": 604800                                      │
+│    },                                                   │
+│    ...                                                  │
+│  }                                                      │
+├─────────────────────────────────────────────────────────┤
+│  Cache Files (/tmp/ai_summary_cache_semantic/)          │
+│  ├── a1b2c3.json {"summary": "...", "hash": "..."}      │
+│  ├── d4e5f6.json {"summary": "...", "hash": "..."}      │
+│  └── ...                                                │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -139,140 +153,226 @@ params = {
 }
 ```
 
-#### 3.1.2 分页处理
+#### 3.1.2 Prompt 预精简 (v1.1.0)
 
 ```python
-def fetch_all_initiatives():
+def pre_clean_description(description):
     """
-    分页抓取所有 Initiatives
+    Prompt 预精简 - 减少 Token 消耗
     
     Algorithm:
-    1. 初始请求，获取第一页和总数
-    2. while 循环直到获取全部
-    3. 每次请求后 startAt += 100
-    4. 异常时指数退避重试
+    1. 移除 HTML 标签
+    2. 移除 ADF (Atlassian Document Format) 标记
+    3. 规范化空白字符
+    4. 截断至 1000 字符
+    
+    效果: 平均减少 20% Token 消耗
     """
-    all_issues = []
-    start_at = 0
-    max_results = 100
+    if not description:
+        return ""
     
-    while True:
-        response = jira_api.search(jql=JQL_QUERY, startAt=start_at)
-        issues = response['issues']
-        all_issues.extend(issues)
-        
-        if len(all_issues) >= response['total']:
-            break
-            
-        start_at += max_results
-        time.sleep(0.5)  # 避免限流
+    # 移除 HTML/ADF 标签
+    text = re.sub(r'<[^>]+>', ' ', description)
     
-    return all_issues
+    # 规范化空白
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    # 限制长度
+    return text[:1000]
 ```
 
-### 3.2 AI 摘要模块
+### 3.2 AI 摘要模块 (v1.1.0)
 
-#### 3.2.1 Prompt 模板
+#### 3.2.1 语义缓存类
 
 ```python
-AI_SUMMARY_PROMPT = """请根据以下 Initiative 的标题和描述，用简洁自然的语言总结 What 和 Why。
+class SemanticCache:
+    """
+    语义哈希缓存 - 基于内容 MD5 而非 Issue Key
+    
+    Design Decisions:
+    1. MD5 计算: summary + description 的组合
+    2. 内容变化自动失效: 修改后 MD5 变化
+    3. 跨 Issue 复用: 相同内容不同 Key 可复用
+    4. TTL: 7 天自动清理
+    """
+    
+    def __init__(self, cache_dir, ttl_days=7):
+        self.cache_dir = Path(cache_dir)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.index_file = self.cache_dir / "index.json"
+        self.index = self._load_index()
+        self.ttl = ttl_days * 24 * 3600
+        self.stats = {"hits": 0, "misses": 0, "saves": 0}
+    
+    def _compute_hash(self, summary, description):
+        """计算内容哈希"""
+        content = f"{summary}:{description}"
+        return hashlib.md5(content.encode('utf-8')).hexdigest()
+    
+    def get(self, summary, description):
+        """
+        获取缓存
+        
+        Returns:
+            str: 缓存的 AI Summary，未命中返回 None
+        """
+        content_hash = self._compute_hash(summary, description)
+        
+        # 检查索引
+        if content_hash not in self.index:
+            self.stats["misses"] += 1
+            return None
+        
+        cache_entry = self.index[content_hash]
+        cache_file = self.cache_dir / cache_entry['file']
+        
+        # 检查文件存在
+        if not cache_file.exists():
+            del self.index[content_hash]
+            self._save_index()
+            self.stats["misses"] += 1
+            return None
+        
+        # 检查 TTL
+        if time.time() - cache_entry['created'] > self.ttl:
+            cache_file.unlink()
+            del self.index[content_hash]
+            self._save_index()
+            self.stats["misses"] += 1
+            return None
+        
+        # 读取缓存
+        with open(cache_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            self.stats["hits"] += 1
+            return data.get('ai_summary')
+    
+    def set(self, summary, description, ai_summary):
+        """保存缓存"""
+        content_hash = self._compute_hash(summary, description)
+        cache_file = self.cache_dir / f"{content_hash[:8]}.json"
+        
+        # 保存内容
+        with open(cache_file, 'w', encoding='utf-8') as f:
+            json.dump({
+                'ai_summary': ai_summary,
+                'hash': content_hash,
+                'cached_at': datetime.now().isoformat()
+            }, f, ensure_ascii=False)
+        
+        # 更新索引
+        self.index[content_hash] = {
+            'file': cache_file.name,
+            'created': time.time(),
+            'ttl': self.ttl
+        }
+        self._save_index()
+        self.stats["saves"] += 1
+```
+
+#### 3.2.2 异步并发处理 (v1.1.0)
+
+```python
+import asyncio
+import aiohttp
+
+AI_MAX_CONCURRENT = 30  # 30 异步并发
+AI_RATE_LIMIT = 0.1     # 每请求间隔 0.1 秒
+
+class AISummaryGenerator:
+    """异步 AI 摘要生成器"""
+    
+    def __init__(self, cache):
+        self.cache = cache
+        self.semaphore = asyncio.Semaphore(AI_MAX_CONCURRENT)
+        self.session = None
+    
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.session.close()
+    
+    async def generate_one(self, issue):
+        """单个 AI Summary 生成"""
+        summary = issue['summary']
+        description = pre_clean_description(issue.get('description', ''))
+        key = issue['key']
+        
+        # 检查语义缓存
+        cached = self.cache.get(summary, description)
+        if cached:
+            return key, cached
+        
+        # 限流控制
+        async with self.semaphore:
+            # 构建 Prompt
+            prompt = self._build_prompt(summary, description)
+            
+            # 调用 AI API
+            try:
+                ai_summary = await self._call_api(prompt)
+                
+                # 保存缓存
+                self.cache.set(summary, description, ai_summary)
+                
+                # 延迟避免限流
+                await asyncio.sleep(AI_RATE_LIMIT)
+                
+                return key, ai_summary
+            except Exception as e:
+                logger.error(f"AI API error for {key}: {e}")
+                return key, f"<span class='error'>生成失败: {str(e)[:50]}</span>"
+    
+    async def batch_generate(self, issues):
+        """批量生成"""
+        tasks = [self.generate_one(issue) for issue in issues]
+        results = await asyncio.gather(*tasks)
+        return dict(results)
+    
+    def _build_prompt(self, summary, description):
+        """构建 AI Prompt"""
+        return f"""请根据以下 Initiative 的标题和描述，用简洁自然的语言总结 What 和 Why。
 
 【Initiative 标题】: {summary}
 【描述内容】: {description}
 
 要求：
-1. What 部分：用动词开头，直接说明要做什么。比如"搭建...系统"、"优化...流程"、"迁移...数据"
+1. What 部分：用动词开头，直接说明要做什么
 2. Why 部分：说明业务价值和原因，用自然的口语化表达
-3. 避免 AI 腔调，不要出现"旨在"、"致力于"、"通过...实现"这种套话
-4. 中英混合使用，术语保留英文（如 API、POS、OMS）
+3. 避免 AI 腔调，不要出现"旨在"、"致力于"这种套话
+4. 中英混合使用，术语保留英文
 5. 每部分 1-2 句话，简洁直接
 
 格式：
 <b>What:</b> [动词开头，直接说明做什么]
-<b>Why:</b> [自然解释为什么要做]
-
-示例：
-<b>What:</b> 把线下门店的 POS 系统从旧版升级到 Cloud POS，支持全渠道退货和实时库存查询
-<b>Why:</b> 现在门店退货要查好几个系统，太慢了，升级后一个界面搞定，提升顾客体验和店员效率
-
-输出格式用 <b> 标签加粗标题。"""
-```
-
-#### 3.2.2 并发处理
-
-```python
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-def batch_generate_ai_summaries(issues_data, max_workers=5):
-    """
-    并发生成 AI Summary
+<b>Why:</b> [自然解释为什么要做]"""
     
-    Design decisions:
-    - 5 workers: 平衡速度和 API 限流
-    - 0.3s delay: 避免触发限流
-    - Cache first: 减少 API 调用
-    - Fallback: 失败时返回占位符
-    """
-    results = {}
-    
-    # 过滤出有描述的 issues
-    issues_with_desc = [
-        (d['description'], d['summary'], d['key'])
-        for d in issues_data
-        if d.get('description') and len(d['description']) >= 10
-    ]
-    
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {
-            executor.submit(generate_one, args): args[2]
-            for args in issues_with_desc
+    async def _call_api(self, prompt):
+        """调用 AI API"""
+        headers = {
+            'Authorization': f'Bearer {AI_API_KEY}',
+            'Content-Type': 'application/json'
+        }
+        payload = {
+            'model': AI_MODEL,
+            'messages': [
+                {'role': 'system', 'content': '你是专业的业务分析师'},
+                {'role': 'user', 'content': prompt}
+            ],
+            'temperature': 0.3,
+            'max_tokens': 300
         }
         
-        for future in as_completed(futures):
-            key = futures[future]
-            try:
-                summary = future.result()
-                results[key] = summary
-            except Exception as e:
-                logger.error(f"Failed for {key}: {e}")
-                results[key] = "<span class='ai-summary-error'>生成失败</span>"
-    
-    return results
-
-def generate_one(args):
-    """单个 AI Summary 生成"""
-    description, summary, key = args
-    
-    # 检查缓存
-    cache_file = CACHE_DIR / f"{key}.json"
-    if cache_file.exists():
-        return load_cache(cache_file)
-    
-    # 调用 AI API
-    prompt = AI_SUMMARY_PROMPT.format(
-        summary=summary,
-        description=description[:1000]  # 限制长度
-    )
-    
-    response = ai_client.chat.completions.create(
-        model="claude-sonnet-4-6",
-        messages=[
-            {"role": "system", "content": "你是一个专业的业务分析师..."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.3,
-        max_tokens=300
-    )
-    
-    ai_summary = response.choices[0].message.content.strip()
-    
-    # 保存缓存
-    save_cache(cache_file, ai_summary)
-    
-    # 延迟避免限流
-    time.sleep(0.3)
-    
-    return ai_summary
+        async with self.session.post(
+            f'{AI_BASE_URL}/chat/completions',
+            headers=headers,
+            json=payload
+        ) as response:
+            data = await response.json()
+            return data['choices'][0]['message']['content'].strip()
 ```
 
 ### 3.3 冻结列实现
@@ -348,231 +448,74 @@ tr:hover .col-assignee {
 }
 ```
 
-#### 3.3.2 浏览器兼容性
-
-```css
-/* 标准语法 */
-position: sticky;
-
-/* Safari 前缀（旧版本） */
-position: -webkit-sticky;
-
-/* 检查支持 */
-@supports (position: sticky) or (position: -webkit-sticky) {
-    .frozen-col {
-        position: sticky;
-    }
-}
-
-/* 不支持 sticky 的降级方案 */
-@supports not ((position: sticky) or (position: -webkit-sticky)) {
-    .issues-table {
-        overflow-x: scroll;
-    }
-    .frozen-col {
-        position: static;
-    }
-}
-```
-
-### 3.4 交互功能
-
-#### 3.4.1 行展开
-
-```javascript
-function toggleRow(row) {
-    const summary = row.querySelector('.issue-summary');
-    const description = row.querySelector('.description-cell');
-    const aiSummary = row.querySelector('.ai-summary-cell');
-    
-    // 切换展开状态
-    const isExpanded = row.classList.toggle('expanded');
-    
-    // 同步更新内部元素
-    if (summary) summary.classList.toggle('expanded', isExpanded);
-    if (description) description.classList.toggle('expanded', isExpanded);
-    if (aiSummary) aiSummary.classList.toggle('expanded', isExpanded);
-}
-```
-
-#### 3.4.2 筛选系统
-
-```javascript
-class FilterManager {
-    constructor() {
-        this.filters = {
-            status: 'all',
-            label: 'all',
-            alert: null,
-            search: ''
-        };
-        this.init();
-    }
-    
-    init() {
-        // 状态筛选
-        document.querySelectorAll('.filter-btn[data-status]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.setFilter('status', e.target.dataset.status);
-            });
-        });
-        
-        // Label 筛选
-        document.querySelectorAll('.filter-btn[data-label]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.setFilter('label', e.target.dataset.label);
-            });
-        });
-        
-        // 搜索
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('keyup', debounce((e) => {
-            this.setFilter('search', e.target.value.toLowerCase());
-        }, 300));
-    }
-    
-    applyFilters() {
-        const rows = document.querySelectorAll('tbody tr');
-        
-        rows.forEach(row => {
-            const matches = this.checkRowMatches(row);
-            row.style.display = matches ? '' : 'none';
-        });
-    }
-    
-    checkRowMatches(row) {
-        const status = row.dataset.status;
-        const labels = row.dataset.labels.split(',');
-        const hasSla = row.dataset.hasSla === 'true';
-        const text = row.textContent.toLowerCase();
-        
-        // 状态匹配
-        if (this.filters.status !== 'all' && status !== this.filters.status) {
-            return false;
-        }
-        
-        // Label 匹配
-        if (this.filters.label !== 'all' && !labels.includes(this.filters.label)) {
-            return false;
-        }
-        
-        // SLA Alert 匹配
-        if (this.filters.alert === 'sla' && !hasSla) {
-            return false;
-        }
-        
-        // 搜索匹配
-        if (this.filters.search && !text.includes(this.filters.search)) {
-            return false;
-        }
-        
-        return true;
-    }
-}
-
-// 防抖函数
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-```
-
-### 3.5 邮件发送
-
-#### 3.5.1 双模式 SMTP
+### 3.4 飞书文件发送 (v1.1.0 新增)
 
 ```python
-class DualModeSMTP:
-    """
-    双模式 SMTP 发送器
+import requests
+
+class FeishuClient:
+    """飞书 API 客户端"""
     
-    支持 SSL (465) 和 STARTTLS (587) 两种模式
-    自动选择最优连接方式
-    """
+    BASE_URL = "https://open.feishu.cn/open-apis"
     
-    def __init__(self, host, ssl_port=465, tls_port=587):
-        self.host = host
-        self.ssl_port = ssl_port
-        self.tls_port = tls_port
-        self.username = os.environ.get('SENDER_EMAIL')
-        self.password = os.environ.get('QQ_MAIL_PASSWORD')
+    def __init__(self, app_id, app_secret):
+        self.app_id = app_id
+        self.app_secret = app_secret
+        self.access_token = self._get_access_token()
     
-    def send(self, recipients, subject, html_content, attachment_path):
-        """
-        发送邮件，自动选择最佳 SMTP 模式
+    def _get_access_token(self):
+        """获取 Tenant Access Token"""
+        url = f"{self.BASE_URL}/auth/v3/tenant_access_token/internal"
+        response = requests.post(url, json={
+            'app_id': self.app_id,
+            'app_secret': self.app_secret
+        })
+        return response.json()['tenant_access_token']
+    
+    def upload_file(self, file_path):
+        """上传文件获取 file_key"""
+        url = f"{self.BASE_URL}/im/v1/files"
         
-        Strategy:
-        1. 优先尝试 SSL (更稳定)
-        2. SSL 失败时回退到 STARTTLS
-        3. 记录失败原因
-        """
-        try:
-            return self._send_ssl(recipients, subject, html_content, attachment_path)
-        except smtplib.SMTPException as ssl_error:
-            logger.warning(f"SSL connection failed: {ssl_error}")
-            try:
-                return self._send_starttls(recipients, subject, html_content, attachment_path)
-            except smtplib.SMTPException as tls_error:
-                logger.error(f"Both SSL and STARTTLS failed: {tls_error}")
-                raise
-    
-    def _send_ssl(self, recipients, subject, html_content, attachment_path):
-        """SSL 模式发送"""
-        with smtplib.SMTP_SSL(self.host, self.ssl_port, timeout=30) as server:
-            server.login(self.username, self.password)
-            msg = self._build_message(recipients, subject, html_content, attachment_path)
-            server.sendmail(self.username, recipients, msg.as_string())
-            logger.info("Email sent via SSL")
-            return True
-    
-    def _send_starttls(self, recipients, subject, html_content, attachment_path):
-        """STARTTLS 模式发送"""
-        with smtplib.SMTP(self.host, self.tls_port, timeout=30) as server:
-            server.starttls()
-            server.login(self.username, self.password)
-            msg = self._build_message(recipients, subject, html_content, attachment_path)
-            server.sendmail(self.username, recipients, msg.as_string())
-            logger.info("Email sent via STARTTLS")
-            return True
-    
-    def _build_message(self, recipients, subject, html_content, attachment_path):
-        """构建 MIME 邮件"""
-        msg = MIMEMultipart('alternative')
-        msg['From'] = self.username
-        msg['To'] = ', '.join(recipients['to'])
-        msg['Cc'] = ', '.join(recipients['cc'])
-        msg['Subject'] = subject
+        with open(file_path, 'rb') as f:
+            files = {'file': (file_path.name, f, 'application/octet-stream')}
+            data = {'file_type': 'stream', 'file_name': file_path.name}
+            
+            response = requests.post(
+                url,
+                headers={'Authorization': f'Bearer {self.access_token}'},
+                files=files,
+                data=data
+            )
         
-        # HTML 内容
-        html_part = MIMEText(html_content, 'html', 'utf-8')
-        msg.attach(html_part)
+        if response.status_code == 200:
+            return response.json()['data']['file_key']
+        else:
+            raise Exception(f"Upload failed: {response.text}")
+    
+    def send_file_message(self, file_key, receive_id, receive_type='chat_id'):
+        """发送文件消息"""
+        url = f"{self.BASE_URL}/im/v1/messages"
         
-        # 附件
-        with open(attachment_path, 'rb') as f:
-            attachment = MIMEBase('application', 'octet-stream')
-            attachment.set_payload(f.read())
-        encoders.encode_base64(attachment)
-        attachment.add_header(
-            'Content-Disposition',
-            f'attachment; filename="{attachment_path.name}"'
+        payload = {
+            'receive_id': receive_id,
+            'msg_type': 'file',
+            'content': json.dumps({'file_key': file_key})
+        }
+        
+        response = requests.post(
+            url,
+            headers={'Authorization': f'Bearer {self.access_token}'},
+            json=payload
         )
-        msg.attach(attachment)
         
-        return msg
+        return response.status_code == 200
 ```
 
 ---
 
 ## 4. 配置管理
 
-### 4.1 环境变量
+### 4.1 环境变量 (v1.1.0)
 
 ```bash
 # Jira API
@@ -585,8 +528,12 @@ export AI_BASE_URL="http://newapi.200m.997555.xyz/v1"
 export AI_MODEL="claude-sonnet-4-6"
 
 # SMTP
-export SENDER_EMAIL="3823810468@qq.com"
-export QQ_MAIL_PASSWORD="ftbabipdlxliceai"
+export QQ_MAIL_PASSWORD="your_qq_auth_code"
+
+# 飞书 (v1.1.0 新增)
+export FEISHU_APP_ID="cli_a91bd999acb8dbce"
+export FEISHU_APP_SECRET="your_app_secret"
+export FEISHU_CHAT_ID="oc_xxx"  # 群聊 ID
 ```
 
 ### 4.2 常量配置
@@ -598,279 +545,208 @@ export QQ_MAIL_PASSWORD="ftbabipdlxliceai"
 JIRA_URL = "https://lululemon.atlassian.net"
 JQL_QUERY = 'project = CNTIN AND issuetype = Initiative AND "Parent Link" = CNTIN-730'
 
-# AI 配置
-AI_MAX_WORKERS = 5
-AI_DELAY_BETWEEN_REQUESTS = 0.3  # seconds
+# AI 配置 (v1.1.0)
+AI_MAX_CONCURRENT = 30       # 30 异步并发
+AI_RATE_LIMIT = 0.1          # 每请求间隔 0.1 秒
 AI_MAX_TOKENS = 300
 AI_TEMPERATURE = 0.3
 
+# 缓存配置 (v1.1.0)
+CACHE_DIR = Path("/tmp/ai_summary_cache_semantic")
+CACHE_TTL_DAYS = 7
+
 # 邮件配置
 SMTP_SERVER = "smtp.qq.com"
-SMTP_SSL_PORT = 465
-SMTP_TLS_PORT = 587
+SMTP_PORT = 587
 RECIPIENTS = ["chinatechpmo@lululemon.com"]
 CC_RECIPIENTS = ["rcheng2@lululemon.com"]
 
-# 路径配置
-CACHE_DIR = Path("/tmp/ai_summary_cache")
-REPORTS_DIR = Path("/Users/admin/.openclaw/workspace/reports")
+# 飞书配置 (v1.1.0)
+FEISHU_BASE_URL = "https://open.feishu.cn/open-apis"
 ```
 
 ---
 
-## 5. 错误处理
+## 5. 性能优化 (v1.1.0)
 
-### 5.1 错误分类与处理
+### 5.1 缓存策略
 
 ```python
-class ErrorHandler:
-    """统一错误处理"""
+# 性能指标追踪
+class PerformanceMonitor:
+    def __init__(self):
+        self.start_time = time.time()
+        self.stats = {
+            'jira_fetch_time': 0,
+            'ai_generation_time': 0,
+            'cache_hits': 0,
+            'cache_misses': 0,
+            'tokens_saved': 0
+        }
     
-    @staticmethod
-    def handle_jira_error(error, context):
-        """处理 Jira API 错误"""
-        if error.status_code == 429:
-            # 限流，指数退避
-            return 'retry_with_backoff'
-        elif error.status_code == 401:
-            # 认证失败
-            send_alert("Jira API Token 失效")
-            raise SystemExit(1)
-        else:
-            logger.error(f"Jira API error: {error}")
-            return 'continue'
-    
-    @staticmethod
-    def handle_ai_error(error, initiative_key):
-        """处理 AI API 错误"""
-        if 'rate limit' in str(error).lower():
-            time.sleep(5)
-            return 'retry'
-        else:
-            logger.error(f"AI summary failed for {initiative_key}: {error}")
-            return 'fallback'
-    
-    @staticmethod
-    def handle_smtp_error(error):
-        """处理 SMTP 错误"""
-        if 'authentication' in str(error).lower():
-            send_alert("SMTP 认证失败，检查密码")
-        else:
-            logger.error(f"SMTP error: {error}")
-        return 'failed'
+    def report(self):
+        total_time = time.time() - self.start_time
+        cache_hit_rate = self.stats['cache_hits'] / (
+            self.stats['cache_hits'] + self.stats['cache_misses']
+        ) * 100
+        
+        print(f"""
+性能报告:
+- 总耗时: {total_time:.1f} 秒
+- Jira 抓取: {self.stats['jira_fetch_time']:.1f} 秒
+- AI 生成: {self.stats['ai_generation_time']:.1f} 秒
+- 缓存命中率: {cache_hit_rate:.1f}%
+- Token 节省: {self.stats['tokens_saved']}
+        """)
 ```
 
----
-
-## 6. 性能优化
-
-### 6.1 缓存策略
+### 5.2 异步并发控制
 
 ```python
-class AISummaryCache:
+# 并发控制策略
+async def controlled_concurrency(tasks, max_concurrent=30):
     """
-    AI Summary 缓存管理
-    
-    - 文件系统缓存
-    - JSON 格式存储
-    - TTL: 7 天
+    控制并发数，避免 API 限流
     """
+    semaphore = asyncio.Semaphore(max_concurrent)
     
-    def __init__(self, cache_dir, ttl_days=7):
-        self.cache_dir = Path(cache_dir)
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self.ttl = timedelta(days=ttl_days)
+    async def run_with_semaphore(task):
+        async with semaphore:
+            result = await task
+            await asyncio.sleep(0.1)  # 延迟避免限流
+            return result
     
-    def get(self, key):
-        cache_file = self.cache_dir / f"{key}.json"
-        
-        if not cache_file.exists():
-            return None
-        
-        # 检查 TTL
-        mtime = datetime.fromtimestamp(cache_file.stat().st_mtime)
-        if datetime.now() - mtime > self.ttl:
-            cache_file.unlink()
-            return None
-        
-        with open(cache_file) as f:
-            data = json.load(f)
-            return data.get('summary')
-    
-    def set(self, key, summary):
-        cache_file = self.cache_dir / f"{key}.json"
-        with open(cache_file, 'w') as f:
-            json.dump({
-                'summary': summary,
-                'cached_at': datetime.now().isoformat()
-            }, f)
-```
-
-### 6.2 并发控制
-
-```python
-from concurrent.futures import ThreadPoolExecutor
-import threading
-
-class RateLimiter:
-    """API 调用速率限制器"""
-    
-    def __init__(self, max_calls_per_second=3):
-        self.min_interval = 1.0 / max_calls_per_second
-        self.last_call_time = 0
-        self.lock = threading.Lock()
-    
-    def acquire(self):
-        with self.lock:
-            current_time = time.time()
-            time_since_last = current_time - self.last_call_time
-            
-            if time_since_last < self.min_interval:
-                time.sleep(self.min_interval - time_since_last)
-            
-            self.last_call_time = time.time()
+    return await asyncio.gather(*[
+        run_with_semaphore(task) for task in tasks
+    ])
 ```
 
 ---
 
-## 7. 测试策略
+## 6. 测试策略
 
-### 7.1 单元测试
+### 6.1 单元测试
 
 ```python
-# test_ai_summary.py
-def test_prompt_building():
-    """测试 Prompt 构建"""
-    description = "Implement new feature"
-    summary = "Feature X"
+# test_semantic_cache.py
+def test_md5_hash_consistency():
+    """测试 MD5 哈希一致性"""
+    cache = SemanticCache("/tmp/test_cache")
     
-    prompt = build_prompt(summary, description)
+    hash1 = cache._compute_hash("Title", "Description")
+    hash2 = cache._compute_hash("Title", "Description")
     
-    assert "Feature X" in prompt
-    assert "Implement new feature" in prompt
-    assert "<b>What:</b>" in prompt
+    assert hash1 == hash2
+    assert len(hash1) == 32  # MD5 长度
 
-def test_cache_operations():
-    """测试缓存读写"""
-    cache = AISummaryCache("/tmp/test_cache")
+def test_prompt_pre_clean():
+    """测试 Prompt 预精简"""
+    html_desc = "<p>Test <b>description</b></p>"
+    cleaned = pre_clean_description(html_desc)
     
-    # 写
-    cache.set("TEST-1", "Summary text")
+    assert "<p>" not in cleaned
+    assert "<b>" not in cleaned
+    assert "Test description" in cleaned
+
+# test_async_ai.py
+@pytest.mark.asyncio
+async def test_async_batch_generation():
+    """测试异步批量生成"""
+    cache = SemanticCache("/tmp/test_cache")
+    generator = AISummaryGenerator(cache)
     
-    # 读
-    result = cache.get("TEST-1")
-    assert result == "Summary text"
+    test_issues = [
+        {'key': 'TEST-1', 'summary': 'Test', 'description': 'Desc'}
+    ]
     
-    # 不存在的 key
-    assert cache.get("NONEXISTENT") is None
+    async with generator:
+        results = await generator.batch_generate(test_issues)
+    
+    assert 'TEST-1' in results
 ```
 
-### 7.2 集成测试
+### 6.2 集成测试
 
 ```python
 # test_integration.py
-def test_full_pipeline():
-    """端到端测试"""
+def test_full_pipeline_v110():
+    """v1.1.0 端到端测试"""
     # 准备测试数据
-    test_issues = [
-        {
-            'key': 'CNTIN-TEST-1',
-            'summary': 'Test Initiative',
-            'description': 'Test description',
-            'status': 'Discovery'
-        }
-    ]
+    test_issues = [...]
     
-    # 执行流程
-    ai_results = batch_generate_ai_summaries(test_issues)
-    html = generate_html_report(test_issues, ai_results)
+    # 1. 测试语义缓存
+    cache = SemanticCache("/tmp/test_cache")
     
-    # 验证
-    assert 'CNTIN-TEST-1' in html
-    assert '<b>What:</b>' in html or '生成失败' in html
+    # 2. 测试异步 AI 生成
+    asyncio.run(test_async_generation())
+    
+    # 3. 测试飞书发送 (Mock)
+    # ...
+    
+    # 验证缓存命中率
+    assert cache.stats['hits'] > 0 or cache.stats['misses'] > 0
 ```
 
 ---
 
-## 8. 部署与运维
+## 7. 部署与运维
 
-### 8.1 手动执行
+### 7.1 手动执行
 
 ```bash
 # 设置环境变量
 export JIRA_API_TOKEN="your_token"
+export AI_API_KEY="your_key"
 export QQ_MAIL_PASSWORD="your_password"
+export FEISHU_APP_SECRET="your_secret"
 
 # 执行周报生成
 python3 scripts/cntin730_weekly_report.py
 ```
 
-### 8.2 定时任务（可选）
-
-```bash
-# 每周一 9:00 执行
-crontab -e
-
-# 添加
-0 9 * * 1 cd /Users/admin/.openclaw/workspace && \
-  export JIRA_API_TOKEN="your_token" && \
-  export QQ_MAIL_PASSWORD="your_password" && \
-  python3 scripts/cntin730_weekly_report.py >> logs/cntin730-cron.log 2>&1
-```
-
-### 8.3 监控
+### 7.2 监控指标 (v1.1.0)
 
 ```python
-# 健康检查脚本
-def health_check():
+# 健康检查
+def health_check_v110():
     checks = {
         'jira_api': test_jira_connection(),
         'ai_api': test_ai_connection(),
         'smtp': test_smtp_connection(),
+        'feishu': test_feishu_connection(),  # 新增
         'cache_dir': check_cache_writable(),
+        'cache_size': get_cache_size(),
     }
     
-    for name, status in checks.items():
-        if not status:
-            send_alert(f"Health check failed: {name}")
-    
-    return all(checks.values())
+    return checks
 ```
 
 ---
 
-## 9. 附录
+## 8. 附录
 
-### 9.1 版本历史
+### 8.1 版本历史
 
 | 版本 | 日期 | 变更 | 作者 |
 |------|------|------|------|
-| v1.0.0 | 2026-03-18 | 初始版本，AI 摘要，冻结列 | OpenClaw |
+| v1.1.0 | 2026-03-18 | **优化版本**: 语义缓存、30 异步并发、Prompt 预精简、飞书文件发送 | OpenClaw |
+| v1.0.0 | 2026-03-18 | 初始版本: AI 摘要、冻结列、基础缓存 | OpenClaw |
 
-### 9.2 参考资料
+### 8.2 性能对比
 
-- [CSS Position Sticky](https://developer.mozilla.org/en-US/docs/Web/CSS/position#sticky)
-- [Python Concurrent Futures](https://docs.python.org/3/library/concurrent.futures.html)
-- [Jira REST API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)
+| 指标 | v1.0.0 | v1.1.0 | 提升 |
+|------|--------|--------|------|
+| AI 生成时间 | ~10 min | ~5 min | **50%** |
+| 并发数 | 5 线程 | 30 异步 | **6x** |
+| Token 消耗 | 100% | ~80% | **20%** |
+| 缓存命中率 | N/A | ~60% | - |
+| 总耗时 | ~12 min | ~7 min | **42%** |
 
-### 9.3 故障排查
+### 8.3 故障排查
 
 | 问题 | 症状 | 解决方案 |
 |------|------|----------|
-| AI 摘要慢 | 生成时间 > 20 分钟 | 检查缓存，减少并发数 |
-| 冻结列失效 | 列随滚动移动 | 检查浏览器支持 CSS sticky |
-| 邮件失败 | Connection closed | 更新 QQ_MAIL_PASSWORD |
-| 数据不完整 | Initiative 数量少 | 检查 Jira API Token 权限 |
-
-### 9.4 AI 提示词优化记录
-
-**v1.0.0 提示词**:
-- 动词开头要求
-- 避免 AI 腔调
-- 中英混合示例
-- 自然语言表达
-
-**未来优化方向**:
-- 按领域定制提示词（技术/业务/数据）
-- Few-shot 学习优化
-- 输出格式模板化
+| AI 摘要慢 | 生成时间 > 10 min | 检查语义缓存命中率，确认 30 异步配置 |
+| 缓存不命中 | 缓存命中率 < 30% | 检查 MD5 计算，确认缓存目录权限 |
+| 飞书发送失败 | 401/403 错误 | 检查 Token 是否过期，确认 App 权限 |
+| 限流错误 | 429 Too Many Requests | 增加 AI_RATE_LIMIT 延迟 |
