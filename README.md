@@ -93,6 +93,10 @@ fy26-jira-reports/
 │   ├── confluence-export/   # Confluence 导出
 │   ├── training-materials/  # Jira 培训 PPT
 │   └── other/               # 其他杂项
+├── docs/                    # 文档（BRD/PRD/Design）
+│   ├── brd/                 # 业务需求文档
+│   ├── prd/                 # 产品需求文档
+│   └── design/              # 详细设计文档
 ├── README.md
 └── CHANGELOG.md
 ```
