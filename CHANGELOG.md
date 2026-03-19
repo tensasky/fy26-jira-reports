@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-03-19
+
+### Changed
+- **Repository Cleanup**: Archived old files to `archive/` directory
+  - Moved 12 legacy shell scripts to `archive/old-scripts/`
+  - Moved ITIL docs (6 PPTs + originals) to `archive/itil-docs/`
+  - Moved Confluence exports to `archive/confluence-export/`
+  - Moved browser data to `archive/browser-data/`
+  - Moved training materials to `archive/training-materials/`
+  - Moved skills directory to `archive/other/skills/`
+- **Security**: Removed secrets from git history using git-filter-repo
+  - Removed `.jira-config` and `.jira-projects` from tracked files
+- **Size Reduction**: Repository size reduced from 3.7GB to 16MB
+
+### Repository Structure
+```
+├── scripts/          # Core FY26 reporting scripts
+├── projects/         # Active project code
+├── jira-reports/     # Report data
+├── memory/           # Daily memory files
+├── archive/          # Archived files (old versions, docs, etc.)
+└── docs/             # Documentation (BRD, PRD, Design)
+```
+
 ## [2.0.1] - 2026-03-18
 
 ### Fixed

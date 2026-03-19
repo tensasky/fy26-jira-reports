@@ -1,6 +1,6 @@
-# FY26 Jira Reports v2.0.0
+# FY26 Jira Reports v2.1.0
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](CHANGELOG.md)
 [![Python](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/)
 
 自动化 Jira 报告生成系统，为 lululemon China Technology 团队提供高性能的数据报告服务。
@@ -77,21 +77,24 @@ python3 scripts/fy26_pipeline_v5.4.py
 
 ```
 fy26-jira-reports/
-├── scripts/
-│   ├── cntin730_weekly_report.py      # CNTIN-730 周报 (AI)
-│   ├── fetch_fy26.py                   # 数据抓取 (并行+增量)
-│   ├── generate_fy26_html.py           # HTML 生成 (内存优化)
-│   ├── generate_fy26_report_v5.py      # JSON 报告生成
-│   ├── send_fy26_report_v5.py          # 邮件发送
-│   ├── fy26_pipeline_v5.4.py           # 流水线主控
-│   ├── fy26_daily_report.sh            # 标准主控脚本
-│   └── fy26_db_schema.sql              # 数据库 Schema
-├── docs/
-│   ├── brd/                            # 业务需求文档
-│   ├── prd/                            # 产品需求文档
-│   └── design/                         # 详细设计文档
-├── CHANGELOG.md
-└── README.md
+├── scripts/                 # 核心脚本（当前使用）
+│   ├── cntin730_weekly_report.py      # CNTIN-730 周报
+│   ├── fy26_pipeline_v5.4.py          # 流水线主控
+│   ├── fetch_fy26.py                  # 数据抓取
+│   ├── generate_fy26_html.py          # HTML 生成
+│   └── ...
+├── projects/                # 项目代码
+│   └── fy26-intake-summary/
+├── jira-reports/            # Jira 报告数据（JSON/HTML）
+├── memory/                  # 每日记忆文件
+├── archive/                 # 归档文件（旧版本）
+│   ├── old-scripts/         # 旧版 shell 脚本
+│   ├── itil-docs/           # ITIL 培训材料
+│   ├── confluence-export/   # Confluence 导出
+│   ├── training-materials/  # Jira 培训 PPT
+│   └── other/               # 其他杂项
+├── README.md
+└── CHANGELOG.md
 ```
 
 ---
@@ -161,6 +164,7 @@ A: 更新 `QQ_MAIL_PASSWORD` 授权码
 
 | 版本 | 日期 | 主要更新 |
 |------|------|----------|
+| v2.1.0 | 2026-03-19 | 仓库清理，归档旧文件 |
 | v2.0.0 | 2026-03-18 | 完整优化套件 |
 | v1.0.0 | 2026-03-12 | 初始稳定版 |
 
