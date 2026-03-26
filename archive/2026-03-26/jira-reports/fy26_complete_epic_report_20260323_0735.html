@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FY26_INIT Epic 汇总报告（完整版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, #E31937 0%, #c41230 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 300; }
+        .header .subtitle { opacity: 0.9; font-size: 1.1em; }
+        .header .date { opacity: 0.7; margin-top: 10px; font-size: 0.9em; }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #E31937;
+        }
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #E31937;
+            margin-bottom: 5px;
+        }
+        .stat-card .label { color: #666; font-size: 0.95em; }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px 40px;
+        }
+        
+        .hierarchy-section {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .initiative-header {
+            background: #E31937;
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.2em;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .initiative-header .init-key {
+            opacity: 0.8;
+            font-size: 0.85em;
+            font-weight: 400;
+            font-family: monospace;
+            margin-right: 10px;
+        }
+        .initiative-header .epic-count {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+        
+        .feature-section {
+            border-bottom: 1px solid #eee;
+        }
+        .feature-section:last-child { border-bottom: none; }
+        
+        .feature-header {
+            background: #fafafa;
+            padding: 15px 25px;
+            font-weight: 600;
+            color: #444;
+            border-left: 4px solid #ff6b7a;
+        }
+        .feature-header .feat-key {
+            color: #999;
+            font-size: 0.85em;
+            font-family: monospace;
+            margin-right: 10px;
+        }
+        
+        .epics-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .epics-table th {
+            background: #f5f5f5;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9em;
+            border-bottom: 2px solid #eee;
+        }
+        .epics-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+        .epics-table tr:hover { background: #fafafa; }
+        
+        .epic-key {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #666;
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .epic-project {
+            font-size: 0.75em;
+            color: #E31937;
+            background: #ffebee;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+        .epic-title {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .epic-desc {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        .status-new { background: #e3f2fd; color: #1976d2; }
+        .status-in-progress { background: #fff3e0; color: #f57c00; }
+        .status-done { background: #e8f5e9; color: #388e3c; }
+        .status-closed { background: #e8f5e9; color: #388e3c; }
+        .status-execution { background: #fff3e0; color: #f57c00; }
+        .status-deferred { background: #fce4ec; color: #c2185b; }
+        .status-cancelled { background: #f5f5f5; color: #757575; }
+        .status-backlog { background: #f3e5f5; color: #7b1fa2; }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .header { padding: 25px; }
+            .header h1 { font-size: 1.8em; }
+            .summary { padding: 20px; }
+            .container { padding: 0 20px 20px; }
+            .epics-table { font-size: 0.9em; }
+            .epics-table th, .epics-table td { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>FY26_INIT Epic 汇总报告</h1>
+        <div class="subtitle">CNTIN Initiative → CNTIN Feature → 其他项目 Epic</div>
+        <div class="date">生成时间: 2026-03-23 07:35</div>
+    </div>
+    
+    <div class="summary">
+        <div class="stat-card">
+            <div class="number">53</div>
+            <div class="label">FY26_INIT Initiatives</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">100</div>
+            <div class="label">CNTIN Features</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">31</div>
+            <div class="label">关联 Epics</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">5</div>
+            <div class="label">涉及项目</div>
+        </div>
+    </div>
+    
+    <div class="container">
+
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-680</span>
+                    3rd DC + Service Center
+                </div>
+                <span class="epic-count">13 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-755</span>
+                    3rd DC Foundation - Transportation Portal for Guest
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2515</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Transportation Portal Phase 2</div>
+                                
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-828</span>
+                    3rd DC Foundation - 3rd DC: Inbound Release
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-1824</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">3rd DC Foundation - PO Release</div>
+                                <div class="epic-desc">Project BRD Output POC Internal Review & Facilitate Action Item / Follow up Status 3rd DC Foundation CN Adoption BRD - 3rd DC Foundation CN Adoption.d...</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2511</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">New item master LxWxH & Weight measurement integration from CN3DC to MDM</div>
+                                <div class="epic-desc">MDM BRD: BRD – New item master LxWxH & Weight measurement integration from CN3DC to MDM.docx</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2512</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">WWMT print format data current Kafka integration to CN3DC</div>
+                                <div class="epic-desc">MDM BRD: BRD – WWMT print format data current Kafka integration to CN3DC.docx</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2513</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Store Master Chinese info & address integration to CN3DC</div>
+                                <div class="epic-desc">MDM BRD: BRD – Store Master Chinese info & address integration to CN3DC.docx</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2562</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">3rd DC Foundation - 3rd DC: Inbound Release</div>
+                                
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-829</span>
+                    3rd DC Foundation - RFID: Inbound with PO & DC Transfer
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2565</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">3rd DC Foundation - RFID: Inbound with PO & DC Transfer</div>
+                                
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-830</span>
+                    KS DC&GZ Adoption - Parent- Child Shipment Note
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2522</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Parent-Child Shipment Note</div>
+                                
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-832</span>
+                    KS DC&GZ Adoption - Agile Fulfillment – FOH/BOH for MD and enhancement
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2518</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Agile Fulfillment – FOH/BOH for MD and enhancement</div>
+                                
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-834</span>
+                    3rd DC Foundation - 3rd DC: Outbound Release
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-1824</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">3rd DC Foundation - PO Release</div>
+                                <div class="epic-desc">Project BRD Output POC Internal Review & Facilitate Action Item / Follow up Status 3rd DC Foundation CN Adoption BRD - 3rd DC Foundation CN Adoption.d...</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2563</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">3rd DC Foundation - 3rd DC: Outbound Release</div>
+                                
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-835</span>
+                    KS DC&GZ Adoption - Parent- Child Shipment Note-Adoption
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2522</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Parent-Child Shipment Note</div>
+                                
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-836</span>
+                    3rd DC Foundation - RFID: Outbound
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">OF-2566</span>
+                                <span class="epic-project">OF</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">3rd DC Foundation - RFID: Outbound</div>
+                                
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-686</span>
+                    Product Catalogue Management system (PCM)
+                </div>
+                <span class="epic-count">15 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-779</span>
+                    POP Phase I - Entity Operation Pipeline
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2017</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Data Process逻辑规则</div>
+                                <div class="epic-desc">Objective : Build OSS-based Excel ingestion trigger and multi-phase data processing pipelines.</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2021</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Dolt DB\OSS\DAG</div>
+                                <div class="epic-desc">Objective : Build reusable core utilities to support cross-module operations (DB access, OSS interaction, async task pattern).</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2045</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Full List data processing</div>
+                                <div class="epic-desc">Objective : Build Full List Excel ingestion, export, and data update workflows.</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2058</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Initialize Code Repository</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2059</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Databricks Raw Data Migration</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2060</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Validation & Rollout</div>
+                                
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2110</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP]PCM & MDM数据同步</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2113</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Quarterly Download List （季度上新数据核验）</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2117</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Quarterly Translate（季度产品内容和Style翻译核验）</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2122</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Weekly Drop List（每周上新产品核验& PCM 数据变更核验）</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2129</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP] Style & SKC export to WMP   export data list to Data team</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2132</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP]Update Launch Date</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2134</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP]Weekly Monitor</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2139</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[EOP]Manual Maintance (On-demand)</div>
+                                
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">EPCH-2259</span>
+                                <span class="epic-project">EPCH</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Data Process -WWMT及MDM相关refinement</div>
+                                <div class="epic-desc">【20260204】 根据April与Alex02/03 PRD review的过程中，发现一些场景需要调整，同时一些场景需要Alex确认。（细节待更新）</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-924</span>
+                    Corporate Sales Enhancement
+                </div>
+                <span class="epic-count">3 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-629</span>
+                    [Corporate Sales] B2B2E Client Employee Purchase in Official website Project
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic Key</th>
+                            <th>Epic 标题 & 描述</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-1916</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[OMS][CR] Corporate sales B2B2E 模式售后功能优化 </div>
+                                <div class="epic-desc">对B2B 店铺新增发货前换货功能，更新订单明细 （不做任何金额的修改）</div>
+                            </td>
+                            <td><span class="status status-discovery">Discovery</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNTD-5225</span>
+                                <span class="epic-project">CNTD</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Retail_BI_B2B2C / Corp(Team) Sales Reporting</div>
+                                <div class="epic-desc">Corps Sales B2B2C / Corp(Team) Sales report Corp Sales reporting Alternative Channels Sales Performance Enhancement New auto report based on as-is man...</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">RMS-22130</span>
+                                <span class="epic-project">RMS</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Corporate Sales & B2B2E | Amelia Chen | RITM1663451</div>
+                                <div class="epic-desc">Request Details: Requested for: Amelia Chen Department: Technology - China Project Name: China Corporate Sales Client Employee Purchase (B2B2E) Please...</div>
+                            </td>
+                            <td><span class="status status-strategy">Strategy</span></td>
+                        </tr>
+</tbody></table></div></div>
+    </div>
+    
+    <div class="footer">
+        报告由 OpenClaw 自动生成 | lululemon Jira 数据
+    </div>
+</body>
+</html>

@@ -1,0 +1,2543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FY26_INIT Epic 日报</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, #E31937 0%, #c41230 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 300; }
+        .header .subtitle { opacity: 0.9; font-size: 1.1em; }
+        .header .date { opacity: 0.7; margin-top: 10px; font-size: 0.9em; }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            padding: 25px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #E31937;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #E31937;
+            margin-bottom: 5px;
+        }
+        .stat-card .label { color: #666; font-size: 0.9em; }
+        
+        .project-stats {
+            max-width: 1400px;
+            margin: 0 auto 25px;
+            padding: 0 40px;
+        }
+        
+        .project-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .project-stat {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .project-stat .count {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #E31937;
+        }
+        .project-stat .name {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px 40px;
+        }
+        
+        .hierarchy-section {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .initiative-header {
+            background: #E31937;
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.2em;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .initiative-header .init-key {
+            opacity: 0.8;
+            font-size: 0.85em;
+            font-weight: 400;
+            font-family: monospace;
+            margin-right: 10px;
+        }
+        .initiative-header .epic-count {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+        
+        .feature-section {
+            border-bottom: 1px solid #eee;
+        }
+        .feature-section:last-child { border-bottom: none; }
+        
+        .feature-header {
+            background: #fafafa;
+            padding: 15px 25px;
+            font-weight: 600;
+            color: #444;
+            border-left: 4px solid #ff6b7a;
+        }
+        .feature-header .feat-key {
+            color: #999;
+            font-size: 0.85em;
+            font-family: monospace;
+            margin-right: 10px;
+        }
+        
+        .epics-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .epics-table th {
+            background: #f5f5f5;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9em;
+            border-bottom: 2px solid #eee;
+        }
+        .epics-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+        .epics-table tr:hover { background: #fafafa; }
+        
+        .epic-key {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #666;
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .epic-project {
+            font-size: 0.75em;
+            color: #E31937;
+            background: #ffebee;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+        .epic-title {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .epic-desc {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.5;
+        }
+        .epic-meta {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 8px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .status-new { background: #e3f2fd; color: #1976d2; }
+        .status-in-progress { background: #fff3e0; color: #f57c00; }
+        .status-done { background: #e8f5e9; color: #388e3c; }
+        .status-closed { background: #e8f5e9; color: #388e3c; }
+        .status-execution { background: #fff3e0; color: #f57c00; }
+        .status-deferred { background: #fce4ec; color: #c2185b; }
+        .status-cancelled { background: #f5f5f5; color: #757575; }
+        .status-backlog { background: #f3e5f5; color: #7b1fa2; }
+        .status-discovery { background: #e1f5fe; color: #0277bd; }
+        .status-strategy { background: #f3e5f5; color: #7b1fa2; }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .header { padding: 25px; }
+            .header h1 { font-size: 1.8em; }
+            .summary { padding: 20px; }
+            .project-stats { padding: 0 20px; }
+            .container { padding: 0 20px 20px; }
+            .epics-table { font-size: 0.9em; }
+            .epics-table th, .epics-table td { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>FY26_INIT Epic 日报</h1>
+        <div class="subtitle">CNTIN Initiative → CNTIN Feature → 跨项目 Epic（通过 parent 字段关联）</div>
+        <div class="date">生成时间: 2026-03-23 10:19</div>
+    </div>
+    
+    <div class="summary">
+        <div class="stat-card">
+            <div class="number">30</div>
+            <div class="label">Initiatives</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">41</div>
+            <div class="label">Features</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">105</div>
+            <div class="label">关联 Epics</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">6</div>
+            <div class="label">涉及项目</div>
+        </div>
+    </div>
+    
+    <div class="project-stats">
+        <div class="project-stats-grid">
+            <div class="project-stat">
+                <div class="count">25</div>
+                <div class="name">CNCRM</div>
+            </div>
+            <div class="project-stat">
+                <div class="count">23</div>
+                <div class="name">CNDIN</div>
+            </div>
+            <div class="project-stat">
+                <div class="count">20</div>
+                <div class="name">CNENG</div>
+            </div>
+            <div class="project-stat">
+                <div class="count">20</div>
+                <div class="name">CNCA</div>
+            </div>
+            <div class="project-stat">
+                <div class="count">13</div>
+                <div class="name">CNPMO</div>
+            </div>
+            <div class="project-stat">
+                <div class="count">4</div>
+                <div class="name">CNTD</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-102</span>
+                    Gift cards
+                </div>
+                <span class="epic-count">6 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-218</span>
+                    Gift Card Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-1112</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[GC][Finance] Wosai Continuous Enhancement</div>
+                                
+                                <div class="epic-meta">👤 Amelia chen</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-404</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[GC][Finance]GC MPS核销订单对账报表</div>
+                                <div class="epic-desc">Project Background Request Team CN Finance Context CN Finance负责对使用礼品卡对账的同事Cara，每个月需要对礼品卡订单进行对账，包括小程序礼品卡核销的订单。关于这部分目前accounting team手上有两份source的数据，1是北美ebs系统 2是收钱吧提供的报表，然而由于对数时间口径不一致，导致天然数据对不齐（北美ebs上游为r...</div>
+                                <div class="epic-meta">👤 Amelia chen</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-460</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[GC][Finance]季度商委申报数据统计报表</div>
+                                
+                                <div class="epic-meta">👤 Amelia chen</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-465</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[GC][Retail]到店客人热享卡余额提醒</div>
+                                
+                                <div class="epic-meta">👤 Amelia chen</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-468</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[GC][Biz]MPS Gift Card Exposure Enhancement</div>
+                                <div class="epic-desc">Adding “search result” with gift card keyword to direct guests to the gift card landing page, Key word include— 热享卡/预付卡/礼品卡 confirmed by Aron go live on week of 6/26 Adding #热享卡 on the hot research ar...</div>
+                                <div class="epic-meta">👤 Aron Feng</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-616</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[GC][Legal]退卡银行打款流程增加身份信息收集核验</div>
+                                
+                                <div class="epic-meta">👤 Amelia chen</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-103</span>
+                    PIH (Product Information Hub) for Tmall+JD
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-219</span>
+                    PIH Phase 2 Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-400</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Product Information Hub phase 2</div>
+                                <div class="epic-desc">Seamless integration with Tmall and JD platforms, building upon the Phase I functionalities of PIH.Providing technical support for operational workflows related to e-commerce routing processes on Tmal...</div>
+                                <div class="epic-meta">👤 Donna Zhou</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-11</span>
+                    Digital Hemming 2.0
+                </div>
+                <span class="epic-count">2 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-271</span>
+                    Digital Hemming 2.0 Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-12</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Hemming2</div>
+                                
+                                <div class="epic-meta">👤 Donna Zhou</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-329</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">lulu-hemming</div>
+                                
+                                <div class="epic-meta">👤 Donna Zhou</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-12</span>
+                    PMO Process Update
+                </div>
+                <span class="epic-count">3 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-157</span>
+                    Project Report Update
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-546</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Project Report Generation</div>
+                                
+                                <div class="epic-meta">👤 Yolanda Xiao</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-29</span>
+                    Portfolio Process Update 
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-541</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Budget Tracker Connecting</div>
+                                
+                                <div class="epic-meta">👤 Yolanda Xiao</div>
+                            </td>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-542</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Jira Contents Training</div>
+                                
+                                <div class="epic-meta">👤 Yolanda Xiao</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-177</span>
+                    China DevOps Foundation Evolution
+                </div>
+                <span class="epic-count">11 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-179</span>
+                    DevOps Foundation Enhancement
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-1061</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[Backlog] Database Archiving - Process Automation to Reduce Manual Labor</div>
+                                <div class="epic-desc">4/18 update: 当前依赖DBA提供方案&脚本 项目预估所需要时间：三周 [数据库归档 - 流程标准化] 原因：数据库归档没有统一的方案，DMS归档大数据又会失败 收益：形成标准的数据库归档方案，并减少人工的付出</div>
+                                <div class="epic-meta">👤 Edward Li | 🏷️ CN-operation, cn_tech_db_archive</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-1066</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[On-going] Database Account Management - PoC & Implementation on non-prod environment</div>
+                                <div class="epic-desc">4/18 update：初步方案完成，需要review，后续落地需要自动化团队配合 [数据库账号管理 - 减少数据库管理成本，减少安全隐患] 原因：当前多个数据库有个人账号，且少量账号具有读写权限。这个会有安全隐患，合理的只有 DBA 的账号和 service account 能够访问数据库 工作内容：梳理现状和整改方案，然后拉会沟通处理 收益：减少数据库管理成本，减少安全隐患 计划DDL：5月3...</div>
+                                <div class="epic-meta">👤 JinHang Cheng | 🏷️ CN-operation</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-1144</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[Cancel] Jump Server Cleanup - Reduce Costs</div>
+                                <div class="epic-desc">4/18：项目待开始、待排期 原因：当前跳板机很多，浪费了很多资源 工作：梳理跳板机数量和当前的用途，然后设计替代方案并实施 收益：降本增效（能节省多少费用）</div>
+                                <div class="epic-meta">👤 Mingo Qin | 🏷️ CN-operation</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-691</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">ACK upgrade - to fix vulnerability and retain stability</div>
+                                <div class="epic-desc">原因：ACK版本老旧有很多安全漏洞，直接原地升级需要多次且风险较大 收益：ACK升级形成固定模式，稳定性更高 计划完成时间：2025.7.30</div>
+                                <div class="epic-meta">👤 Mingo Qin | 🏷️ CN-operation</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-778</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[On-going] Application Standard Compliance & Alignment - to ensure release stability</div>
+                                <div class="epic-desc">（需要确定时间计划 ） 应用标准梳理和对齐 - 保障应用上线稳定性 Due date: end of June</div>
+                                <div class="epic-meta">👤 Mingo Qin | 🏷️ CN-operation</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-855</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[Cancel] Maintenance Calendar - CN on Outlook</div>
+                                <div class="epic-desc">Manage CN & global changes to improve transparency and maintainability. Planned due date is end of June.</div>
+                                <div class="epic-meta">👤 Mingo Qin</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-861</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[On-going] SLA related reports recap</div>
+                                <div class="epic-desc">4/18 update：待开始 降级为task Background 原因：当前告警字段有不完善的地方，缺失较多的字段。从资源层面打tag工作量大维护不方便 工作：梳理告警字段，建立CMDB，对接OneAlert 收益：告警字段自动化匹配，减少人工劳动 行动： 1. 梳理当前所有的告警的级别；定义漏报、误报、incident SLA，输出文档 （一周） 方案书写：如何统计漏报、误报、inciden...</div>
+                                <div class="epic-meta">👤 Mingo Qin</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-929</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Alert Field Optimization - Automated Matching Reduces Manual Effort</div>
+                                <div class="epic-desc">4/18 update：降级为task 时间节点： 确定方案并给到One Alert排期 【时间待确定】 ：One Alert排期 【时间待确定】 落地配置（约1d） 原因：当前告警字段有不完善的地方，缺失较多的字段。从资源层面打tag工作量大维护不方便 工作：梳理告警字段，建立CMDB，对接OneAlert 收益：告警字段自动化匹配，减少人工劳动</div>
+                                <div class="epic-meta">👤 Mingo Qin</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-971</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Technology Stack Convergence - Reduce Maintenance Costs</div>
+                                <div class="epic-desc">降为task 4/18 update：技术栈表格已完成，需要补充到confluence 完善技术栈统计 技术栈收敛 - 降低维护成本</div>
+                                <div class="epic-meta">👤 Mingo Qin</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-275</span>
+                    Foundation Enhancement - Process and efficiency improvement
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-1072</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[New] Establish New Resource Allocation Standards - Reduce Management Costs</div>
+                                <div class="epic-desc">降级为task 4/18update：待开始 【建立新资源分配标准 - 降低管理成本】 原因：当前什么情况能独享什么情况能共享，标准不明确，新资源来了不知道怎么分配 工作：梳理现状后制定标准，内部review没问题后进行公告。过程中尝试看看能不能自动化实现 收益：有明确的标准知道如何区分</div>
+                                <div class="epic-meta">👤 Mingo Qin</div>
+                            </td>
+                            <td><span class="status status-in-development">In Development</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-862</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">[New] Resources management review for performance testing</div>
+                                <div class="epic-desc">4/18 update：待开始 资源回收机制：当前资源回收是如何管理的，需要有明确的记录可以追踪。 定方案 给自动化团队提需 后续需要自动化团队确定排期，并跟进完成 Background China Cloud Resource Request Request Details: Requested for: Lron Ye Requested for manager: Loda Shen User...</div>
+                                <div class="epic-meta">👤 Mingo Qin | 🏷️ CN-operation</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-180</span>
+                    Secret Management Revamp
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-194</span>
+                    Tech Solution Transition: Replace KMS with Vault
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-893</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Vault Path Standardization to PBN - Ensuring Naming Convention Compliance</div>
+                                <div class="epic-desc">4/18 update：项目进行中，进度约30%，目前pending（可降级为task，关联到PBN项目下） 【风险】依赖供应商配合 背景&价值：保证命名规范性 Non Vendor Name 梳理当前所使用的 Vault Path Name，并按照技术项目来管理和跟踪，预期完成时间 3 月底。</div>
+                                <div class="epic-meta">👤 ShuoNan Yuan | 🏷️ cn_tech_debt</div>
+                            </td>
+                            <td><span class="status status-deferred">Deferred</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-198</span>
+                    Wechat MINI Store
+                </div>
+                <span class="epic-count">4 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-199</span>
+                    WeChat Mini Store - Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-1</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">OMS | Wechat mini store OMS Deployment</div>
+                                <div class="epic-desc">OMS to support Wechat Store</div>
+                                <div class="epic-meta">👤 Kathy Zhang | 🏷️ FY25_New_Requirements</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-200</span>
+                    ECOM workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-7</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Wechat mini store business operation creation</div>
+                                <div class="epic-desc">need to be done before we start SIT and UAT, also need discuss how we create QA environment for funcation test.</div>
+                                <div class="epic-meta">👤 James Chen</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-8</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Need Sign off business case and solution</div>
+                                
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-202</span>
+                    Feasibility check for WeChat Mini Store
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-1</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Arch Feasibility Study for WeChat Mini Store</div>
+                                
+                                <div class="epic-meta">👤 David Du</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-205</span>
+                    WMP Revamp Phase II
+                </div>
+                <span class="epic-count">2 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-206</span>
+                    Recommendation Service for PDP
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-10</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Product Recommendation Engine </div>
+                                <div class="epic-desc">Build up arithmetic product recommendation engine and deliver multiple flavours of recommenders to the business include item 2 item, trending, hot seller and personalize</div>
+                                <div class="epic-meta">👤 Kino Wang</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-21</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">WMP integrate with Recommend Getaway and display recommendation result in PDP and Cart page</div>
+                                
+                                <div class="epic-meta">👤 Aron Feng</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-210</span>
+                    New SSC (Tech Infrastructure)
+                </div>
+                <span class="epic-count">11 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-184</span>
+                    New SSC Building Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-12</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">IT Room Build Up</div>
+                                
+                                <div class="epic-meta">👤 Roger Shen</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-13</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Meeting room solution roll out</div>
+                                
+                                <div class="epic-meta">👤 Jane Wang</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-14</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Network Build Up</div>
+                                
+                                <div class="epic-meta">👤 Mike Dong</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-42</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Innovation Store</div>
+                                <div class="epic-desc">There is a new store nearby the SSC new building. This store will be the Experience Store for tech innovation solution.</div>
+                                <div class="epic-meta">👤 Rex Mao</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-43</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">SSC Reservation Ticket</div>
+                                <div class="epic-desc">Develop a reservation ticket function for Recovery Room in new SSC building.</div>
+                                <div class="epic-meta">👤 James Chen</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-557</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Commercial contract </div>
+                                
+                                <div class="epic-meta">👤 Nora Wang</div>
+                            </td>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-185</span>
+                    StoreDev work stream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-588</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">StoreDev to Tech requirements confirmation</div>
+                                
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-589</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Full Package Review and Approval from StoreDev</div>
+                                
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-590</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">IT Room Facility Ready and Handover</div>
+                                
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-591</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Mover Selection</div>
+                                
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-186</span>
+                    AP work stream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-587</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">AP to Tech requirements confirmation</div>
+                                
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-cancelled">Cancelled</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-213</span>
+                    API & MQ Schema management
+                </div>
+                <span class="epic-count">3 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-214</span>
+                    Tech teams analyze, design and implement API & MQ schemas
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-47</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Analyze & enhance design developing applications' API / MQ schema</div>
+                                
+                                <div class="epic-meta">👤 David Du</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-48</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Analyze & enhance design existing applications' API / MQ schema</div>
+                                
+                                <div class="epic-meta">👤 David Du</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-49</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Analyze & draft design future applications' API / MQ schema</div>
+                                
+                                <div class="epic-meta">👤 David Du</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-221</span>
+                    Red Mini Program
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-225</span>
+                    Red Mini Program Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-546</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Red Mini Program Set up</div>
+                                
+                                <div class="epic-meta">👤 Aron Feng</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-223</span>
+                    Digital Maintenance FY25
+                </div>
+                <span class="epic-count">7 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-244</span>
+                    PIH  Maintenance FY25
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-767</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">The Maintenance of PIH</div>
+                                
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-893</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">PIH - datalake数据回流</div>
+                                <div class="epic-desc">The data from the Mini Program and EP will be fed back to the Data Lake through PIH.</div>
+                                <div class="epic-meta">👤 Can Zhang</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-895</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">PIH - Label Anywhere+Catalog Service</div>
+                                <div class="epic-desc">Coordinate with LP to implement necessary adaptations, ensuring data delivery aligns with TUAT and stress testing requirements.</div>
+                                <div class="epic-meta">👤 Siwei Tan</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-896</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">PIH - 小程序增量数据同步</div>
+                                <div class="epic-desc">Since PIH and WMP are not yet interconnected, the incremental data for color names and color swatches from WMP cannot currently be synchronized to PIH . As a temporary solution, the data team is uploa...</div>
+                                <div class="epic-meta">👤 Can Zhang</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-309</span>
+                    CRM Maintenance FY25
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1437</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">CRM底层优化</div>
+                                <div class="epic-desc">将活动数据计算部分迁移至databricks，计算结果通过kafka回传至CRM</div>
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1456</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">CRM - 老服务部署新流水线</div>
+                                <div class="epic-desc">将CRM 老服务部署至新流水线</div>
+                                <div class="epic-meta">👤 LEI ZHANG</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-908</span>
+                    AMB Maintenance FY25
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1505</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">amb hub-prod- 门店关系经理信息能够系统自动更新</div>
+                                
+                                <div class="epic-meta">👤 Della Tang | 🏷️ ambhub2.0</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-235</span>
+                    Standard as Code - Phase 1
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-295</span>
+                    Standardization - Platform Tools Kit 1 - Nacos/Log
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-88</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Configuration Management - Nacos</div>
+                                <div class="epic-desc">account management for application update flow - iac?</div>
+                                <div class="epic-meta">👤 Gray Yang | 🏷️ cn-eng-frameworks</div>
+                            </td>
+                            <td><span class="status status-ready-for-release">Ready for Release</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-237</span>
+                    Standard as Code - Phase 2
+                </div>
+                <span class="epic-count">2 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-238</span>
+                    Standardization - Platform Library Phase 2
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-12</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Kong Authentication</div>
+                                
+                                <div class="epic-meta">👤 Gray Yang</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-176</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Kong Observability</div>
+                                
+                                <div class="epic-meta">👤 Gray Yang</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-45</span>
+                    Application Observability Tier 1
+                </div>
+                <span class="epic-count">5 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-187</span>
+                    App O11y - Business Criticality Tier 1 - Implementation
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-611</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">App Observability - Omni Inventory CN</div>
+                                <div class="epic-desc">Business Requirement: Observability - Omni Inventory CN.xlsx</div>
+                                <div class="epic-meta">👤 Loda Shen | 🏷️ app-observability-round-1, cn-infra-app-observability</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-696</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Observability Dashboard - Omni Inventory CN - SFDC</div>
+                                
+                                <div class="epic-meta">👤 Loda Shen | 🏷️ app-observability-round-1, cn-infra-app-observability</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-732</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Observability Dashboard - Omni Inventory CN - SFS</div>
+                                
+                                <div class="epic-meta">👤 Loda Shen | 🏷️ app-observability-round-1, cn-infra-app-observability</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-808</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">App Observability - WMP CN</div>
+                                <div class="epic-desc">Business Requirement v1.0: Observability - WMP CN.xlsx</div>
+                                <div class="epic-meta">👤 Loda Shen | 🏷️ app-observability-round-1, cn-infra-app-observability</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNENG-849</span>
+                                <span class="epic-project">CNENG</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Tech Oriented Observability Dashboard</div>
+                                <div class="epic-desc">Design tech oriented dashboard, which shall include network, store devices, security components, applications, middleware components, SaaS, etc.</div>
+                                <div class="epic-meta">👤 Loda Shen</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-47</span>
+                    China Infrastructure Operation
+                </div>
+                <span class="epic-count">3 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-215</span>
+                    China Prisma GP VPN 
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-50</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Prisma GP VPN Site Infrastructure Foundation</div>
+                                <div class="epic-desc">Build up new Prisma GP VPN Site for China Build GP Saas services in China Build connection between Prisma Cloud and lululemon internal network</div>
+                                <div class="epic-meta">👤 Mike Dong</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-51</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">GP Security Feature Foundation</div>
+                                <div class="epic-desc">Make the security standard and policy on Prisma GP VPN.</div>
+                                <div class="epic-meta">👤 Lindsay Liu</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-277</span>
+                    Store Wireless “l-Connect” Change
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-52</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Store Wireless “l-Connect” Change</div>
+                                
+                                <div class="epic-meta">👤 Mike Dong</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-48</span>
+                    Aviatrix Rollout in China
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-207</span>
+                    Aviatrix Rollout
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-53</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Aviatrix Rollout</div>
+                                <div class="epic-desc">Building secure multi-cloud interconnection with aviatrix</div>
+                                <div class="epic-meta">👤 Hua Shen</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-49</span>
+                    Multi-Cloud
+                </div>
+                <span class="epic-count">7 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-209</span>
+                    Multi-Cloud Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-10</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">MultiCloud-Nacos</div>
+                                <div class="epic-desc">Modify application structure basing on multi-clouds structure Application: Nacos Owner: Devops</div>
+                                <div class="epic-meta">👤 Roger Shen</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-11</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Vault Cluster Foundation</div>
+                                <div class="epic-desc">Build up the vault cluster cross multi-clouds to provide authentication, data encryption and decryption services.</div>
+                                <div class="epic-meta">👤 Peter Pan</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-5</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Multi-cloud ARB Preparation</div>
+                                <div class="epic-desc">Collect existing cloud structure and resource. Design the multi-clouds principle, roadmap and requirements for cloud architecture review. Select the secondary cloud to establish the multi-clouds struc...</div>
+                                <div class="epic-meta">👤 Roger Shen</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-6</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Internal DNS Migration</div>
+                                <div class="epic-desc">Set up a specified internal DNS domain to segregate the existing hybrid internal/external DNS configuration and modify the related application.</div>
+                                <div class="epic-meta">👤 Roger Shen</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-7</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Secondary Cloud Foundation</div>
+                                <div class="epic-desc">Build the second cloud of applications to form a multi-cloud architecture with the existing clouds.</div>
+                                <div class="epic-meta">👤 Roger Shen</div>
+                            </td>
+                            <td><span class="status status-backlog">Backlog</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-9</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Public DNS Services Migration</div>
+                                <div class="epic-desc">Migration Public DNS service from Alibaba to the third service vendor. The new DNS service will act as the traffic scheduler when failover is required.</div>
+                                <div class="epic-meta">👤 Roger Shen</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-461</span>
+                    F5 Internal DNS resolver
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCA-8</span>
+                                <span class="epic-project">CNCA</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Internal DNS Service foundation</div>
+                                <div class="epic-desc">Build an internal DNS platform based on a multi-cloud architecture and leverage it to serve for the traffic steering.</div>
+                                <div class="epic-meta">👤 Hua Shen</div>
+                            </td>
+                            <td><span class="status status-in-progress">In Progress</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-52</span>
+                    AI Portal 1.0 - Internal Pilot Version
+                </div>
+                <span class="epic-count">2 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-155</span>
+                    Explore GenAI Capabilities
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-540</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Project Documents on Confluence</div>
+                                
+                                <div class="epic-meta">👤 Yolanda Xiao</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-552</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Project Knowledge Base Building</div>
+                                
+                                <div class="epic-meta">👤 Yolanda Xiao</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-53</span>
+                    Enterprise Business Performance Dashboard Tech Build
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-14</span>
+                    China Retail Dashboards Enhancement
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNTD-790</span>
+                                <span class="epic-project">CNTD</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Retail_BI_Corporate Sales/Team Sales Product Catalogue</div>
+                                <div class="epic-desc">Title Description Project Name Corporate Sales Product Catalogue Report Name Corporate Sales Product Catalogue Requested By Huiwen GU Department/Team Retail Date of Request 2024-08-20 Expected Deliver...</div>
+                                <div class="epic-meta">👤 Kevin Wang</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-702</span>
+                    WeCom optimization
+                </div>
+                <span class="epic-count">14 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-566</span>
+                    Wecom Tool 2.0
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1523</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_operation_bff b端bff服务</div>
+                                <div class="epic-desc">功能平移</div>
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1540</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_channel_bff c端bff服务</div>
+                                <div class="epic-desc">保持平移</div>
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1541</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_ h5前端h5页面服务</div>
+                                <div class="epic-desc">保持平移</div>
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1542</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_ miniapp_admin-前端小程序服务</div>
+                                <div class="epic-desc">整合智能助手& 企微商城小程序，重新梳理uiux 提供全新的企微小程序赋能导购omni operation</div>
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1543</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_ common_consumer-系统功能后端kafka队列服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1544</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_ customer_consumer-客人后端kafka队列服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1545</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_customer_job客人后端job服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1546</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_common_job系统功能后端job服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1547</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_common系统功能后端服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1548</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_stockout缺货管理后端服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1549</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_task任务后端服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1550</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_ activity 活动后端服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1551</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_ customer客人后端服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1552</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">【wecom tool2.0】brandcommunity_wecom_ content内容相关后端服务</div>
+                                
+                                <div class="epic-meta">👤 Bin Zhou | 🏷️ wecomtool2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-710</span>
+                    Ambassador HUB 
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-1036</span>
+                    Amb hub 2.0 enhancements- Task Management
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1532</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">brandcommunity-ambhub- task management for ambassador </div>
+                                <div class="epic-desc">大使团队希望直接与大使下任务，无需关系经理确认，但是关系经理存在知情权。 同时，大使本人除了能在小程序中看到任务，还能反馈信息给到大使团队</div>
+                                <div class="epic-meta">👤 Patrick Qian | 🏷️ ambhub2.0</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-718</span>
+                    Tech Delivery Portal 
+                </div>
+                <span class="epic-count">2 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-1039</span>
+                    Tech Delivery Portal - PMO  board - project status
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-723</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">China TPMO Project Life Cycle Tracking Dashboard</div>
+                                
+                                <div class="epic-meta">👤 Yolanda Xiao</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNPMO-724</span>
+                                <span class="epic-project">CNPMO</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Jira Unhealthy Information Dashboard</div>
+                                
+                                <div class="epic-meta">👤 Quinny Wang</div>
+                            </td>
+                            <td><span class="status status-execution">Execution</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-87</span>
+                    GEC Platform Enhancements(AI based QA)
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-268</span>
+                    GEC AI based QA Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-1180</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">GEC Platform Enhancements(AI based QA)</div>
+                                
+                                <div class="epic-meta">👤 Donna Zhou</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-9</span>
+                    Data Foundation Modernization
+                </div>
+                <span class="epic-count">3 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-248</span>
+                    DataOps & DBA Service
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNTD-517</span>
+                                <span class="epic-project">CNTD</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Ad Hoc Requests</div>
+                                <div class="epic-desc">Pls create a story under this Epic once you receive an Ad Hoc request. Template: Requester Name : Xxxx Xxxx Department/Team : Retail/EC/Tech… Date of Request : 2024-06-06 Due Date : 2024-06-06 Priorit...</div>
+                                <div class="epic-meta">👤 CK Chen</div>
+                            </td>
+                            <td><span class="status status-dataops">dataops</span></td>
+                        </tr>
+</tbody></table></div>
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-249</span>
+                    Enhance & Enrich Data Lake Data Process
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNTD-413</span>
+                                <span class="epic-project">CNTD</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Infra 基础设施优化</div>
+                                
+                                <div class="epic-meta">👤 Can Wang</div>
+                            </td>
+                            <td><span class="status status-dataops">dataops</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNTD-555</span>
+                                <span class="epic-project">CNTD</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">EDE - data exchange [Master Epic]</div>
+                                <div class="epic-desc">Request for SFS/Fulfillment team Background： Consume Anaplan Snowflake data into CN Snowflake AC: 完成Anaplan数据接入到CN snowflake到CN Datalake 产出完整的Snowflake数据接入的SOP 已经有权限: Inventory Daily Snapshot (1 view)...</div>
+                                <div class="epic-meta">👤 Can Wang</div>
+                            </td>
+                            <td><span class="status status-pending">Pending</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-92</span>
+                    Sample Hub
+                </div>
+                <span class="epic-count">2 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-266</span>
+                    Sample Hub Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-11</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Sample Portal QA</div>
+                                
+                                <div class="epic-meta">👤 Donna Zhou</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-259</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">Sample Portal Function</div>
+                                
+                                <div class="epic-meta">👤 Donna Zhou</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-93</span>
+                    AMB Hub 2.0 - Core Functions
+                </div>
+                <span class="epic-count">5 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-211</span>
+                    AMB Hub 2.0 Core Functions
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1332</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">amb hub2.0 project Phase II</div>
+                                
+                                <div class="epic-meta">👤 Amanda Xu | 🏷️ ambhub2.0</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1393</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">amb hub2.0 project Phase I</div>
+                                
+                                <div class="epic-meta">👤 Patrick Qian | 🏷️ ambhub2.0</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1487</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">China Ambassador Overview --for SLT team</div>
+                                
+                                <div class="epic-meta">👤 Kai Wang</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1488</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">approval 流程优化& 新的电子合同功能</div>
+                                
+                                <div class="epic-meta">👤 Patrick Qian</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1489</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">内容管理模块模块优化升级</div>
+                                
+                                <div class="epic-meta">👤 Patrick Qian</div>
+                            </td>
+                            <td><span class="status status-buat">BUAT</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-94</span>
+                    cnDAM 2.0
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-230</span>
+                    cnDAM 2.0 Tech Workstream
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNDIN-586</span>
+                                <span class="epic-project">CNDIN</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">cnDAM UI Revamp</div>
+                                <div class="epic-desc">Per the Creative team's requirements, the UI interface of cnDAM will be redesigned following BDAM's style to facilitate usage by business teams.</div>
+                                <div class="epic-meta">👤 Unassigned</div>
+                            </td>
+                            <td><span class="status status-new">New</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-963</span>
+                    FY26 Unplanned Projects for Corporate Functions
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-964</span>
+                    SSC wecom Group
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1522</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">wecom rollout to ssc</div>
+                                <div class="epic-desc">公司信息发布& 分享（有敏感词过滤功能） 群内发红包 群人数可以满足公司发展</div>
+                                <div class="epic-meta">👤 Amanda Xu</div>
+                            </td>
+                            <td><span class="status status-design">Design</span></td>
+                        </tr>
+</tbody></table></div></div>
+        <div class="hierarchy-section">
+            <div class="initiative-header">
+                <div>
+                    <span class="init-key">CNTIN-98</span>
+                    AMB Hub 2.0 - Referral
+                </div>
+                <span class="epic-count">1 Epics</span>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-header">
+                    <span class="feat-key">CNTIN-192</span>
+                    AMB 2.0 Referral
+                </div>
+                <table class="epics-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Epic</th>
+                            <th>Epic 详情</th>
+                            <th style="width: 100px;">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <span class="epic-key">CNCRM-1333</span>
+                                <span class="epic-project">CNCRM</span>
+                            </td>
+                            <td>
+                                <div class="epic-title">amb hub2.0 project Phase III</div>
+                                
+                                <div class="epic-meta">👤 Patrick Qian | 🏷️ ambhub2.0</div>
+                            </td>
+                            <td><span class="status status-done">Done</span></td>
+                        </tr>
+</tbody></table></div></div>
+    </div>
+    
+    <div class="footer">
+        报告由 OpenClaw 自动生成 | lululemon Jira 数据 | 抓取逻辑: Epic.parent → Feature → Initiative
+    </div>
+</body>
+</html>
