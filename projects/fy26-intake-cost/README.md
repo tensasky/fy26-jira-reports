@@ -49,13 +49,24 @@ Interactive cost tracking report for CNTIN-730 initiatives with real-time exchan
 Intake    = Ticket + Summary + Create Date
 Type      = Components (default: TBD)
 SLA       = Days from Create Date
-Status    = Status
+Status    = Status (mapped for filtering)
 Assignee  = Assignee
 Cost      = InitiativeChildCount × Exchange Rate
 Approver  = Affects Versions
 Scope     = Description
 Follow Up = Linked Issues
 ```
+
+## Status Mapping
+
+| Filter Button | Jira Statuses | Count |
+|--------------|---------------|-------|
+| **未开始** | New | 15 |
+| **进行中** | Discovery, Strategy, Execution | 95 |
+| **已关闭** | Done | 46 |
+| **已取消** | Cancelled | 2 |
+
+Click status cards to filter table data by status group.
 
 ## Technical Stack
 - **Backend**: Python 3 + SQLite
