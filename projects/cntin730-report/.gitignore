@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+
+# Reports (生成的文件)
+reports/*.html
+!reports/.gitkeep
+
+# Logs
+logs/*.log
+
+# Config (包含敏感信息)
+.jira-config
+config/*.json
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archive
+archive/

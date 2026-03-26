@@ -14,7 +14,7 @@ echo "" >> "$LOG_FILE"
 
 # 1. 抓取 Epics (修复版，带延迟)
 echo "[1/4] 抓取 Epics (修复版)..." >> "$LOG_FILE"
-python3 fetch_data_fixed.py >> "$LOG_FILE" 2>&1
+python3 fetch_data.py >> "$LOG_FILE" 2>&1
 if [ $? -ne 0 ]; then
     echo "❌ Epics 抓取失败" >> "$LOG_FILE"
     exit 1

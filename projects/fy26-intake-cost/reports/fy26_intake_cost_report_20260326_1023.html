@@ -1,0 +1,2842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FY26 Intake Cost 报表系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f7fa;color:#333;padding:20px}
+.container{max-width:1600px;margin:0 auto}
+.header{background:#fff;padding:24px;border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.header h1{font-size:24px;color:#1a1a1a;margin-bottom:8px}
+.header .subtitle{color:#666;font-size:14px}
+.header-actions{float:right;margin-top:-50px}
+.btn{padding:8px 16px;border-radius:4px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:14px}
+.btn-primary{background:#00b96b;color:#fff;border-color:#00b96b}
+.stats-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:20px}
+.stat-card{background:#fff;padding:20px;border-radius:8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.stat-card.total{background:#e6f7ff;border:1px solid #91d5ff}
+.stat-label{font-size:14px;color:#666;margin-bottom:8px}
+.stat-value{font-size:32px;font-weight:600;color:#1a1a1a}
+.stat-value.blue{color:#1890ff}
+.stat-value.orange{color:#fa8c16}
+.stat-value.green{color:#52c41a}
+.stat-value.red{color:#ff4d4f}
+.charts-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.chart-card{background:#fff;padding:20px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.chart-title{font-size:16px;color:#1a1a1a;margin-bottom:16px}
+.donut-chart{width:200px;height:200px;margin:0 auto;position:relative}
+.donut-chart svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-center .number{font-size:32px;font-weight:600}
+.donut-center .label{font-size:12px;color:#666}
+.chart-legend{display:flex;justify-content:center;gap:20px;margin-top:16px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.bar-chart{display:flex;flex-direction:column;gap:12px}
+.bar-item{display:flex;align-items:center;gap:12px}
+.bar-label{width:80px;font-size:12px;color:#666;text-align:right}
+.bar-track{flex:1;height:24px;background:#f0f0f0;border-radius:4px;overflow:hidden;position:relative}
+.bar-fill{height:100%;background:#5470c6;border-radius:4px;transition:width 0.3s}
+.bar-value{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;color:#333;font-weight:500}
+.table-section{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.1);overflow:hidden;width:100%}
+.table-header{display:grid;grid-template-columns:minmax(180px,1.5fr) minmax(100px,0.8fr) minmax(80px,0.6fr) minmax(90px,0.7fr) minmax(80px,0.6fr) minmax(100px,0.8fr) minmax(200px,2fr) minmax(120px,1fr);background:#fafafa;padding:12px 16px;font-weight:500;font-size:13px;color:#666;border-bottom:1px solid #f0f0f0}
+.table-row{display:grid;grid-template-columns:minmax(180px,1.5fr) minmax(100px,0.8fr) minmax(80px,0.6fr) minmax(90px,0.7fr) minmax(80px,0.6fr) minmax(100px,0.8fr) minmax(200px,2fr) minmax(120px,1fr);padding:16px;border-bottom:1px solid #f0f0f0;align-items:start;font-size:13px}
+.table-row:hover{background:#f5f7fa}
+.col-ticket{display:flex;flex-direction:column;gap:4px}
+.ticket-key{font-weight:600;color:#1890ff;text-decoration:none}
+.ticket-key:hover{text-decoration:underline}
+.ticket-label{font-size:11px;color:#666}
+.ticket-date{font-size:11px;color:#999}
+.col-components{color:#666;font-size:12px}
+.col-pending{font-weight:500}
+.sla-warning{color:#fa8c16;background:#fff7e6;padding:2px 8px;border-radius:4px}
+.sla-danger{color:#ff4d4f;background:#fff1f0;padding:2px 8px;border-radius:4px}
+.col-status{display:inline-block;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:500}
+.status-todo{background:#e6f7ff;color:#1890ff}
+.status-progress{background:#fff7e6;color:#fa8c16}
+.status-done{background:#f6ffed;color:#52c41a}
+.status-cancel{background:#f5f5f5;color:#999}
+.col-count{text-align:center;font-weight:500}
+.col-versions{color:#666;font-size:12px}
+.col-description{color:#666;font-size:12px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.col-links{display:flex;flex-direction:column;gap:4px}
+.link-item{font-size:12px;color:#1890ff;text-decoration:none}
+.link-item:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>FY26 Intake Cost 报表系统</h1>
+<div class="subtitle">监控项目进度、费用及 SLA 风险状态 | 生成时间: 2026-03-26 10:23</div>
+<div class="header-actions"><button class="btn btn-primary" onclick="window.print()">🖨️ 打印 / PDF</button></div>
+</div>
+<div class="stats-cards">
+<div class="stat-card total"><div class="stat-label">总数</div><div class="stat-value">155</div></div>
+<div class="stat-card"><div class="stat-label">未开始</div><div class="stat-value blue">17</div></div>
+<div class="stat-card"><div class="stat-label">进行中</div><div class="stat-value orange">91</div></div>
+<div class="stat-card"><div class="stat-label">已关闭</div><div class="stat-value green">47</div></div>
+<div class="stat-card"><div class="stat-label">已取消</div><div class="stat-value red">0</div></div>
+</div>
+<div class="charts-section">
+<div class="chart-card">
+<div class="chart-title">Intake 状态占比</div>
+<div class="donut-chart">
+<svg width="200" height="200" viewBox="0 0 100 100"><path d="M50,50 L50.00,10.00 A40,40 0 0,1 68.70,14.64 Z" fill="#5470c6" /><path d="M50,50 L68.70,14.64 A40,40 0 1,1 19.39,75.75 Z" fill="#91cc75" /><path d="M50,50 L19.39,75.75 A40,40 0 0,1 32.75,13.91 Z" fill="#fac858" /><path d="M50,50 L32.75,13.91 A40,40 0 0,1 40.37,11.18 Z" fill="#ee6666" /><path d="M50,50 L40.37,11.18 A40,40 0 0,1 46.76,10.13 Z" fill="#73c0de" /><path d="M50,50 L46.76,10.13 A40,40 0 0,1 50.00,10.00 Z" fill="#5470c6" /><circle cx="50" cy="50" r="25" fill="#fff"/></svg>
+<div class="donut-center"><div class="number">155</div><div class="label">总数</div></div>
+</div>
+<div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#5470c6"></div><span>New 12</span></div><div class="legend-item"><div class="legend-dot" style="background:#91cc75"></div><span>Discovery 87</span></div><div class="legend-item"><div class="legend-dot" style="background:#fac858"></div><span>Done 45</span></div><div class="legend-item"><div class="legend-dot" style="background:#ee6666"></div><span>Strategy 5</span></div><div class="legend-item"><div class="legend-dot" style="background:#73c0de"></div><span>Execution 4</span></div><div class="legend-item"><div class="legend-dot" style="background:#5470c6"></div><span>Cancelled 2</span></div></div>
+</div>
+<div class="chart-card">
+<div class="chart-title">状态分布</div>
+<div class="bar-chart"><div class="bar-item"><div class="bar-label">New</div><div class="bar-track"><div class="bar-fill" style="width:7.741935483870968%"></div><span class="bar-value">12</span></div></div><div class="bar-item"><div class="bar-label">Discovery</div><div class="bar-track"><div class="bar-fill" style="width:56.12903225806451%"></div><span class="bar-value">87</span></div></div><div class="bar-item"><div class="bar-label">Done</div><div class="bar-track"><div class="bar-fill" style="width:29.03225806451613%"></div><span class="bar-value">45</span></div></div><div class="bar-item"><div class="bar-label">Strategy</div><div class="bar-track"><div class="bar-fill" style="width:3.225806451612903%"></div><span class="bar-value">5</span></div></div><div class="bar-item"><div class="bar-label">Execution</div><div class="bar-track"><div class="bar-fill" style="width:2.5806451612903225%"></div><span class="bar-value">4</span></div></div><div class="bar-item"><div class="bar-label">Cancelled</div><div class="bar-track"><div class="bar-fill" style="width:1.2903225806451613%"></div><span class="bar-value">2</span></div></div></div>
+</div>
+</div>
+<div class="table-section">
+<div class="table-header">
+<div>基础信息<br><small>Ticket / Label / Create Date</small></div>
+<div>Components</div>
+<div>Pending<br>天数</div>
+<div>Status</div>
+<div>Child<br>Count</div>
+<div>Affects<br>Version</div>
+<div>Description</div>
+<div>Linked Items</div>
+</div>
+
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1134" class="ticket-key" target="_blank">CNTIN-1134</a>
+                <span class="ticket-label">RITM1840742 -  Xstore Enhancement</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Bin Jin
+Requestor's Line Manager: Jony Li
+Requested for: Edward Pan
+Why we need this new case?: Currently Xstore only can scan one read pro...">Requestor: Bin Jin
+Requestor's Line Manager: Jony Li
+Requested for: Edward Pan
+Why we need this new case?: Currently Xstore only can scan one read pro...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1133" class="ticket-key" target="_blank">CNTIN-1133</a>
+                <span class="ticket-label">RITM1840698 - three‑flow alignment ...</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Lynn Ouyang
+Requestor's Line Manager: Candy Tian
+Why we need this new case?: We have identified discrepancies between EBS/bank records and ...">Requestor: Lynn Ouyang
+Requestor's Line Manager: Candy Tian
+Why we need this new case?: We have identified discrepancies between EBS/bank records and ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1132" class="ticket-key" target="_blank">CNTIN-1132</a>
+                <span class="ticket-label">RITM1839557 - Reduce the usage cost...</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Pengchao Guo
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: To reduce the usage cost of ACK
+What new process/user experienc...">Requestor: Pengchao Guo
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: To reduce the usage cost of ACK
+What new process/user experienc...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1131" class="ticket-key" target="_blank">CNTIN-1131</a>
+                <span class="ticket-label">RITM1839553 - SSC network improveme...</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Roger Shen
+Requestor's Line Manager: David Du
+Why we need this new case?: Optimize the network experience in the SSC office.
+Improve the ut...">Requestor: Roger Shen
+Requestor's Line Manager: David Du
+Why we need this new case?: Optimize the network experience in the SSC office.
+Improve the ut...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1130" class="ticket-key" target="_blank">CNTIN-1130</a>
+                <span class="ticket-label">RITM1838197 - LSP operation and API</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Pinkie Diao
+Requestor's Line Manager: Jessie Lin
+Why we need this new case?: Outbound Logistics is doing China Retail Delivery RFP, busines...">Requestor: Pinkie Diao
+Requestor's Line Manager: Jessie Lin
+Why we need this new case?: Outbound Logistics is doing China Retail Delivery RFP, busines...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1124" class="ticket-key" target="_blank">CNTIN-1124</a>
+                <span class="ticket-label">RITM1838053 - Monitor Platform with...</span>
+                <span class="ticket-date">2026-03-22</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Roger Shen
+Requestor's Line Manager: David Du
+Why we need this new case?: Traditional network monitoring tools rely on manual inspection, f...">Requestor: Roger Shen
+Requestor's Line Manager: David Du
+Why we need this new case?: Traditional network monitoring tools rely on manual inspection, f...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1123" class="ticket-key" target="_blank">CNTIN-1123</a>
+                <span class="ticket-label">RITM1835701 - CNDAM system migratio...</span>
+                <span class="ticket-date">2026-03-22</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">803996</div>
+            <div class="col-versions">James Chen</div>
+            <div class="col-description" title="transite cnDAM system from Nuxeo’s current proprietary licensed version to an open-source alternative">transite cnDAM system from Nuxeo’s current proprietary licensed version to an open-source alternative</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1125" class="link-item" target="_blank">🔗 CNTIN-1125</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1121" class="ticket-key" target="_blank">CNTIN-1121</a>
+                <span class="ticket-label">RITM1837893 - Jira&Confluence Autom...</span>
+                <span class="ticket-date">2026-03-22</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Yolanda Xiao
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: For Tech project document archival process automation
+What...">Requestor: Yolanda Xiao
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: For Tech project document archival process automation
+What...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1120" class="ticket-key" target="_blank">CNTIN-1120</a>
+                <span class="ticket-label">RITM1815622 - Help for a regression...</span>
+                <span class="ticket-date">2026-03-22</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Rhea Patton
+Requestor's Line Manager: Ujjwal Sharma
+Why we need this new case?: Help for a regression testing on the PRICE HUB payload chan...">Requestor: Rhea Patton
+Requestor's Line Manager: Ujjwal Sharma
+Why we need this new case?: Help for a regression testing on the PRICE HUB payload chan...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1118" class="ticket-key" target="_blank">CNTIN-1118</a>
+                <span class="ticket-label">RITM1833164 - FY26 SMD Dashboard</span>
+                <span class="ticket-date">2026-03-20</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Summer MD timeline for FY26 has been confirmed.
+As part of our ann...">Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Summer MD timeline for FY26 has been confirmed.
+As part of our ann...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1116" class="ticket-key" target="_blank">CNTIN-1116</a>
+                <span class="ticket-label">RITM1834163 -  IT长期使用资产流程优化</span>
+                <span class="ticket-date">2026-03-18</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Rex Mao
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: 为了解决“长期使用资产在申请、借用、状态判断和管理上的系统性缺口”，提升准确性、自动化程度和资产可控性。
+What new p...">Requestor: Rex Mao
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: 为了解决“长期使用资产在申请、借用、状态判断和管理上的系统性缺口”，提升准确性、自动化程度和资产可控性。
+What new p...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1115" class="ticket-key" target="_blank">CNTIN-1115</a>
+                <span class="ticket-label">RITM1831624 - Gift card reporting f...</span>
+                <span class="ticket-date">2026-03-18</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Kristen Qi
+Requestor's Line Manager: Virginia Chen
+Why we need this new case?: 1. Since its launch, Gift Card operations have gradually bec...">Requestor: Kristen Qi
+Requestor's Line Manager: Virginia Chen
+Why we need this new case?: 1. Since its launch, Gift Card operations have gradually bec...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1114" class="ticket-key" target="_blank">CNTIN-1114</a>
+                <span class="ticket-label">RITM1831567 - Expand data scope for...</span>
+                <span class="ticket-date">2026-03-18</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Lisa Liu
+Requestor's Line Manager: Joey Li
+Why we need this new case?: To get more accurate update on D-1 order volume received by DC
+What ...">Requestor: Lisa Liu
+Requestor's Line Manager: Joey Li
+Why we need this new case?: To get more accurate update on D-1 order volume received by DC
+What ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1113" class="ticket-key" target="_blank">CNTIN-1113</a>
+                <span class="ticket-label">RITM1829859 -  WMP backend new requ...</span>
+                <span class="ticket-date">2026-03-18</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: WMP backend new request - Batch 2
+What new process/user exper...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: WMP backend new request - Batch 2
+What new process/user exper...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1096" class="ticket-key" target="_blank">CNTIN-1096</a>
+                <span class="ticket-label">RITM1829787 - Sibling for UCS and W...</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To convert sibling SPU
+What new process/user experience will ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To convert sibling SPU
+What new process/user experience will ...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-776" class="link-item" target="_blank">🔗 CNTIN-776</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1097" class="link-item" target="_blank">🔗 CNTIN-1097</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1095" class="ticket-key" target="_blank">CNTIN-1095</a>
+                <span class="ticket-label">RITM1827642 - Own Channel BI dashbo...</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requested for: Danni Yang
+Requested for Manager: Jasmine Zhou
+Function: Digital
+Business Sponsor: Angie Yeh
+Business Owner : Jasmine Zhou
+Stakeholders...">Requested for: Danni Yang
+Requested for Manager: Jasmine Zhou
+Function: Digital
+Business Sponsor: Angie Yeh
+Business Owner : Jasmine Zhou
+Stakeholders...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1094" class="ticket-key" target="_blank">CNTIN-1094</a>
+                <span class="ticket-label">RITM1829692 - Baobai Project</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Harper Yang
+Requestor's Line Manager: Becca Zhao
+Why we need this new case?: gaobai project - 2026 runners data collection
+What new process...">Requestor: Harper Yang
+Requestor's Line Manager: Becca Zhao
+Why we need this new case?: gaobai project - 2026 runners data collection
+What new process...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1093" class="ticket-key" target="_blank">CNTIN-1093</a>
+                <span class="ticket-label">RITM1824914 - WMP role integration ...</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: WMP to build role integration with IAM for standardizing app...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: WMP to build role integration with IAM for standardizing app...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1092" class="ticket-key" target="_blank">CNTIN-1092</a>
+                <span class="ticket-label">RITM1826337 - To add the purchase-l...</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To add the purchase-limit for lululemon WMP+RMP+.CN
+What new ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To add the purchase-limit for lululemon WMP+RMP+.CN
+What new ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1085" class="ticket-key" target="_blank">CNTIN-1085</a>
+                <span class="ticket-label">RITM1823692 - Yoga mat personalizat...</span>
+                <span class="ticket-date">2026-03-10</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">9090</div>
+            <div class="col-versions">Franck Feng</div>
+            <div class="col-description" title="Existed capability enhancement: Follow run campaign , upgrade the personalization materials.">Existed capability enhancement: Follow run campaign , upgrade the personalization materials.</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1084" class="ticket-key" target="_blank">CNTIN-1084</a>
+                <span class="ticket-label">RITM1823556 - Automated System Moni...</span>
+                <span class="ticket-date">2026-03-10</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">5467626</div>
+            <div class="col-versions">Ian Wang</div>
+            <div class="col-description" title="Configuration as Code (CaC).Adoption of GitOps Methodology.Self‑Service Experiences for End Users.Unified Standards Across the Organization.">Configuration as Code (CaC).Adoption of GitOps Methodology.Self‑Service Experiences for End Users.Unified Standards Across the Organization.</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-719" class="link-item" target="_blank">🔗 CNTIN-719</a><a href="https://lululemon.atlassian.net/browse/CNTIN-800" class="link-item" target="_blank">🔗 CNTIN-800</a><a href="https://lululemon.atlassian.net/browse/CNTIN-801" class="link-item" target="_blank">🔗 CNTIN-801</a><a href="https://lululemon.atlassian.net/browse/CNTIN-802" class="link-item" target="_blank">🔗 CNTIN-802</a><a href="https://lululemon.atlassian.net/browse/CNTIN-803" class="link-item" target="_blank">🔗 CNTIN-803</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1083" class="ticket-key" target="_blank">CNTIN-1083</a>
+                <span class="ticket-label">RITM1819300 - FP&A Sales x city Das...</span>
+                <span class="ticket-date">2026-03-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Chris Xu
+Requestor's Line Manager: Cecilia Chen
+Why we need this new case?: FP&A Sales x city Dashboard revamp
+What new process/user experi...">Requestor: Chris Xu
+Requestor's Line Manager: Cecilia Chen
+Why we need this new case?: FP&A Sales x city Dashboard revamp
+What new process/user experi...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-6997" class="link-item" target="_blank">🔗 CNTD-6997</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1080" class="ticket-key" target="_blank">CNTIN-1080</a>
+                <span class="ticket-label">RITM1819614 - Product Transition Pr...</span>
+                <span class="ticket-date">2026-03-08</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Leah Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Ask/Objective: Address status transition problem which leads to ...">Requestor: Leah Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Ask/Objective: Address status transition problem which leads to ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1079" class="ticket-key" target="_blank">CNTIN-1079</a>
+                <span class="ticket-label">RITM1819516 - CRM data encryption s...</span>
+                <span class="ticket-date">2026-03-08</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: CRM as the repository of all our guest PI data requires stre...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: CRM as the repository of all our guest PI data requires stre...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNCRM-1338" class="link-item" target="_blank">🔗 CNCRM-1338</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1078" class="ticket-key" target="_blank">CNTIN-1078</a>
+                <span class="ticket-label">RITM1819547 - Outlets Stores Foreca...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: for outlet store drive sales
+What new process/user experience wi...">Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: for outlet store drive sales
+What new process/user experience wi...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-952" class="link-item" target="_blank">🔗 CSCOP-952</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1077" class="ticket-key" target="_blank">CNTIN-1077</a>
+                <span class="ticket-label">RITM1819522 - Employee contact sign...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: The AI-IS employee contract and documentation signing proces...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: The AI-IS employee contract and documentation signing proces...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-949" class="link-item" target="_blank">🔗 CSCOP-949</a><a href="https://lululemon.atlassian.net/browse/CDM-3376" class="link-item" target="_blank">🔗 CDM-3376</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1100" class="link-item" target="_blank">🔗 CNTIN-1100</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1076" class="ticket-key" target="_blank">CNTIN-1076</a>
+                <span class="ticket-label">RITM1819271 - nso airport stores pr...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jodie Zhang
+Requestor's Line Manager: Rex Mao
+Why we need this new case?: need Data team's support to provide price date for NSO Airport st...">Requestor: Jodie Zhang
+Requestor's Line Manager: Rex Mao
+Why we need this new case?: need Data team's support to provide price date for NSO Airport st...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1074" class="ticket-key" target="_blank">CNTIN-1074</a>
+                <span class="ticket-label">RITM1818616 - CN Store Clustering A...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">Pravav Limaye</div>
+            <div class="col-description" title="Merged intake.">Merged intake.</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-950" class="link-item" target="_blank">🔗 CSCOP-950</a><a href="https://lululemon.atlassian.net/browse/CNTD-6558" class="link-item" target="_blank">🔗 CNTD-6558</a><a href="https://lululemon.atlassian.net/browse/CNTIN-560" class="link-item" target="_blank">🔗 CNTIN-560</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1073" class="ticket-key" target="_blank">CNTIN-1073</a>
+                <span class="ticket-label">RITM1818297 -  PT Survey set up in ...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-components">Configuration</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">5000</div>
+            <div class="col-versions">Becca Zhao</div>
+            <div class="col-description" title="PT Survey set up in stores">PT Survey set up in stores</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1072" class="ticket-key" target="_blank">CNTIN-1072</a>
+                <span class="ticket-label">RITM1817832 - Coupon overview syste...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Optimize coupon/promotion module of WMP to do coupon up-sell ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Optimize coupon/promotion module of WMP to do coupon up-sell ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1071" class="ticket-key" target="_blank">CNTIN-1071</a>
+                <span class="ticket-label">RITM1817995 - account taken-over ca...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To avoid the account taken-over case in WMP
+What new process/...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To avoid the account taken-over case in WMP
+What new process/...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1070" class="ticket-key" target="_blank">CNTIN-1070</a>
+                <span class="ticket-label">RITM1817821 -  AP Replacement for S...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: Meraki MR42 Access Point (AP) Replacement：
+A number of existing C...">Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: Meraki MR42 Access Point (AP) Replacement：
+A number of existing C...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-720" class="link-item" target="_blank">🔗 CNTIN-720</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1069" class="ticket-key" target="_blank">CNTIN-1069</a>
+                <span class="ticket-label">RITM1816409 - Single Store Network</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: China Single Store Network requires enhancement to support ongoin...">Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: China Single Store Network requires enhancement to support ongoin...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-720" class="link-item" target="_blank">🔗 CNTIN-720</a><a href="https://lululemon.atlassian.net/browse/CNTEST-8844" class="link-item" target="_blank">🔗 CNTEST-8844</a><a href="https://lululemon.atlassian.net/browse/CNTEST-8845" class="link-item" target="_blank">🔗 CNTEST-8845</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1068" class="ticket-key" target="_blank">CNTIN-1068</a>
+                <span class="ticket-label">RITM1816475 - IOS-XE Migration for ...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: IOS‑XE Migration for ISR:
+Cisco has announced the End of Support ...">Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: IOS‑XE Migration for ISR:
+Cisco has announced the End of Support ...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-720" class="link-item" target="_blank">🔗 CNTIN-720</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1067" class="ticket-key" target="_blank">CNTIN-1067</a>
+                <span class="ticket-label">RITM1816973 - Power BI premium tran...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Allan Oue
+Requestor's Line Manager: Randy Wong
+Why we need this new case?: Power BI premium has come to end of life and has to migrate to M...">Requestor: Allan Oue
+Requestor's Line Manager: Randy Wong
+Why we need this new case?: Power BI premium has come to end of life and has to migrate to M...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-6886" class="link-item" target="_blank">🔗 CNTD-6886</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1066" class="ticket-key" target="_blank">CNTIN-1066</a>
+                <span class="ticket-label">RITM1816820 - AMB Hub Activity Mana...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">254080</div>
+            <div class="col-versions">Peter Wolkowicz</div>
+            <div class="col-description" title="Eenhance the activity management functionality on Ambassador Hub">Eenhance the activity management functionality on Ambassador Hub</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1036" class="link-item" target="_blank">🔗 CNTIN-1036</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1064" class="ticket-key" target="_blank">CNTIN-1064</a>
+                <span class="ticket-label">RITM1816371 - WMP PLP</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">2000</div>
+            <div class="col-versions">Jasmine Zhou</div>
+            <div class="col-description" title="Why we need this new case?: WMP PLP top search banner user journey optimize, click search icon, go to search page; click search recommended words, go ...">Why we need this new case?: WMP PLP top search banner user journey optimize, click search icon, go to search page; click search recommended words, go ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1063" class="ticket-key" target="_blank">CNTIN-1063</a>
+                <span class="ticket-label">RITM1816415 - RMP product split nee...</span>
+                <span class="ticket-date">2026-03-03</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">15000</div>
+            <div class="col-versions">Jasmine Zhou</div>
+            <div class="col-description" title="RMP existed capability enhancement: By cc level could have different tags within on style.">RMP existed capability enhancement: By cc level could have different tags within on style.</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1129" class="link-item" target="_blank">🔗 CNTIN-1129</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1056" class="ticket-key" target="_blank">CNTIN-1056</a>
+                <span class="ticket-label">RITM1773954 - one single source of ...</span>
+                <span class="ticket-date">2026-03-02</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Lin ZHANG
+Requestor's Line Manager: Sophie Hong
+Why we need this new case?: one part of the project&quot; one single source of truth&quot; , for busi...">Requestor: Lin ZHANG
+Requestor's Line Manager: Sophie Hong
+Why we need this new case?: one part of the project&quot; one single source of truth&quot; , for busi...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-943" class="link-item" target="_blank">🔗 CSCOP-943</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1051" class="ticket-key" target="_blank">CNTIN-1051</a>
+                <span class="ticket-label">RITM1813528 -  NPS in WMP and NPS b...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: NPS service by agency will end, so we need to do localized so...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: NPS service by agency will end, so we need to do localized so...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1050" class="ticket-key" target="_blank">CNTIN-1050</a>
+                <span class="ticket-label">RITM1813334 - GWP Cache Inventory C...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">62580</div>
+            <div class="col-versions">Jasmine Zhou</div>
+            <div class="col-description" title="Existed capability enhancement: To increase the operation efficiency and meet the business timeline when will be used in summer markdown, sample versi...">Existed capability enhancement: To increase the operation efficiency and meet the business timeline when will be used in summer markdown, sample versi...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1122" class="link-item" target="_blank">🔗 CNTIN-1122</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1049" class="ticket-key" target="_blank">CNTIN-1049</a>
+                <span class="ticket-label">RITM1810646 - DC to store portal En...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: based on disposition issues will not be solved ASAP.
+What new pr...">Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: based on disposition issues will not be solved ASAP.
+What new pr...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-951" class="link-item" target="_blank">🔗 CSCOP-951</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1047" class="ticket-key" target="_blank">CNTIN-1047</a>
+                <span class="ticket-label">RITM1810913 -  Impact of Keystone P...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Shirley Hsu
+Requestor's Line Manager: Holly Geant
+Why we need this new case?: Keystone Program Roll Out 2 will impact China MDM and downstr...">Requestor: Shirley Hsu
+Requestor's Line Manager: Holly Geant
+Why we need this new case?: Keystone Program Roll Out 2 will impact China MDM and downstr...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-944" class="link-item" target="_blank">🔗 CSCOP-944</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1045" class="ticket-key" target="_blank">CNTIN-1045</a>
+                <span class="ticket-label">RITM1809045 - CN application migrat...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jay Wu
+Requestor's Line Manager: David Du
+Why we need this new case?: CN application migration for global Keystone Product hierarchy change...">Requestor: Jay Wu
+Requestor's Line Manager: David Du
+Why we need this new case?: CN application migration for global Keystone Product hierarchy change...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1044" class="ticket-key" target="_blank">CNTIN-1044</a>
+                <span class="ticket-label">RITM1805923 - GDAP EDE Data Changin...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Anubha Bais
+Requestor Email: abais@lululemon.com
+Requestor's Line Manager: Vani Birlangi
+Requested for: Anubha Bais
+Requested for Email: ab...">Requestor: Anubha Bais
+Requestor Email: abais@lululemon.com
+Requestor's Line Manager: Vani Birlangi
+Requested for: Anubha Bais
+Requested for Email: ab...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/DAIMAIN-10252" class="link-item" target="_blank">🔗 DAIMAIN-10252</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1043" class="ticket-key" target="_blank">CNTIN-1043</a>
+                <span class="ticket-label">RITM1807736 - Product Information t...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Transfer product information to Tencent platform to optimize ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Transfer product information to Tencent platform to optimize ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1042" class="ticket-key" target="_blank">CNTIN-1042</a>
+                <span class="ticket-label">RITM1807646 - Cloud Automation Upgr...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">2834498</div>
+            <div class="col-versions">Ian Wang</div>
+            <div class="col-description" title="Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: Cloud Automation Upgrade: Modernize and unify our cloud delivery ...">Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: Cloud Automation Upgrade: Modernize and unify our cloud delivery ...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-804" class="link-item" target="_blank">🔗 CNTIN-804</a><a href="https://lululemon.atlassian.net/browse/CNTIN-808" class="link-item" target="_blank">🔗 CNTIN-808</a><a href="https://lululemon.atlassian.net/browse/CNTIN-809" class="link-item" target="_blank">🔗 CNTIN-809</a><a href="https://lululemon.atlassian.net/browse/CNTIN-810" class="link-item" target="_blank">🔗 CNTIN-810</a><a href="https://lululemon.atlassian.net/browse/CNTIN-811" class="link-item" target="_blank">🔗 CNTIN-811</a><a href="https://lululemon.atlassian.net/browse/CNTIN-812" class="link-item" target="_blank">🔗 CNTIN-812</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1020" class="ticket-key" target="_blank">CNTIN-1020</a>
+                <span class="ticket-label">RITM1806483 - Azure cost saving</span>
+                <span class="ticket-date">2026-02-24</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Leo Wang
+Requestor's Line Manager: Kano Zhang
+Why we need this new case?: Cost efficiency is mandatory
+What new process/user experience wil...">Requestor: Leo Wang
+Requestor's Line Manager: Kano Zhang
+Why we need this new case?: Cost efficiency is mandatory
+What new process/user experience wil...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-6799" class="link-item" target="_blank">🔗 CNTD-6799</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1014" class="ticket-key" target="_blank">CNTIN-1014</a>
+                <span class="ticket-label">RITM1792036 - SFS FY26 Roll out</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS FY26 roll out
+What new process/user experience will be needed...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS FY26 roll out
+What new process/user experience will be needed...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/OF-2567" class="link-item" target="_blank">🔗 OF-2567</a><a href="https://lululemon.atlassian.net/browse/CSCOP-954" class="link-item" target="_blank">🔗 CSCOP-954</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1013" class="ticket-key" target="_blank">CNTIN-1013</a>
+                <span class="ticket-label">RITM1792047 - SFS Operation Handove...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Operation Handover from Hand to EHC: 
+We need this case to tra...">Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Operation Handover from Hand to EHC: 
+We need this case to tra...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/OF-2568" class="link-item" target="_blank">🔗 OF-2568</a><a href="https://lululemon.atlassian.net/browse/CSCOP-945" class="link-item" target="_blank">🔗 CSCOP-945</a><a href="https://lululemon.atlassian.net/browse/CNSCO-2728" class="link-item" target="_blank">🔗 CNSCO-2728</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1012" class="ticket-key" target="_blank">CNTIN-1012</a>
+                <span class="ticket-label">RITM1792041 - one‑page dashboard fo...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: AD/RM need a one‑page dashboard that clearly shows each store’s g...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: AD/RM need a one‑page dashboard that clearly shows each store’s g...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1011" class="ticket-key" target="_blank">CNTIN-1011</a>
+                <span class="ticket-label">RITM1792038 - omni booster for SFS ...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: we need to study omni booster for SFS business impact in store ac...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: we need to study omni booster for SFS business impact in store ac...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-946" class="link-item" target="_blank">🔗 CSCOP-946</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1010" class="ticket-key" target="_blank">CNTIN-1010</a>
+                <span class="ticket-label">RITM1791997 - Helios‑embedded XXL‑J...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: The current Helios‑embedded XXL‑JOB is running on an outdate...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: The current Helios‑embedded XXL‑JOB is running on an outdate...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-953" class="link-item" target="_blank">🔗 CSCOP-953</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1009" class="ticket-key" target="_blank">CNTIN-1009</a>
+                <span class="ticket-label">RITM1795481 - GWP function to incre...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Need GWP function to increase conversion rate and sales volum...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Need GWP function to increase conversion rate and sales volum...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1007" class="ticket-key" target="_blank">CNTIN-1007</a>
+                <span class="ticket-label">RITM1807433 - Snowflake Platform: S...</span>
+                <span class="ticket-date">2026-02-16</span>
+            </div>
+            <div class="col-components">Configuration</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="**ServiceNow ticket: ****TASK2242305**Per Sec-team audits, two updates require implementation. Once implemented, kindly update each related confluence...">**ServiceNow ticket: ****TASK2242305**Per Sec-team audits, two updates require implementation. Once implemented, kindly update each related confluence...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-6881" class="link-item" target="_blank">🔗 CNTD-6881</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-998" class="ticket-key" target="_blank">CNTIN-998</a>
+                <span class="ticket-label">RITM1795307 - Retail Hardware Repla...</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Mike Dong
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: We need to prepare the budget for purchasing the MR44 to replace o...">Requestor: Mike Dong
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: We need to prepare the budget for purchasing the MR44 to replace o...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-997" class="ticket-key" target="_blank">CNTIN-997</a>
+                <span class="ticket-label">RITM1794624 -  Weekly Store Report</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Vida Tian
+Requestor's Line Manager: Michael Pang
+Why we need this new case?: Currently, the requested data—store sales, inventory, receivin...">Requestor: Vida Tian
+Requestor's Line Manager: Michael Pang
+Why we need this new case?: Currently, the requested data—store sales, inventory, receivin...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-6939" class="link-item" target="_blank">🔗 CNTD-6939</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-996" class="ticket-key" target="_blank">CNTIN-996</a>
+                <span class="ticket-label">RITM1790736 - Unified Frontend Midd...</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Naico Wang
+Requestor's Line Manager: Ian Wang
+Why we need this new case?Fontend Middleware need to be unified and follow the same rule as t...">Requestor: Naico Wang
+Requestor's Line Manager: Ian Wang
+Why we need this new case?Fontend Middleware need to be unified and follow the same rule as t...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-995" class="ticket-key" target="_blank">CNTIN-995</a>
+                <span class="ticket-label">RITM1790705 - Standard as Code</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">3305755</div>
+            <div class="col-versions">Ian Wang</div>
+            <div class="col-description" title="Requestor: Gray Yang
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: 
+Enforce &quot;Standard as Code&quot; to ensure both new build and existing ...">Requestor: Gray Yang
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: 
+Enforce &quot;Standard as Code&quot; to ensure both new build and existing ...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-766" class="link-item" target="_blank">🔗 CNTIN-766</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-994" class="ticket-key" target="_blank">CNTIN-994</a>
+                <span class="ticket-label">RITM1792841 - Store Portal Enhancem...</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Juliette Zhu
+Requestor's Line Manager: Lilly Chau
+Why we need this new case?: Currently, store data from Product, Brand, and Community team...">Requestor: Juliette Zhu
+Requestor's Line Manager: Lilly Chau
+Why we need this new case?: Currently, store data from Product, Brand, and Community team...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-941" class="link-item" target="_blank">🔗 CSCOP-941</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-991" class="ticket-key" target="_blank">CNTIN-991</a>
+                <span class="ticket-label">RITM1791955 - SFS Inventory Exposur...</span>
+                <span class="ticket-date">2026-02-11</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Inventory Exposure Optimization:
+To optimize store inventory r...">Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Inventory Exposure Optimization:
+To optimize store inventory r...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-947" class="link-item" target="_blank">🔗 CSCOP-947</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-990" class="ticket-key" target="_blank">CNTIN-990</a>
+                <span class="ticket-label">RITM1791950 - SFS Capacity Usage Re...</span>
+                <span class="ticket-date">2026-02-11</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Capacity Usage Recommendation: 
+After adjusting store inventor...">Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Capacity Usage Recommendation: 
+After adjusting store inventor...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-948" class="link-item" target="_blank">🔗 CSCOP-948</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-978" class="ticket-key" target="_blank">CNTIN-978</a>
+                <span class="ticket-label">RITM1790592 - Add Paid Class Functi...</span>
+                <span class="ticket-date">2026-02-09</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">470000</div>
+            <div class="col-versions">Ada Tang</div>
+            <div class="col-description" title="Need to add paid class function to inprove attendace rate and enhance cuxtomer experience">Need to add paid class function to inprove attendace rate and enhance cuxtomer experience</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1032" class="link-item" target="_blank">🔗 CNTIN-1032</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-977" class="ticket-key" target="_blank">CNTIN-977</a>
+                <span class="ticket-label">RITM1767652 - Finance Document Outp...</span>
+                <span class="ticket-date">2026-02-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Yvette Liu
+Requestor's Line Manager: Candy Tian
+Why we need this new case?: The current process is good and efficient in helping us combine...">Requestor: Yvette Liu
+Requestor's Line Manager: Candy Tian
+Why we need this new case?: The current process is good and efficient in helping us combine...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-937" class="link-item" target="_blank">🔗 CSCOP-937</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-976" class="ticket-key" target="_blank">CNTIN-976</a>
+                <span class="ticket-label">RITM1790681 - Financial intercompan...</span>
+                <span class="ticket-date">2026-02-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Issue DescriptionFinancial intercompany Reconciliation Requirements:...">Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Issue DescriptionFinancial intercompany Reconciliation Requirements:...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-936" class="link-item" target="_blank">🔗 CSCOP-936</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-975" class="ticket-key" target="_blank">CNTIN-975</a>
+                <span class="ticket-label">RITM1790689 - 24/7 automated suppor...</span>
+                <span class="ticket-date">2026-02-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Currently finance AP team and P&C team handle user’s reimbursement r...">Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Currently finance AP team and P&C team handle user’s reimbursement r...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-934" class="link-item" target="_blank">🔗 CSCOP-934</a><a href="https://lululemon.atlassian.net/browse/CNTIN-859" class="link-item" target="_blank">🔗 CNTIN-859</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-973" class="ticket-key" target="_blank">CNTIN-973</a>
+                <span class="ticket-label">RITM1787727 - NA Kafka client + sch...</span>
+                <span class="ticket-date">2026-02-08</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jay Wu
+Requestor's Line Manager: David Du
+Why we need this new case?: kafka client, schema/serializer client version upgrade for CN applica...">Requestor: Jay Wu
+Requestor's Line Manager: David Du
+Why we need this new case?: kafka client, schema/serializer client version upgrade for CN applica...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-972" class="ticket-key" target="_blank">CNTIN-972</a>
+                <span class="ticket-label">RITM1787061 - Hemming Enhancement</span>
+                <span class="ticket-date">2026-02-08</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Leah Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Hemming emhancement
+What new process/user experience will be nee...">Requestor: Leah Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Hemming emhancement
+What new process/user experience will be nee...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-970" class="ticket-key" target="_blank">CNTIN-970</a>
+                <span class="ticket-label">RITM1785739 - China Service Center</span>
+                <span class="ticket-date">2026-02-04</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="**Requestor**Minglei Sun**Requestor's Line Manager**Kenneth Rao**Why we need this new case?** Wuhan Service Center in the 3rd DC is a strategic module...">**Requestor**Minglei Sun**Requestor's Line Manager**Kenneth Rao**Why we need this new case?** Wuhan Service Center in the 3rd DC is a strategic module...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-935" class="link-item" target="_blank">🔗 CSCOP-935</a><a href="https://lululemon.atlassian.net/browse/CNDIN-2038" class="link-item" target="_blank">🔗 CNDIN-2038</a><a href="https://lululemon.atlassian.net/browse/CNRTPRJ-1304" class="link-item" target="_blank">🔗 CNRTPRJ-1304</a><a href="https://lululemon.atlassian.net/browse/OF-2542" class="link-item" target="_blank">🔗 OF-2542</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-968" class="ticket-key" target="_blank">CNTIN-968</a>
+                <span class="ticket-label">RITM1782342 -  China FY26 Peak Read...</span>
+                <span class="ticket-date">2026-02-01</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">738000</div>
+            <div class="col-versions">Jobs Zheng</div>
+            <div class="col-description" title="Peak Readiness is made of 4 pillars in 2025: Risk Management, Vendor Management, Capacity Planning, and Incident Management. Each pillar will have its...">Peak Readiness is made of 4 pillars in 2025: Risk Management, Vendor Management, Capacity Planning, and Incident Management. Each pillar will have its...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-696" class="link-item" target="_blank">🔗 CNTIN-696</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-967" class="ticket-key" target="_blank">CNTIN-967</a>
+                <span class="ticket-label">RITM1779184 -  Kafka across applica...</span>
+                <span class="ticket-date">2026-02-01</span>
+            </div>
+            <div class="col-components">Configuration</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Fiona Leung
+Requestor's Line Manager: Sundar Muthuvelu
+Requested for: Roberto Cheng
+Why we need this new case?: Kafka topics across applica...">Requestor: Fiona Leung
+Requestor's Line Manager: Sundar Muthuvelu
+Requested for: Roberto Cheng
+Why we need this new case?: Kafka topics across applica...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-966" class="ticket-key" target="_blank">CNTIN-966</a>
+                <span class="ticket-label">RITM1619821 - UCS Management Portal</span>
+                <span class="ticket-date">2026-02-01</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Cancelled</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Alex Dong
+Requestor's Line Manager: James Chen
+Why we need this new case?: WMP, RMP, 官网, EP等渠道端 都有产品数据需求、搜索需求、推荐需求，UCS项目组希望构建通用组件和统一的管理后台Po...">Requestor: Alex Dong
+Requestor's Line Manager: James Chen
+Why we need this new case?: WMP, RMP, 官网, EP等渠道端 都有产品数据需求、搜索需求、推荐需求，UCS项目组希望构建通用组件和统一的管理后台Po...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-965" class="ticket-key" target="_blank">CNTIN-965</a>
+                <span class="ticket-label">RITM1776229 - Product personalizati...</span>
+                <span class="ticket-date">2026-02-01</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jacky Xie
+Requestor's Line Manager: Patrick Bren
+Why we need this new case?: Guests in China are showing growing demand for product persona...">Requestor: Jacky Xie
+Requestor's Line Manager: Patrick Bren
+Why we need this new case?: Guests in China are showing growing demand for product persona...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-927" class="link-item" target="_blank">🔗 CSCOP-927</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-958" class="ticket-key" target="_blank">CNTIN-958</a>
+                <span class="ticket-label">RITM1778324 - Inventory Efficiency ...</span>
+                <span class="ticket-date">2026-01-30</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: With Charley's team fully support for our team to build Invent...">Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: With Charley's team fully support for our team to build Invent...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-926" class="link-item" target="_blank">🔗 CSCOP-926</a><a href="https://lululemon.atlassian.net/browse/CSCOP-783" class="link-item" target="_blank">🔗 CSCOP-783</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-957" class="ticket-key" target="_blank">CNTIN-957</a>
+                <span class="ticket-label">RITM1778426 - Channel rebalance too...</span>
+                <span class="ticket-date">2026-01-30</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: Channel rebalance tool will support team find sales opportunit...">Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: Channel rebalance tool will support team find sales opportunit...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-925" class="link-item" target="_blank">🔗 CSCOP-925</a><a href="https://lululemon.atlassian.net/browse/CSCOP-940" class="link-item" target="_blank">🔗 CSCOP-940</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-956" class="ticket-key" target="_blank">CNTIN-956</a>
+                <span class="ticket-label">RITM1776321 - OTB Report Automation</span>
+                <span class="ticket-date">2026-01-30</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">342657</div>
+            <div class="col-versions">Sophie Hong</div>
+            <div class="col-description" title="Automate the Open to Buy Rolling Visualization generation through SharePoint">Automate the Open to Buy Rolling Visualization generation through SharePoint</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-924" class="link-item" target="_blank">🔗 CSCOP-924</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1098" class="link-item" target="_blank">🔗 CNTIN-1098</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-952" class="ticket-key" target="_blank">CNTIN-952</a>
+                <span class="ticket-label">RITM1775956 - API Governance</span>
+                <span class="ticket-date">2026-01-28</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">206420</div>
+            <div class="col-versions">Jobs Zheng</div>
+            <div class="col-description" title="All of the existing application's API need to be reviewed and classified by API tiers, all new APIs should follow this standard. API Gateway will be s...">All of the existing application's API need to be reviewed and classified by API tiers, all new APIs should follow this standard. API Gateway will be s...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-936" class="link-item" target="_blank">🔗 CNTIN-936</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-951" class="ticket-key" target="_blank">CNTIN-951</a>
+                <span class="ticket-label">RITM1775973 - IP Protection</span>
+                <span class="ticket-date">2026-01-28</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">2158273</div>
+            <div class="col-versions">Ian Wang</div>
+            <div class="col-description" title="Requestor: Ian Wang
+Requestor's Line Manager: Jobs Zheng
+Why we need this new case?: To protect our software intellectual property, ensure lululemon's...">Requestor: Ian Wang
+Requestor's Line Manager: Jobs Zheng
+Why we need this new case?: To protect our software intellectual property, ensure lululemon's...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-937" class="link-item" target="_blank">🔗 CNTIN-937</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-950" class="ticket-key" target="_blank">CNTIN-950</a>
+                <span class="ticket-label">RITM1773921 - product info to publi...</span>
+                <span class="ticket-date">2026-01-28</span>
+            </div>
+            <div class="col-components">Task</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">Ann Zeng</div>
+            <div class="col-description" title="Requestor: Rachel Yuan
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: To support team get more clear and aligned product info and disp...">Requestor: Rachel Yuan
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: To support team get more clear and aligned product info and disp...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-949" class="ticket-key" target="_blank">CNTIN-949</a>
+                <span class="ticket-label">RITM1771305 - centralized product v...</span>
+                <span class="ticket-date">2026-01-28</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Sasa Yang
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Need for a centralized product visualization & information platfor...">Requestor: Sasa Yang
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Need for a centralized product visualization & information platfor...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-948" class="ticket-key" target="_blank">CNTIN-948</a>
+                <span class="ticket-label">RITM1771363 - Store to store rebala...</span>
+                <span class="ticket-date">2026-01-26</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Vida Tian
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Store to Store Rebalance_Inner Region
+To improve the efficiency...">Requestor: Vida Tian
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Store to Store Rebalance_Inner Region
+To improve the efficiency...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-878" class="link-item" target="_blank">🔗 CSCOP-878</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-947" class="ticket-key" target="_blank">CNTIN-947</a>
+                <span class="ticket-label">RITM1771311 - SP26 Running Campaign</span>
+                <span class="ticket-date">2026-01-26</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">48000</div>
+            <div class="col-versions">Ada Tang</div>
+            <div class="col-description" title="Requestor: Simmy Wang
+Requestor's Line Manager: Ada Tang
+Why we need this new case?: Deliver SP26 running Campaign user journey on MPS
+What new proces...">Requestor: Simmy Wang
+Requestor's Line Manager: Ada Tang
+Why we need this new case?: Deliver SP26 running Campaign user journey on MPS
+What new proces...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1030" class="link-item" target="_blank">🔗 CNTIN-1030</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-946" class="ticket-key" target="_blank">CNTIN-946</a>
+                <span class="ticket-label">RITM1769127 - Monthly Store Sales R...</span>
+                <span class="ticket-date">2026-01-25</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Hi Team , we request a Automation 2.0 for Finance Sales report repar...">Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Hi Team , we request a Automation 2.0 for Finance Sales report repar...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-917" class="link-item" target="_blank">🔗 CSCOP-917</a><a href="https://lululemon.atlassian.net/browse/CNTIN-862" class="link-item" target="_blank">🔗 CNTIN-862</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-945" class="ticket-key" target="_blank">CNTIN-945</a>
+                <span class="ticket-label">RITM1767940 - automatic FOH/BOH spl...</span>
+                <span class="ticket-date">2026-01-25</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">365109</div>
+            <div class="col-versions">Cecillia Chen</div>
+            <div class="col-description" title="Fulfillment requires enhancement on Agile Fulfillment - FOH BOH engine to cover 2 functionalities: 1. To fulfill FOH BOH split for MD event 2. To fulf...">Fulfillment requires enhancement on Agile Fulfillment - FOH BOH engine to cover 2 functionalities: 1. To fulfill FOH BOH split for MD event 2. To fulf...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-918" class="link-item" target="_blank">🔗 CSCOP-918</a><a href="https://lululemon.atlassian.net/browse/CNTIN-915" class="link-item" target="_blank">🔗 CNTIN-915</a><a href="https://lululemon.atlassian.net/browse/CNTIN-832" class="link-item" target="_blank">🔗 CNTIN-832</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-944" class="ticket-key" target="_blank">CNTIN-944</a>
+                <span class="ticket-label">RITM1766185 -  China Avature Enhanc...</span>
+                <span class="ticket-date">2026-01-21</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Andrea Wang
+Requestor's Line Manager: Emily Qiu
+Why we need this new case?: To roll out Signature TA project to China market and improve Av...">Requestor: Andrea Wang
+Requestor's Line Manager: Emily Qiu
+Why we need this new case?: To roll out Signature TA project to China market and improve Av...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-916" class="link-item" target="_blank">🔗 CSCOP-916</a><a href="https://lululemon.atlassian.net/browse/CNTIN-875" class="link-item" target="_blank">🔗 CNTIN-875</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-943" class="ticket-key" target="_blank">CNTIN-943</a>
+                <span class="ticket-label">RITM1764158 - Data Accuracy </span>
+                <span class="ticket-date">2026-01-20</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Emily Wang
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Adding important data attributes to the data set for analytics...">Requestor: Emily Wang
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Adding important data attributes to the data set for analytics...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-6764" class="link-item" target="_blank">🔗 CNTD-6764</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-942" class="ticket-key" target="_blank">CNTIN-942</a>
+                <span class="ticket-label">RITM1764161 - Big Events Sales Dash...</span>
+                <span class="ticket-date">2026-01-20</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">Eric Li</div>
+            <div class="col-description" title="Merged intake.">Merged intake.</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-6674" class="link-item" target="_blank">🔗 CNTD-6674</a><a href="https://lululemon.atlassian.net/browse/CNTIN-918" class="link-item" target="_blank">🔗 CNTIN-918</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-941" class="ticket-key" target="_blank">CNTIN-941</a>
+                <span class="ticket-label">RITM1764154 - China daily sales rep...</span>
+                <span class="ticket-date">2026-01-20</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Emily Wang
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Need to change the current data intake process for consistency...">Requestor: Emily Wang
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Need to change the current data intake process for consistency...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-6765" class="link-item" target="_blank">🔗 CNTD-6765</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-940" class="ticket-key" target="_blank">CNTIN-940</a>
+                <span class="ticket-label">RITM1761432 -  Establish robust gov...</span>
+                <span class="ticket-date">2026-01-18</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: In 2025, the Chinese government has relaxed its stance on transfer...">Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: In 2025, the Chinese government has relaxed its stance on transfer...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-939" class="ticket-key" target="_blank">CNTIN-939</a>
+                <span class="ticket-label">RITM1761429 - PI Data Governance fo...</span>
+                <span class="ticket-date">2026-01-18</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: Ensure the China market has access to reliable, secure people data...">Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: Ensure the China market has access to reliable, secure people data...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-922" class="link-item" target="_blank">🔗 CSCOP-922</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-938" class="ticket-key" target="_blank">CNTIN-938</a>
+                <span class="ticket-label">RITM1761420 - PI Data governance fo...</span>
+                <span class="ticket-date">2026-01-18</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: Ensure the China market has access to reliable, secure people data...">Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: Ensure the China market has access to reliable, secure people data...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-915" class="link-item" target="_blank">🔗 CSCOP-915</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-934" class="ticket-key" target="_blank">CNTIN-934</a>
+                <span class="ticket-label">RITM1757443 - Omni Operation Portal...</span>
+                <span class="ticket-date">2026-01-14</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Use system-driven intelligent screening to identify which stores ...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Use system-driven intelligent screening to identify which stores ...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-914" class="link-item" target="_blank">🔗 CSCOP-914</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-933" class="ticket-key" target="_blank">CNTIN-933</a>
+                <span class="ticket-label">RITM1757525 - 慢SQL优化</span>
+                <span class="ticket-date">2026-01-14</span>
+            </div>
+            <div class="col-components">Task</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">Ian Wang</div>
+            <div class="col-description" title="Requestor: XingPeng Liu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: reporting的数据库存在慢sql，导致性能问题；因为性能问题，导致数据库中断，就会导致所有使用该数据库实例的服务受到影响...">Requestor: XingPeng Liu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: reporting的数据库存在慢sql，导致性能问题；因为性能问题，导致数据库中断，就会导致所有使用该数据库实例的服务受到影响...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-913" class="link-item" target="_blank">🔗 CSCOP-913</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-932" class="ticket-key" target="_blank">CNTIN-932</a>
+                <span class="ticket-label">RITM1757417 -  B2B Inventory </span>
+                <span class="ticket-date">2026-01-14</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Virginia Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Currently, B2B inventory allocation is manually handled by the ...">Requestor: Virginia Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Currently, B2B inventory allocation is manually handled by the ...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-912" class="link-item" target="_blank">🔗 CSCOP-912</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-929" class="ticket-key" target="_blank">CNTIN-929</a>
+                <span class="ticket-label">RITM1757407 - Chart Attribute chang...</span>
+                <span class="ticket-date">2026-01-13</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">56180</div>
+            <div class="col-versions">Erans Fan</div>
+            <div class="col-description" title="Change the deck layout and chart attribute for dashboard to PPT automation process, and update SharePoint elements.">Change the deck layout and chart attribute for dashboard to PPT automation process, and update SharePoint elements.</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-938" class="link-item" target="_blank">🔗 CSCOP-938</a><a href="https://lululemon.atlassian.net/browse/CNTIN-853" class="link-item" target="_blank">🔗 CNTIN-853</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-919" class="ticket-key" target="_blank">CNTIN-919</a>
+                <span class="ticket-label">RITM1758259 - China Transaction Rec...</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Elizabeth Parra Gomez
+Requestor's Line Manager: Mohit Goel
+Why we need this new case?: Inventory Systems (ReSA/RMS) should be able to provi...">Requestor: Elizabeth Parra Gomez
+Requestor's Line Manager: Mohit Goel
+Why we need this new case?: Inventory Systems (ReSA/RMS) should be able to provi...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-911" class="link-item" target="_blank">🔗 CSCOP-911</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-918" class="ticket-key" target="_blank">CNTIN-918</a>
+                <span class="ticket-label">RITM1748996 - Update the data for F...</span>
+                <span class="ticket-date">2026-01-11</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">150000</div>
+            <div class="col-versions">Eric Li</div>
+            <div class="col-description" title="Update the data for FY26 each sales initiative dashboard">Update the data for FY26 each sales initiative dashboard</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-942" class="link-item" target="_blank">🔗 CNTIN-942</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-917" class="ticket-key" target="_blank">CNTIN-917</a>
+                <span class="ticket-label">RITM1751714 - Educator training opt...</span>
+                <span class="ticket-date">2026-01-11</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Qi Li
+Requestor Email: qli@lululemon.com
+Requestor's Line Manager: Rachel Mathia
+Requested for: Qi Li
+Requested for Email: qli@lululemon.co...">Requestor: Qi Li
+Requestor Email: qli@lululemon.com
+Requestor's Line Manager: Rachel Mathia
+Requested for: Qi Li
+Requested for Email: qli@lululemon.co...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-909" class="link-item" target="_blank">🔗 CSCOP-909</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-916" class="ticket-key" target="_blank">CNTIN-916</a>
+                <span class="ticket-label">RITM1753062 - Improve efficiency an...</span>
+                <span class="ticket-date">2026-01-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">297946</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Charlotte QIN
+Requestor's Line Manager: Jaco Chen
+Why we need this new case?: To improve efficiency and accuracy for MD pricing process
+Wha...">Requestor: Charlotte QIN
+Requestor's Line Manager: Jaco Chen
+Why we need this new case?: To improve efficiency and accuracy for MD pricing process
+Wha...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-939" class="link-item" target="_blank">🔗 CSCOP-939</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1065" class="link-item" target="_blank">🔗 CNTIN-1065</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-915" class="ticket-key" target="_blank">CNTIN-915</a>
+                <span class="ticket-label">RITM1753101 -  Split FOH/BOH During...</span>
+                <span class="ticket-date">2026-01-09</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">Cecillia Chen</div>
+            <div class="col-description" title="Merged intake.">Merged intake.</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-910" class="link-item" target="_blank">🔗 CSCOP-910</a><a href="https://lululemon.atlassian.net/browse/CSCOP-909" class="link-item" target="_blank">🔗 CSCOP-909</a><a href="https://lululemon.atlassian.net/browse/CNTIN-945" class="link-item" target="_blank">🔗 CNTIN-945</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-914" class="ticket-key" target="_blank">CNTIN-914</a>
+                <span class="ticket-label">RITM1751697 - AP WMP backend data</span>
+                <span class="ticket-date">2026-01-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Louie Sun
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: To renew AP Wechat Miniprogram backend data usage.
+What new proc...">Requestor: Louie Sun
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: To renew AP Wechat Miniprogram backend data usage.
+What new proc...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-908" class="link-item" target="_blank">🔗 CSCOP-908</a><a href="https://lululemon.atlassian.net/browse/CDM-3205" class="link-item" target="_blank">🔗 CDM-3205</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-913" class="ticket-key" target="_blank">CNTIN-913</a>
+                <span class="ticket-label">RITM1750314 - Integrate Yuyi with W...</span>
+                <span class="ticket-date">2026-01-08</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">105524</div>
+            <div class="col-versions">Angie Yeh</div>
+            <div class="col-description" title="Integrating WeCom customer service 1v1 dialogues with Yuyi AI（6 accounts） Customer Service Quality Inspection & Real-Time Risk Monitoring Customer Inq...">Integrating WeCom customer service 1v1 dialogues with Yuyi AI（6 accounts） Customer Service Quality Inspection & Real-Time Risk Monitoring Customer Inq...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1015" class="link-item" target="_blank">🔗 CNTIN-1015</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-912" class="ticket-key" target="_blank">CNTIN-912</a>
+                <span class="ticket-label">RITM1750318 - Own Channel guest ref...</span>
+                <span class="ticket-date">2026-01-08</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Zita Wang
+Requestor's Line Manager: Angie Yeh
+Why we need this new case?: Improve guest refund experience in own channel.
+Reduce push refun...">Requestor: Zita Wang
+Requestor's Line Manager: Angie Yeh
+Why we need this new case?: Improve guest refund experience in own channel.
+Reduce push refun...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-911" class="ticket-key" target="_blank">CNTIN-911</a>
+                <span class="ticket-label">RITM1750316 - GEC after-sales enhan...</span>
+                <span class="ticket-date">2026-01-08</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">274239</div>
+            <div class="col-versions">Zita Wang</div>
+            <div class="col-description" title="3 Own-Channel after-sales orders ：WMP/RMP/.CN 5 Scenarios：请客人提供正确退货物流单号/请客人提供商品图片/通知客人寄出换货 商品/通知客人换货商品已发出/通知客人申请退货">3 Own-Channel after-sales orders ：WMP/RMP/.CN 5 Scenarios：请客人提供正确退货物流单号/请客人提供商品图片/通知客人寄出换货 商品/通知客人换货商品已发出/通知客人申请退货</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-971" class="link-item" target="_blank">🔗 CNTIN-971</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-909" class="ticket-key" target="_blank">CNTIN-909</a>
+                <span class="ticket-label">RITM1747159 - 企微群for SSC</span>
+                <span class="ticket-date">2026-01-04</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">83000</div>
+            <div class="col-versions">San Yan Ng</div>
+            <div class="col-description" title="Requestor: Stephanie Li
+Requestor Email: stephanieli@lululemon.com
+Requestor's Line Manager: San Yan Ng
+姓名: Stephanie Li
+Requested for Email: stephani...">Requestor: Stephanie Li
+Requestor Email: stephanieli@lululemon.com
+Requestor's Line Manager: San Yan Ng
+姓名: Stephanie Li
+Requested for Email: stephani...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-964" class="link-item" target="_blank">🔗 CNTIN-964</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-904" class="ticket-key" target="_blank">CNTIN-904</a>
+                <span class="ticket-label">RITM1741316 - Trade Compliance AI f...</span>
+                <span class="ticket-date">2025-12-28</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">620000</div>
+            <div class="col-versions">Simon Ma</div>
+            <div class="col-description" title="At present, Trade Compliance monitoring relied heavily on brokers manually maintaining and reporting customs-related data, which was timeconsuming an...">At present, Trade Compliance monitoring relied heavily on brokers manually maintaining and reporting customs-related data, which was timeconsuming an...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-907" class="link-item" target="_blank">🔗 CSCOP-907</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1090" class="link-item" target="_blank">🔗 CNTIN-1090</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-903" class="ticket-key" target="_blank">CNTIN-903</a>
+                <span class="ticket-label">RITM1721664 - GB Testing data consu...</span>
+                <span class="ticket-date">2025-12-28</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Brittany Mardon
+Requestor's Line Manager: Kapil Tijare
+Why we need this new case?: Reduce manual work for local labs and China PI team to u...">Requestor: Brittany Mardon
+Requestor's Line Manager: Kapil Tijare
+Why we need this new case?: Reduce manual work for local labs and China PI team to u...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-906" class="link-item" target="_blank">🔗 CSCOP-906</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-902" class="ticket-key" target="_blank">CNTIN-902</a>
+                <span class="ticket-label">RITM1738750 - POC for AI agent/Mode...</span>
+                <span class="ticket-date">2025-12-25</span>
+            </div>
+            <div class="col-components">POC</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">14400</div>
+            <div class="col-versions">Harry Zhuang</div>
+            <div class="col-description" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: To enable a POC leveraging 通义千问 APIs via 阿里云百炼 (The POC uses...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: To enable a POC leveraging 通义千问 APIs via 阿里云百炼 (The POC uses...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-813" class="link-item" target="_blank">🔗 CNTIN-813</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-901" class="ticket-key" target="_blank">CNTIN-901</a>
+                <span class="ticket-label">RITM1737748 - Legal Hub Reporting </span>
+                <span class="ticket-date">2025-12-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Patrick Zhang
+Requestor's Line Manager: Celine Xia
+Why we need this new case?: The legal team proposes establishing a legal hub dashboard t...">Requestor: Patrick Zhang
+Requestor's Line Manager: Celine Xia
+Why we need this new case?: The legal team proposes establishing a legal hub dashboard t...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-905" class="link-item" target="_blank">🔗 CSCOP-905</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-900" class="ticket-key" target="_blank">CNTIN-900</a>
+                <span class="ticket-label">RITM1737730 - EC Data Quality</span>
+                <span class="ticket-date">2025-12-23</span>
+            </div>
+            <div class="col-components">Task</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">270000</div>
+            <div class="col-versions">Liz Li</div>
+            <div class="col-description" title="Why we need this new case?: As EC data has been through some quality issue, request for a quality barometer for in-time reflection on data quality
+Wha...">Why we need this new case?: As EC data has been through some quality issue, request for a quality barometer for in-time reflection on data quality
+Wha...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-5969" class="link-item" target="_blank">🔗 CNTD-5969</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-898" class="ticket-key" target="_blank">CNTIN-898</a>
+                <span class="ticket-label">RITM1731896 - Store Community Event...</span>
+                <span class="ticket-date">2025-12-19</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">220000</div>
+            <div class="col-versions">Leah Zhu</div>
+            <div class="col-description" title="The activity creation platform needs to add a judgment mechanism for whether insurance is required. The mini-program needs to add a mechanism for tran...">The activity creation platform needs to add a judgment mechanism for whether insurance is required. The mini-program needs to add a mechanism for tran...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1128" class="link-item" target="_blank">🔗 CNTIN-1128</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-897" class="ticket-key" target="_blank">CNTIN-897</a>
+                <span class="ticket-label">RITM1730601 - Integrated Inventory ...</span>
+                <span class="ticket-date">2025-12-19</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Alice Yan
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Inventory has become a growing focus, yet we currently lack an ...">Requestor: Alice Yan
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Inventory has become a growing focus, yet we currently lack an ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-761" class="ticket-key" target="_blank">CNTIN-761</a>
+                <span class="ticket-label">RITM1730959 -  Oracle RMS SaaS impl...</span>
+                <span class="ticket-date">2025-12-17</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Elizabeth Parra Gomez
+Requestor's Line Manager: Mohit Goel
+Why we need this new case?: Ensure there is cross-functional integrity after the...">Requestor: Elizabeth Parra Gomez
+Requestor's Line Manager: Mohit Goel
+Why we need this new case?: Ensure there is cross-functional integrity after the...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-758" class="ticket-key" target="_blank">CNTIN-758</a>
+                <span class="ticket-label">RITM1727881 - Price Recon Alert con...</span>
+                <span class="ticket-date">2025-12-17</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Luffy Ge
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: The current alert content is not referenceable.
+What new proce...">Requestor: Luffy Ge
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: The current alert content is not referenceable.
+What new proce...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-5483" class="link-item" target="_blank">🔗 CNTD-5483</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-741" class="ticket-key" target="_blank">CNTIN-741</a>
+                <span class="ticket-label">RITM1725631 - Fix R&D false applica...</span>
+                <span class="ticket-date">2025-12-14</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Louie Sun
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Fixing R&D false application risk.
+What new process/user experie...">Requestor: Louie Sun
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Fixing R&D false application risk.
+What new process/user experie...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-739" class="ticket-key" target="_blank">CNTIN-739</a>
+                <span class="ticket-label">RITM1723783 - subscription message ...</span>
+                <span class="ticket-date">2025-12-11</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">53360</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to optimize the subscription message experience on th...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to optimize the subscription message experience on th...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1024" class="link-item" target="_blank">🔗 CNTIN-1024</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-738" class="ticket-key" target="_blank">CNTIN-738</a>
+                <span class="ticket-label">RITM1723802 - pre-sell function on ...</span>
+                <span class="ticket-date">2025-12-11</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to add the pre-sell function on WMP to drive sales an...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to add the pre-sell function on WMP to drive sales an...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1025" class="link-item" target="_blank">🔗 CNTIN-1025</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1026" class="link-item" target="_blank">🔗 CNTIN-1026</a><a href="https://lululemon.atlassian.net/browse/EPCH-2341" class="link-item" target="_blank">🔗 EPCH-2341</a><a href="https://lululemon.atlassian.net/browse/EPCH-2342" class="link-item" target="_blank">🔗 EPCH-2342</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-737" class="ticket-key" target="_blank">CNTIN-737</a>
+                <span class="ticket-label"> RITM1723812 - PDP enhancement</span>
+                <span class="ticket-date">2025-12-11</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to split and combine the PDP by cc level, because for...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to split and combine the PDP by cc level, because for...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1027" class="link-item" target="_blank">🔗 CNTIN-1027</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-733" class="ticket-key" target="_blank">CNTIN-733</a>
+                <span class="ticket-label">RITM1696927 - Legal Tenancy Agreeme...</span>
+                <span class="ticket-date">2025-12-10</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Erin Liu
+Requestor's Line Manager: Carrie Yu
+Why we need this new case?: To digitalize full-life-circle TA management; To facilitate co-wor...">Requestor: Erin Liu
+Requestor's Line Manager: Carrie Yu
+Why we need this new case?: To digitalize full-life-circle TA management; To facilitate co-wor...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-894" class="link-item" target="_blank">🔗 CSCOP-894</a><a href="https://lululemon.atlassian.net/browse/CNTIN-864" class="link-item" target="_blank">🔗 CNTIN-864</a><a href="https://lululemon.atlassian.net/browse/CDM-1698" class="link-item" target="_blank">🔗 CDM-1698</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-732" class="ticket-key" target="_blank">CNTIN-732</a>
+                <span class="ticket-label">RITM1722394 - Unified platform for ...</span>
+                <span class="ticket-date">2025-12-10</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Tony Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: The increasing volume of support requests from stores to the SSC...">Requestor: Tony Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: The increasing volume of support requests from stores to the SSC...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-746" class="link-item" target="_blank">🔗 CNTIN-746</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-676" class="ticket-key" target="_blank">CNTIN-676</a>
+                <span class="ticket-label">RITM1719780 - AP RFID anti-theft</span>
+                <span class="ticket-date">2025-12-08</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jack Fernyhough
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Exploring leveraging currently fitted RFID readers in indi...">Requestor: Jack Fernyhough
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Exploring leveraging currently fitted RFID readers in indi...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNRTPRJ-1126" class="link-item" target="_blank">🔗 CNRTPRJ-1126</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-673" class="ticket-key" target="_blank">CNTIN-673</a>
+                <span class="ticket-label">RITM1717536 - Inquiry on RPA Access...</span>
+                <span class="ticket-date">2025-12-07</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Grace JIA
+Requestor's Line Manager: Helen Wang
+Why we need this new case?: our global VibeIQ system can now generate colored product images...">Requestor: Grace JIA
+Requestor's Line Manager: Helen Wang
+Why we need this new case?: our global VibeIQ system can now generate colored product images...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-888" class="link-item" target="_blank">🔗 CSCOP-888</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-672" class="ticket-key" target="_blank">CNTIN-672</a>
+                <span class="ticket-label">RITM1716330 - Tax Automation New Re...</span>
+                <span class="ticket-date">2025-12-04</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Background: Based upon stage l findings and Lululemon’s decisions on...">Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Background: Based upon stage l findings and Lululemon’s decisions on...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-889" class="link-item" target="_blank">🔗 CSCOP-889</a><a href="https://lululemon.atlassian.net/browse/CNTIN-858" class="link-item" target="_blank">🔗 CNTIN-858</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-668" class="ticket-key" target="_blank">CNTIN-668</a>
+                <span class="ticket-label">RITM1715010 - Assets protection - P...</span>
+                <span class="ticket-date">2025-12-03</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jack Fernyhough
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Adding additional function to the AP mini program to autom...">Requestor: Jack Fernyhough
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Adding additional function to the AP mini program to autom...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-891" class="link-item" target="_blank">🔗 CSCOP-891</a><a href="https://lululemon.atlassian.net/browse/CNTIN-867" class="link-item" target="_blank">🔗 CNTIN-867</a><a href="https://lululemon.atlassian.net/browse/CDM-3208" class="link-item" target="_blank">🔗 CDM-3208</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-666" class="ticket-key" target="_blank">CNTIN-666</a>
+                <span class="ticket-label">RITM1712520 - Security Risk</span>
+                <span class="ticket-date">2025-12-03</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">28800</div>
+            <div class="col-versions">Aina Han</div>
+            <div class="col-description" title="1. Actionable data security baseline with configuration guidanceIntegration of the Data Security Baseline into New IaCFindings from assessing existing...">1. Actionable data security baseline with configuration guidanceIntegration of the Data Security Baseline into New IaCFindings from assessing existing...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-910" class="link-item" target="_blank">🔗 CNTIN-910</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-658" class="ticket-key" target="_blank">CNTIN-658</a>
+                <span class="ticket-label">RITM1709839 - Provide China guest d...</span>
+                <span class="ticket-date">2025-11-30</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Aaron Petry
+Requestor's Line Manager: Brett Rinehold
+Why we need this new case?: China guest data is needed to supplement with other region...">Requestor: Aaron Petry
+Requestor's Line Manager: Brett Rinehold
+Why we need this new case?: China guest data is needed to supplement with other region...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-2269" class="link-item" target="_blank">🔗 CNTD-2269</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-652" class="ticket-key" target="_blank">CNTIN-652</a>
+                <span class="ticket-label">RITM1705443 - Add Bags Options in P...</span>
+                <span class="ticket-date">2025-11-25</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Ray Jin
+Requestor's Line Manager: Milla Wang
+Why we need this new case?: Add bag options on the basis of existing personalized customizatio...">Requestor: Ray Jin
+Requestor's Line Manager: Milla Wang
+Why we need this new case?: Add bag options on the basis of existing personalized customizatio...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-651" class="ticket-key" target="_blank">CNTIN-651</a>
+                <span class="ticket-label">RITM1704141 - Inventory loss contro...</span>
+                <span class="ticket-date">2025-11-24</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: Let stores know the actual inventory loss and improve them contr...">Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: Let stores know the actual inventory loss and improve them contr...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-5825" class="link-item" target="_blank">🔗 CNTD-5825</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-643" class="ticket-key" target="_blank">CNTIN-643</a>
+                <span class="ticket-label">RITM1699952 -  SFS order loss estim...</span>
+                <span class="ticket-date">2025-11-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Since September 2025, the tech team has received multiple request...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Since September 2025, the tech team has received multiple request...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-884" class="link-item" target="_blank">🔗 CSCOP-884</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-642" class="ticket-key" target="_blank">CNTIN-642</a>
+                <span class="ticket-label">RITM1699939 - SFS block order logic...</span>
+                <span class="ticket-date">2025-11-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: After analyzing SFS year-to-date (YTD) order data, the biz team f...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: After analyzing SFS year-to-date (YTD) order data, the biz team f...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-883" class="link-item" target="_blank">🔗 CSCOP-883</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-630" class="ticket-key" target="_blank">CNTIN-630</a>
+                <span class="ticket-label">RITM1698130 - Infra cost and usage ...</span>
+                <span class="ticket-date">2025-11-19</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">300000</div>
+            <div class="col-versions">Jobs Zheng</div>
+            <div class="col-description" title="Refresh infra resource cost from monthly cadence to be weekly.Abstract infra resource usage percentage data to generate report and alert rulesTagging ...">Refresh infra resource cost from monthly cadence to be weekly.Abstract infra resource usage percentage data to generate report and alert rulesTagging ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-627" class="ticket-key" target="_blank">CNTIN-627</a>
+                <span class="ticket-label">RITM1698000 - APS Report CR</span>
+                <span class="ticket-date">2025-11-19</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">Jaco Chen</div>
+            <div class="col-description" title="Exist capacity enhancement: Each new quarter automatically retains the data from the final week of the previous quarter, successfully displayed in the...">Exist capacity enhancement: Each new quarter automatically retains the data from the final week of the previous quarter, successfully displayed in the...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-881" class="link-item" target="_blank">🔗 CSCOP-881</a><a href="https://lululemon.atlassian.net/browse/CNTIN-851" class="link-item" target="_blank">🔗 CNTIN-851</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-608" class="ticket-key" target="_blank">CNTIN-608</a>
+                <span class="ticket-label">RITM1689427 - China Inventory Repor...</span>
+                <span class="ticket-date">2025-11-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: After 2 months using of current report, we found some parts co...">Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: After 2 months using of current report, we found some parts co...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTD-5401" class="link-item" target="_blank">🔗 CNTD-5401</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-607" class="ticket-key" target="_blank">CNTIN-607</a>
+                <span class="ticket-label">RITM1688323 - guest segmentation re...</span>
+                <span class="ticket-date">2025-11-12</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">1259225.19</div>
+            <div class="col-versions">Mel Chau</div>
+            <div class="col-description" title="Build reliable data foundation and automated guest segmentation calculation mechanism Provide product attributes (collection, special edition, etc) an...">Build reliable data foundation and automated guest segmentation calculation mechanism Provide product attributes (collection, special edition, etc) an...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-736" class="link-item" target="_blank">🔗 CNTIN-736</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-593" class="ticket-key" target="_blank">CNTIN-593</a>
+                <span class="ticket-label">RITM1686664 - NPS response improvem...</span>
+                <span class="ticket-date">2025-11-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">150000</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Tony Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: In order to enhance the NPS survey open rate and response rate. ...">Requestor: Tony Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: In order to enhance the NPS survey open rate and response rate. ...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-591" class="ticket-key" target="_blank">CNTIN-591</a>
+                <span class="ticket-label">RITM1683834 - Buyers' assortment re...</span>
+                <span class="ticket-date">2025-11-09</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">49104</div>
+            <div class="col-versions">Helen Wang</div>
+            <div class="col-description" title="To support the demand for multi-dimensional assortment reviews, User would like to make enhancements below on the output PowerPoint of existing Produc...">To support the demand for multi-dimensional assortment reviews, User would like to make enhancements below on the output PowerPoint of existing Produc...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-862" class="link-item" target="_blank">🔗 CSCOP-862</a><a href="https://lululemon.atlassian.net/browse/CNTIN-854" class="link-item" target="_blank">🔗 CNTIN-854</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-579" class="ticket-key" target="_blank">CNTIN-579</a>
+                <span class="ticket-label">RITM1675817 - Customs Portal Inter ...</span>
+                <span class="ticket-date">2025-11-03</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Desree Chen
+Requestor's Line Manager: Kenneth Rao
+Why we need this new case?: Customs Portal – Inter Company Transfer Management (Non – dir...">Requestor: Desree Chen
+Requestor's Line Manager: Kenneth Rao
+Why we need this new case?: Customs Portal – Inter Company Transfer Management (Non – dir...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-861" class="link-item" target="_blank">🔗 CSCOP-861</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-577" class="ticket-key" target="_blank">CNTIN-577</a>
+                <span class="ticket-label">RITM1675811 - Customs Portal AEO en...</span>
+                <span class="ticket-date">2025-11-03</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Desree Chen
+Requestor's Line Manager: Kenneth Rao
+Why we need this new case?: New Entry Verification features can directly address core AEO...">Requestor: Desree Chen
+Requestor's Line Manager: Kenneth Rao
+Why we need this new case?: New Entry Verification features can directly address core AEO...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-860" class="link-item" target="_blank">🔗 CSCOP-860</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-571" class="ticket-key" target="_blank">CNTIN-571</a>
+                <span class="ticket-label">RITM1671612 - Business Database</span>
+                <span class="ticket-date">2025-11-02</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Sophie Hong
+Requestor's Line Manager: Odette Yip
+Why we need this new case?: To standardize one source of truth for business reads
+What new...">Requestor: Sophie Hong
+Requestor's Line Manager: Odette Yip
+Why we need this new case?: To standardize one source of truth for business reads
+What new...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-851" class="link-item" target="_blank">🔗 CSCOP-851</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-565" class="ticket-key" target="_blank">CNTIN-565</a>
+                <span class="ticket-label">RITM1667895 - Wecom Evolution Tools</span>
+                <span class="ticket-date">2025-10-29</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">1710000</div>
+            <div class="col-versions">Mel Chau</div>
+            <div class="col-description" title="Elevate the existing tools (企微智能助手& 企微商城)to enhance Guest Engagement and omni-channel experience capabilities while equipping store teams with an all-...">Elevate the existing tools (企微智能助手& 企微商城)to enhance Guest Engagement and omni-channel experience capabilities while equipping store teams with an all-...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-566" class="link-item" target="_blank">🔗 CNTIN-566</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-561" class="ticket-key" target="_blank">CNTIN-561</a>
+                <span class="ticket-label">RITM1657362 -  Guest Communication ...</span>
+                <span class="ticket-date">2025-10-26</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Aaron Zhang
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Currently, the personalization system that supports guest communi...">Requestor: Aaron Zhang
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Currently, the personalization system that supports guest communi...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-560" class="ticket-key" target="_blank">CNTIN-560</a>
+                <span class="ticket-label">RITM1660901 - Store clustering appr...</span>
+                <span class="ticket-date">2025-10-26</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">636000</div>
+            <div class="col-versions">Odette Yip</div>
+            <div class="col-description" title="Ingest External Proximity & Followgraph data for store clustering modeling, add new store cluster – Preferred activity for assortment & planning">Ingest External Proximity & Followgraph data for store clustering modeling, add new store cluster – Preferred activity for assortment & planning</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1062" class="link-item" target="_blank">🔗 CNTIN-1062</a><a href="https://lululemon.atlassian.net/browse/CSCOP-886" class="link-item" target="_blank">🔗 CSCOP-886</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1074" class="link-item" target="_blank">🔗 CNTIN-1074</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-558" class="ticket-key" target="_blank">CNTIN-558</a>
+                <span class="ticket-label">RITM1660312 - Store Pull back effic...</span>
+                <span class="ticket-date">2025-10-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: Improve store users pull back efficiency
+What new process/user e...">Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: Improve store users pull back efficiency
+What new process/user e...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-557" class="ticket-key" target="_blank">CNTIN-557</a>
+                <span class="ticket-label">RITM1658799 - High-level people Ana...</span>
+                <span class="ticket-date">2025-10-23</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Cancelled</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: To support with the China Data project.
+What new process/user expe...">Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: To support with the China Data project.
+What new process/user expe...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-942" class="link-item" target="_blank">🔗 CSCOP-942</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-556" class="ticket-key" target="_blank">CNTIN-556</a>
+                <span class="ticket-label">RITM1658630 - Digital Privacy Revie...</span>
+                <span class="ticket-date">2025-10-23</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">930000</div>
+            <div class="col-versions">Celine Xia</div>
+            <div class="col-description" title="a digitalized system flow where it can realize an on-line full circle of PIA process.">a digitalized system flow where it can realize an on-line full circle of PIA process.</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-863" class="link-item" target="_blank">🔗 CNTIN-863</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-544" class="ticket-key" target="_blank">CNTIN-544</a>
+                <span class="ticket-label">RITM1658859 - New SSC外派人员门禁项目</span>
+                <span class="ticket-date">2025-10-21</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">349018</div>
+            <div class="col-versions">James Chen</div>
+            <div class="col-description" title="Provide a secure, identity-bound way for vendor staff without corporate email (e.g., office janitors) to obtain and use their SSC building access QR c...">Provide a secure, identity-bound way for vendor staff without corporate email (e.g., office janitors) to obtain and use their SSC building access QR c...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CSCOP-847" class="link-item" target="_blank">🔗 CSCOP-847</a><a href="https://lululemon.atlassian.net/browse/CNTIN-871" class="link-item" target="_blank">🔗 CNTIN-871</a><a href="https://lululemon.atlassian.net/browse/CDM-2956" class="link-item" target="_blank">🔗 CDM-2956</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-533" class="ticket-key" target="_blank">CNTIN-533</a>
+                <span class="ticket-label">RITM1652338 - Enhance the membershi...</span>
+                <span class="ticket-date">2025-10-19</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Winter Qi
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Enhance the membership benefits &user experience of own channe...">Requestor: Winter Qi
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Enhance the membership benefits &user experience of own channe...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-531" class="ticket-key" target="_blank">CNTIN-531</a>
+                <span class="ticket-label">RITM1650578 - new API is needed to ...</span>
+                <span class="ticket-date">2025-10-19</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Murial Ho
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Due to changes in the ordering channels, a new API is needed to re...">Requestor: Murial Ho
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Due to changes in the ordering channels, a new API is needed to re...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-527" class="ticket-key" target="_blank">CNTIN-527</a>
+                <span class="ticket-label">RITM1648902 - more than 1 box in Ec...</span>
+                <span class="ticket-date">2025-10-19</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Pinkie Diao
+Requestor's Line Manager: Jessie LinWhy we need this new case?: We may need more than 1 box to pack Ecom multi-unit orders, the...">Requestor: Pinkie Diao
+Requestor's Line Manager: Jessie LinWhy we need this new case?: We may need more than 1 box to pack Ecom multi-unit orders, the...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-835" class="link-item" target="_blank">🔗 CNTIN-835</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-525" class="ticket-key" target="_blank">CNTIN-525</a>
+                <span class="ticket-label">RITM1648871 - Enhancement of China ...</span>
+                <span class="ticket-date">2025-10-19</span>
+            </div>
+            <div class="col-components">Enhancement</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">850000</div>
+            <div class="col-versions">Jonathan Hui</div>
+            <div class="col-description" title="New DC in Wuhan at Central China to increase the delivery efficiency. • CNDC3 configuration would be replicated from CNDC1 and CNDC2. • CNDC3 will be ...">New DC in Wuhan at Central China to increase the delivery efficiency. • CNDC3 configuration would be replicated from CNDC1 and CNDC2. • CNDC3 will be ...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-838" class="link-item" target="_blank">🔗 CNTIN-838</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-522" class="ticket-key" target="_blank">CNTIN-522</a>
+                <span class="ticket-label">RITM1647911 - RFID in All 3 DCs</span>
+                <span class="ticket-date">2025-10-15</span>
+            </div>
+            <div class="col-components">New Dev</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">1030203</div>
+            <div class="col-versions">Kenneth Rao</div>
+            <div class="col-description" title="Inbound: manual scanning to put-away / seamless receiving and put-away by RFID tunnel and automated AGV =&gt; one stop solution for quicker integration O...">Inbound: manual scanning to put-away / seamless receiving and put-away by RFID tunnel and automated AGV =&gt; one stop solution for quicker integration O...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-829" class="link-item" target="_blank">🔗 CNTIN-829</a><a href="https://lululemon.atlassian.net/browse/CNTIN-836" class="link-item" target="_blank">🔗 CNTIN-836</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1038" class="link-item" target="_blank">🔗 CNTIN-1038</a><a href="https://lululemon.atlassian.net/browse/CNTIN-839" class="link-item" target="_blank">🔗 CNTIN-839</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-515" class="ticket-key" target="_blank">CNTIN-515</a>
+                <span class="ticket-label">RITM1645275 - Optimize the second p...</span>
+                <span class="ticket-date">2025-10-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Murial Ho
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Optimize the second phase of Sample Hub
+What new process/user expe...">Requestor: Murial Ho
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Optimize the second phase of Sample Hub
+What new process/user expe...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/OF-2583" class="link-item" target="_blank">🔗 OF-2583</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-499" class="ticket-key" target="_blank">CNTIN-499</a>
+                <span class="ticket-label">RITM1626854 - China 3rd DC</span>
+                <span class="ticket-date">2025-09-28</span>
+            </div>
+            <div class="col-components">New Application</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-count">4341227</div>
+            <div class="col-versions">Jonathan Hui</div>
+            <div class="col-description" title="CN 3rd DC foundation setup which mainly replicate as-is CNDC1 and CNDC2 functionality with CN Adoption. For new tech capability such as Return Routing...">CN 3rd DC foundation setup which mainly replicate as-is CNDC1 and CNDC2 functionality with CN Adoption. For new tech capability such as Return Routing...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-828" class="link-item" target="_blank">🔗 CNTIN-828</a><a href="https://lululemon.atlassian.net/browse/CNTIN-754" class="link-item" target="_blank">🔗 CNTIN-754</a><a href="https://lululemon.atlassian.net/browse/CNTIN-834" class="link-item" target="_blank">🔗 CNTIN-834</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1087" class="link-item" target="_blank">🔗 CNTIN-1087</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-423" class="ticket-key" target="_blank">CNTIN-423</a>
+                <span class="ticket-label">RITM1568537 - AP , in conjunction w...</span>
+                <span class="ticket-date">2025-08-10</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="Requestor: Jack Fernyhough
+Requestor Email: jfernyhough@lululemon.com
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: AP , in conjunc...">Requestor: Jack Fernyhough
+Requestor Email: jfernyhough@lululemon.com
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: AP , in conjunc...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-422" class="link-item" target="_blank">🔗 CNTIN-422</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-325" class="ticket-key" target="_blank">CNTIN-325</a>
+                <span class="ticket-label">Smart Subsidy Flow</span>
+                <span class="ticket-date">2025-06-22</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="**2025.7 Updated: **Assign to@Meave Qian from Retail Team: Wait for SC review.**2025.6 Ticket:RITM1515921 - Has been allocated as child feature**Reque...">**2025.7 Updated: **Assign to@Meave Qian from Retail Team: Wait for SC review.**2025.6 Ticket:RITM1515921 - Has been allocated as child feature**Reque...</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-747" class="link-item" target="_blank">🔗 CNTIN-747</a></div>
+        </div>
+</div>
+</div>
+</body>
+</html>

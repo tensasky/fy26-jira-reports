@@ -15,6 +15,7 @@ import base64
 import sqlite3
 import os
 from datetime import datetime
+from collections import Counter
 from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -52,17 +53,40 @@ def log_fetch(cursor, step, project, count, status, message=""):
         VALUES (?, ?, ?, ?, ?)
     ''', (step, project, count, status, message))
 
-def fetch_issues_jql(jql, fields):
+def fetch_issues_jql(jql, fields, page_size=100):
+    """抓取所有issues，支持分页"""
     url = f"{JIRA_URL}/rest/api/3/search/jql"
-    payload = {"jql": jql, "maxResults": 1000, "fields": fields}
-    try:
-        response = requests.post(url, headers=headers, json=payload, verify=False, timeout=120)
-        response.raise_for_status()
-        data = response.json()
-        return data.get('issues', [])
-    except Exception as e:
-        print(f"    ⚠️ 请求失败: {e}")
-        return []
+    all_issues = []
+    next_page_token = None
+    page = 1
+
+    while True:
+        payload = {"jql": jql, "maxResults": page_size, "fields": fields}
+        if next_page_token:
+            payload["nextPageToken"] = next_page_token
+
+        try:
+            response = requests.post(url, headers=headers, json=payload, verify=False, timeout=120)
+            response.raise_for_status()
+            data = response.json()
+
+            issues = data.get('issues', [])
+            all_issues.extend(issues)
+
+            # 检查是否有下一页
+            next_page_token = data.get('nextPageToken')
+            if not next_page_token:
+                break
+
+            page += 1
+            if page % 5 == 0:
+                print(f"      分页进度: {len(all_issues)} 个...")
+
+        except Exception as e:
+            print(f"    ⚠️ 请求失败: {e}")
+            break
+
+    return all_issues
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -80,17 +104,23 @@ def step1_fetch_epics(cursor):
         print(f"  批次 {i}/{len(PROJECT_BATCHES)}: {','.join(batch)}")
         projects_str = ','.join(batch)
         epics = fetch_issues_jql(
-            f"project in ({projects_str}) AND issuetype = Epic ORDER BY project ASC, key ASC",
+            f"project in ({projects_str}) AND issuetype = Epic AND created >= '2025-11-01' ORDER BY project ASC, key ASC",
             ["key", "summary", "description", "status", "assignee", "created", "updated", "project", "parent", "labels"]
         )
         print(f"    ✓ 找到 {len(epics)} 个Epics")
         all_epics.extend(epics)
         log_fetch(cursor, "Step1", f"batch_{i}", len(epics), "success")
+        
+        # 显示每个项目的分布
+        from collections import Counter
+        project_counts = Counter([e['fields'].get('project', {}).get('key', 'UNKNOWN') for e in epics])
+        for proj, cnt in sorted(project_counts.items()):
+            print(f"      - {proj}: {cnt}")
     
     # 单独处理OF项目（JQL保留字）
     print("  单独抓取OF项目...")
     of_epics = fetch_issues_jql(
-        "project = 'OF' AND issuetype = Epic ORDER BY key ASC",
+        "project = 'OF' AND issuetype = Epic AND created >= '2025-11-01' ORDER BY key ASC",
         ["key", "summary", "description", "status", "assignee", "created", "updated", "project", "parent", "labels"]
     )
     print(f"    ✓ 找到 {len(of_epics)} 个Epics")
@@ -140,11 +170,11 @@ def step1_fetch_epics(cursor):
     return all_epics
 
 def step2_fetch_fy26_init_initiatives(cursor):
-    """Step 2: 抓取所有带FY26_INIT标签的CNTIN Initiatives"""
+    """Step 2: 抓取所有带FY26_INIT标签的CNTIN Initiatives (2025-11-01后创建)"""
     print("\n📋 Step 2: 抓取所有带FY26_INIT标签的CNTIN Initiatives...")
     
     initiatives = fetch_issues_jql(
-        "project = CNTIN AND issuetype = Initiative AND labels = 'FY26_INIT' ORDER BY key ASC",
+        "project = CNTIN AND issuetype = Initiative AND labels = 'FY26_INIT' AND created >= '2025-11-01' ORDER BY key ASC",
         ["key", "summary", "description", "status", "assignee", "created", "updated", "labels"]
     )
     
@@ -205,7 +235,7 @@ def step3_fetch_all_features(cursor):
             print(f"    进度: {i}/{len(initiative_keys)}")
         
         features = fetch_issues_jql(
-            f"project = CNTIN AND issuetype = Feature AND parent = {init_key} ORDER BY key ASC",
+            f"project = CNTIN AND issuetype = Feature AND parent = {init_key} AND created >= '2025-11-01' ORDER BY key ASC",
             ["key", "summary", "description", "status", "assignee", "created", "updated", "parent", "labels"]
         )
         if features:

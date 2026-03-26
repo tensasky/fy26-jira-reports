@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.openclaw.fy26-intake-cost</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/admin/.openclaw/workspace/projects/fy26-intake-cost/run.sh</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/admin/.openclaw/workspace/projects/fy26-intake-cost</string>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
+        <key>HOME</key>
+        <string>/Users/admin</string>
+    </dict>
+    
+    <!-- 每周一上午9点运行 -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/admin/.openclaw/workspace/projects/fy26-intake-cost/logs/launchd.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/admin/.openclaw/workspace/projects/fy26-intake-cost/logs/launchd_error.log</string>
+</dict>
+</plist>

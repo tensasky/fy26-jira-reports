@@ -1,22 +1,30 @@
-# Dependencies
-node_modules/
-package-lock.json
-package.json
+# Logs
+*.log
+logs/*.log
+.temp_log
 
-# Chrome user data
-chrome_user_data/
+# Databases
+*.db
+*.sqlite
+*.sqlite3
 
-# Python cache
+# Generated Reports (keep .gitkeep)
+reports/*.html
+reports/*.zip
+!reports/.gitkeep
+
+# macOS
+.DS_Store
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
-*.pyd
-.Python
+*.egg-info/
 
-# Virtual environments
-venv/
-env/
-ENV/
+# Environment
+.env
+.env.local
 
 # IDE
 .vscode/
@@ -24,52 +32,11 @@ ENV/
 *.swp
 *.swo
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-logs/*.log
-
 # Temporary files
-tmp/
-temp/
 *.tmp
-
-# Reports and data (generated files)
-jira-reports/*.json
-jira-reports/*.html
-jira-reports/*.csv
-jira-reports/*.db
-reports/*.html
-!reports/.gitkeep
-
-# Cache
-/tmp/
-*.cache
-
-# Secrets
-.env
-*.env
-.jira-config
-confluence_auth.json
-
-# Large files
+*.temp
+EOF
+*.json
+*.csv
 *.zip
-*.tar.gz
-*.mp4
-*.mov
-
-# Novels (too many files)
-novels/
-
-# Confluence exports (temporary)
-confluence_export/
-confluence_export.zip
-
-# Node modules in skills
-skills/**/node_modules/
-
-# Output files
-output/
+.jira-config

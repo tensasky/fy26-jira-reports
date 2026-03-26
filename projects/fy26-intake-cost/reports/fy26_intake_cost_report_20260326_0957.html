@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FY26 Intake Cost 报表系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f7fa;color:#333;padding:20px}
+.container{max-width:1600px;margin:0 auto}
+.header{background:#fff;padding:24px;border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.header h1{font-size:24px;color:#1a1a1a;margin-bottom:8px}
+.header .subtitle{color:#666;font-size:14px}
+.header-actions{float:right;margin-top:-50px}
+.btn{padding:8px 16px;border-radius:4px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:14px}
+.btn-primary{background:#00b96b;color:#fff;border-color:#00b96b}
+.stats-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:20px}
+.stat-card{background:#fff;padding:20px;border-radius:8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.stat-card.total{background:#e6f7ff;border:1px solid #91d5ff}
+.stat-label{font-size:14px;color:#666;margin-bottom:8px}
+.stat-value{font-size:32px;font-weight:600;color:#1a1a1a}
+.stat-value.blue{color:#1890ff}
+.stat-value.orange{color:#fa8c16}
+.stat-value.green{color:#52c41a}
+.stat-value.red{color:#ff4d4f}
+.charts-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.chart-card{background:#fff;padding:20px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.chart-title{font-size:16px;color:#1a1a1a;margin-bottom:16px}
+.donut-chart{width:200px;height:200px;margin:0 auto;position:relative}
+.donut-chart svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-center .number{font-size:32px;font-weight:600}
+.donut-center .label{font-size:12px;color:#666}
+.chart-legend{display:flex;justify-content:center;gap:20px;margin-top:16px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.bar-chart{display:flex;flex-direction:column;gap:12px}
+.bar-item{display:flex;align-items:center;gap:12px}
+.bar-label{width:80px;font-size:12px;color:#666;text-align:right}
+.bar-track{flex:1;height:24px;background:#f0f0f0;border-radius:4px;overflow:hidden;position:relative}
+.bar-fill{height:100%;background:#5470c6;border-radius:4px;transition:width 0.3s}
+.bar-value{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;color:#333;font-weight:500}
+.table-section{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.1);overflow:hidden}
+.table-header{display:grid;grid-template-columns:200px 120px 90px 100px 90px 120px 250px 150px;background:#fafafa;padding:12px 16px;font-weight:500;font-size:13px;color:#666;border-bottom:1px solid #f0f0f0}
+.table-row{display:grid;grid-template-columns:200px 120px 90px 100px 90px 120px 250px 150px;padding:16px;border-bottom:1px solid #f0f0f0;align-items:start;font-size:13px}
+.table-row:hover{background:#f5f7fa}
+.col-ticket{display:flex;flex-direction:column;gap:4px}
+.ticket-key{font-weight:600;color:#1890ff;text-decoration:none}
+.ticket-key:hover{text-decoration:underline}
+.ticket-label{font-size:11px;color:#666}
+.ticket-date{font-size:11px;color:#999}
+.col-components{color:#666;font-size:12px}
+.col-pending{font-weight:500}
+.sla-warning{color:#fa8c16;background:#fff7e6;padding:2px 8px;border-radius:4px}
+.sla-danger{color:#ff4d4f;background:#fff1f0;padding:2px 8px;border-radius:4px}
+.col-status{display:inline-block;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:500}
+.status-todo{background:#e6f7ff;color:#1890ff}
+.status-progress{background:#fff7e6;color:#fa8c16}
+.status-done{background:#f6ffed;color:#52c41a}
+.status-cancel{background:#f5f5f5;color:#999}
+.col-count{text-align:center;font-weight:500}
+.col-versions{color:#666;font-size:12px}
+.col-description{color:#666;font-size:12px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.col-links{display:flex;flex-direction:column;gap:4px}
+.link-item{font-size:12px;color:#1890ff;text-decoration:none}
+.link-item:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>FY26 Intake Cost 报表系统</h1>
+<div class="subtitle">监控项目进度、费用及 SLA 风险状态 | 生成时间: 2026-03-26 09:57</div>
+<div class="header-actions"><button class="btn btn-primary" onclick="window.print()">🖨️ 打印 / PDF</button></div>
+</div>
+<div class="stats-cards">
+<div class="stat-card total"><div class="stat-label">总数</div><div class="stat-value">53</div></div>
+<div class="stat-card"><div class="stat-label">未开始</div><div class="stat-value blue">32</div></div>
+<div class="stat-card"><div class="stat-label">进行中</div><div class="stat-value orange">19</div></div>
+<div class="stat-card"><div class="stat-label">已关闭</div><div class="stat-value green">2</div></div>
+<div class="stat-card"><div class="stat-label">已取消</div><div class="stat-value red">0</div></div>
+</div>
+<div class="charts-section">
+<div class="chart-card">
+<div class="chart-title">Intake 状态占比</div>
+<div class="donut-chart">
+<svg width="200" height="200" viewBox="0 0 100 100"><path d="M50,50 L50.00,10.00 A40,40 0 1,1 25.73,81.79 Z" fill="#5470c6" /><path d="M50,50 L25.73,81.79 A40,40 0 0,1 18.94,75.20 Z" fill="#91cc75" /><path d="M50,50 L18.94,75.20 A40,40 0 0,1 20.49,23.00 Z" fill="#fac858" /><path d="M50,50 L20.49,23.00 A40,40 0 0,1 50.00,10.00 Z" fill="#ee6666" /><circle cx="50" cy="50" r="25" fill="#fff"/></svg>
+<div class="donut-center"><div class="number">53</div><div class="label">总数</div></div>
+</div>
+<div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#5470c6"></div><span>New 32</span></div><div class="legend-item"><div class="legend-dot" style="background:#91cc75"></div><span>Cancelled 2</span></div><div class="legend-item"><div class="legend-dot" style="background:#fac858"></div><span>Execution 12</span></div><div class="legend-item"><div class="legend-dot" style="background:#ee6666"></div><span>Discovery 7</span></div></div>
+</div>
+<div class="chart-card">
+<div class="chart-title">状态分布</div>
+<div class="bar-chart"><div class="bar-item"><div class="bar-label">New</div><div class="bar-track"><div class="bar-fill" style="width:60.37735849056604%"></div><span class="bar-value">32</span></div></div><div class="bar-item"><div class="bar-label">Cancelled</div><div class="bar-track"><div class="bar-fill" style="width:3.7735849056603774%"></div><span class="bar-value">2</span></div></div><div class="bar-item"><div class="bar-label">Execution</div><div class="bar-track"><div class="bar-fill" style="width:22.641509433962266%"></div><span class="bar-value">12</span></div></div><div class="bar-item"><div class="bar-label">Discovery</div><div class="bar-track"><div class="bar-fill" style="width:13.20754716981132%"></div><span class="bar-value">7</span></div></div></div>
+</div>
+</div>
+<div class="table-section">
+<div class="table-header">
+<div>基础信息<br><small>Ticket / Label / Create Date</small></div>
+<div>Components</div>
+<div>Pending<br>天数</div>
+<div>Status</div>
+<div>Child<br>Count</div>
+<div>Affects<br>Version</div>
+<div>Description</div>
+<div>Linked Items</div>
+</div>
+
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-928" class="ticket-key" target="_blank">CNTIN-928</a>
+                <span class="ticket-label">Corporate Finance Automation & Reco...</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="-">-</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-927" class="ticket-key" target="_blank">CNTIN-927</a>
+                <span class="ticket-label">Corporate Product Master Data Enhan...</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="-">-</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-926" class="ticket-key" target="_blank">CNTIN-926</a>
+                <span class="ticket-label">Corporate Inventory Enhancement</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="-">-</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-925" class="ticket-key" target="_blank">CNTIN-925</a>
+                <span class="ticket-label">Corporate Sales DC and Transportati...</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Cancelled</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="-">-</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-924" class="ticket-key" target="_blank">CNTIN-924</a>
+                <span class="ticket-label">Corporate Sales Enhancement</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="-">-</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-923" class="ticket-key" target="_blank">CNTIN-923</a>
+                <span class="ticket-label">Corporate Sales New business Model ...</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Cancelled</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="-">-</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-922" class="ticket-key" target="_blank">CNTIN-922</a>
+                <span class="ticket-label">Cancelled/Draft Tickets</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="-">-</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-921" class="ticket-key" target="_blank">CNTIN-921</a>
+                <span class="ticket-label">Gift Card Enhancement</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="-">-</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-725" class="ticket-key" target="_blank">CNTIN-725</a>
+                <span class="ticket-label">L3 Support</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-723" class="ticket-key" target="_blank">CNTIN-723</a>
+                <span class="ticket-label">Government subsidy automation</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-722" class="ticket-key" target="_blank">CNTIN-722</a>
+                <span class="ticket-label">Employee Portal Contract Integratio...</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-721" class="ticket-key" target="_blank">CNTIN-721</a>
+                <span class="ticket-label">SSC Win11 Upgrade</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-720" class="ticket-key" target="_blank">CNTIN-720</a>
+                <span class="ticket-label">Network Upgrade </span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1070" class="link-item" target="_blank">🔗 CNTIN-1070</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1068" class="link-item" target="_blank">🔗 CNTIN-1068</a><a href="https://lululemon.atlassian.net/browse/CNTIN-1069" class="link-item" target="_blank">🔗 CNTIN-1069</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-719" class="ticket-key" target="_blank">CNTIN-719</a>
+                <span class="ticket-label">Automated system Monitoring & Alert...</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-1084" class="link-item" target="_blank">🔗 CNTIN-1084</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-718" class="ticket-key" target="_blank">CNTIN-718</a>
+                <span class="ticket-label">Tech Delivery Portal </span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-717" class="ticket-key" target="_blank">CNTIN-717</a>
+                <span class="ticket-label">GEC Enhancements</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-716" class="ticket-key" target="_blank">CNTIN-716</a>
+                <span class="ticket-label">Store community event management</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-715" class="ticket-key" target="_blank">CNTIN-715</a>
+                <span class="ticket-label">Lease Verification & Payment Automa...</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-714" class="ticket-key" target="_blank">CNTIN-714</a>
+                <span class="ticket-label">Ambassador HUB Enhancement - R&D</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-713" class="ticket-key" target="_blank">CNTIN-713</a>
+                <span class="ticket-label">Product Testing Automation</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-712" class="ticket-key" target="_blank">CNTIN-712</a>
+                <span class="ticket-label">China Architecture Portal</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-711" class="ticket-key" target="_blank">CNTIN-711</a>
+                <span class="ticket-label">New Shanghai SSC HW</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-710" class="ticket-key" target="_blank">CNTIN-710</a>
+                <span class="ticket-label">Ambassador HUB </span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-709" class="ticket-key" target="_blank">CNTIN-709</a>
+                <span class="ticket-label">CRM & Marketing automation</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-708" class="ticket-key" target="_blank">CNTIN-708</a>
+                <span class="ticket-label">Product Sample Management</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-707" class="ticket-key" target="_blank">CNTIN-707</a>
+                <span class="ticket-label">Wechat mini store</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-706" class="ticket-key" target="_blank">CNTIN-706</a>
+                <span class="ticket-label">Voice of Guest complaint management...</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-705" class="ticket-key" target="_blank">CNTIN-705</a>
+                <span class="ticket-label">Retail Service Request Portal</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': 'Business Value:'}], 'attrs': {'localId': '6a076b...">{'type': 'doc', 'version': 1, 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': 'Business Value:'}], 'attrs': {'localId': '6a076b...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-704" class="ticket-key" target="_blank">CNTIN-704</a>
+                <span class="ticket-label">X-Mobile Ipad </span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-703" class="ticket-key" target="_blank">CNTIN-703</a>
+                <span class="ticket-label">China Corporate Capability</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-702" class="ticket-key" target="_blank">CNTIN-702</a>
+                <span class="ticket-label">WeCom optimization</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-701" class="ticket-key" target="_blank">CNTIN-701</a>
+                <span class="ticket-label">SSC Device Replacement </span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-700" class="ticket-key" target="_blank">CNTIN-700</a>
+                <span class="ticket-label">AI Traffic Counter</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-699" class="ticket-key" target="_blank">CNTIN-699</a>
+                <span class="ticket-label">LegalHub Enhancements</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-698" class="ticket-key" target="_blank">CNTIN-698</a>
+                <span class="ticket-label">Ship From Store + Store to Home ext...</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': 'report drafting owner', 'marks': [{'type': 'stro...">{'type': 'doc', 'version': 1, 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': 'report drafting owner', 'marks': [{'type': 'stro...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-697" class="ticket-key" target="_blank">CNTIN-697</a>
+                <span class="ticket-label">Finance process Automation</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-696" class="ticket-key" target="_blank">CNTIN-696</a>
+                <span class="ticket-label">Peak Readiness</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><a href="https://lululemon.atlassian.net/browse/CNTIN-968" class="link-item" target="_blank">🔗 CNTIN-968</a></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-695" class="ticket-key" target="_blank">CNTIN-695</a>
+                <span class="ticket-label">Cloud Automation upgrade</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-694" class="ticket-key" target="_blank">CNTIN-694</a>
+                <span class="ticket-label">WMP Marketing Campaigns</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-693" class="ticket-key" target="_blank">CNTIN-693</a>
+                <span class="ticket-label">Store Device Replacement </span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-692" class="ticket-key" target="_blank">CNTIN-692</a>
+                <span class="ticket-label">xStore Operational Support</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-691" class="ticket-key" target="_blank">CNTIN-691</a>
+                <span class="ticket-label">Natural Language Chatbot</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-690" class="ticket-key" target="_blank">CNTIN-690</a>
+                <span class="ticket-label">Product Datasets & Global system in...</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-689" class="ticket-key" target="_blank">CNTIN-689</a>
+                <span class="ticket-label">Platform middleware standardization</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-688" class="ticket-key" target="_blank">CNTIN-688</a>
+                <span class="ticket-label">Merchandising Planning & Allocation...</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-687" class="ticket-key" target="_blank">CNTIN-687</a>
+                <span class="ticket-label">Unified commerce services (UCS)</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': [{'type': 'mediaSingle', 'attrs': {'width': 960, 'widthType': 'pixel', 'localId': '995be4c52641', 'layout': '...">{'type': 'doc', 'version': 1, 'content': [{'type': 'mediaSingle', 'attrs': {'width': 960, 'widthType': 'pixel', 'localId': '995be4c52641', 'layout': '...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-686" class="ticket-key" target="_blank">CNTIN-686</a>
+                <span class="ticket-label">Product Catalogue Management system...</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-685" class="ticket-key" target="_blank">CNTIN-685</a>
+                <span class="ticket-label">Business Reporting </span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-684" class="ticket-key" target="_blank">CNTIN-684</a>
+                <span class="ticket-label">Enterprise Datalake Modernization</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-683" class="ticket-key" target="_blank">CNTIN-683</a>
+                <span class="ticket-label">Legacy Migration </span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-682" class="ticket-key" target="_blank">CNTIN-682</a>
+                <span class="ticket-label">Owned Digital Channel Enhancement</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-681" class="ticket-key" target="_blank">CNTIN-681</a>
+                <span class="ticket-label">Asset Protection Portal Phase III</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': []}">{'type': 'doc', 'version': 1, 'content': []}</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+        <div class="table-row">
+            <div class="col-ticket">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-680" class="ticket-key" target="_blank">CNTIN-680</a>
+                <span class="ticket-label">3rd DC + Service Center</span>
+                <span class="ticket-date">2025-12-09</span>
+            </div>
+            <div class="col-components">-</div>
+            <div class="col-pending ">0d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-count">0</div>
+            <div class="col-versions">-</div>
+            <div class="col-description" title="{'type': 'doc', 'version': 1, 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': 'report drafting owner', 'marks': [{'type': 'stro...">{'type': 'doc', 'version': 1, 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': 'report drafting owner', 'marks': [{'type': 'stro...</div>
+            <div class="col-links"><span style="color:#999;font-size:12px;">-</span></div>
+        </div>
+</div>
+</div>
+</body>
+</html>

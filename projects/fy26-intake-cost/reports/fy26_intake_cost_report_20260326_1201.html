@@ -1,0 +1,2951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FY26 Intake Cost 报表系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f7fa;color:#333;padding:20px}
+.container{max-width:1600px;margin:0 auto}
+
+.header{background:#fff;padding:24px;border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.header h1{font-size:24px;color:#1a1a1a;margin-bottom:8px}
+.header .subtitle{color:#666;font-size:14px}
+.header-actions{float:right;margin-top:-50px}
+.btn{padding:8px 16px;border-radius:4px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:14px}
+.btn-primary{background:#00b96b;color:#fff;border-color:#00b96b}
+
+/* 汇率设置 */
+.rate-setting{background:#f0f7ff;border:1px solid #91d5ff;padding:12px 16px;border-radius:8px;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.rate-setting label{font-weight:500;color:#333}
+.rate-setting input{width:80px;padding:6px 10px;border:1px solid #d9d9d9;border-radius:4px;font-size:14px}
+.rate-setting .rate-info{color:#666;font-size:13px}
+
+.stats-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:20px}
+.stat-card{background:#fff;padding:20px;border-radius:8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.stat-card.total{background:#e6f7ff;border:1px solid #91d5ff}
+.stat-label{font-size:14px;color:#666;margin-bottom:8px}
+.stat-value{font-size:32px;font-weight:600;color:#1a1a1a}
+.stat-value.blue{color:#1890ff}
+.stat-value.orange{color:#fa8c16}
+.stat-value.green{color:#52c41a}
+.stat-value.red{color:#ff4d4f}
+
+.charts-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.chart-card{background:#fff;padding:20px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.chart-title{font-size:16px;color:#1a1a1a;margin-bottom:16px}
+.donut-chart{width:200px;height:200px;margin:0 auto;position:relative}
+.donut-chart svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-center .number{font-size:32px;font-weight:600}
+.donut-center .label{font-size:12px;color:#666}
+.chart-legend{display:flex;justify-content:center;gap:20px;margin-top:16px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.bar-chart{display:flex;flex-direction:column;gap:12px}
+.bar-item{display:flex;align-items:center;gap:12px}
+.bar-label{width:100px;font-size:12px;color:#666;text-align:right}
+.bar-track{flex:1;height:24px;background:#f0f0f0;border-radius:4px;overflow:hidden;position:relative}
+.bar-fill{height:100%;background:#5470c6;border-radius:4px;transition:width 0.3s}
+.bar-value{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;color:#333;font-weight:500}
+
+/* 表格 - 9列布局 */
+.table-section{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.1);overflow:hidden;width:100%}
+.table-header{display:grid;grid-template-columns:minmax(160px,1.5fr) minmax(80px,0.8fr) minmax(60px,0.5fr) minmax(90px,0.7fr) minmax(100px,0.8fr) minmax(100px,0.9fr) minmax(100px,0.8fr) minmax(150px,1.2fr) minmax(120px,1fr);background:#fafafa;padding:12px 16px;font-weight:600;font-size:13px;color:#333;border-bottom:2px solid #e8e8e8}
+.table-row{display:grid;grid-template-columns:minmax(160px,1.5fr) minmax(80px,0.8fr) minmax(60px,0.5fr) minmax(90px,0.7fr) minmax(100px,0.8fr) minmax(100px,0.9fr) minmax(100px,0.8fr) minmax(150px,1.2fr) minmax(120px,1fr);padding:12px 16px;border-bottom:1px solid #f0f0f0;align-items:center;font-size:13px}
+.table-row:hover{background:#f5f7fa}
+
+.col-intake{display:flex;flex-direction:column;gap:4px}
+.ticket-key{font-weight:600;color:#1890ff;text-decoration:none;font-size:13px}
+.ticket-key:hover{text-decoration:underline}
+.ticket-label{font-size:11px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ticket-date{font-size:11px;color:#999}
+
+.col-type{color:#333;font-weight:500}
+.col-type.tbd{color:#999;font-style:italic}
+
+.col-sla{font-weight:600;text-align:center}
+.sla-warning{color:#fa8c16;background:#fff7e6;padding:4px 8px;border-radius:4px}
+.sla-danger{color:#ff4d4f;background:#fff1f0;padding:4px 8px;border-radius:4px}
+
+.col-status{display:inline-block;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:500}
+.status-todo{background:#e6f7ff;color:#1890ff}
+.status-progress{background:#fff7e6;color:#fa8c16}
+.status-done{background:#f6ffed;color:#52c41a}
+.status-cancel{background:#f5f5f5;color:#999}
+
+.col-assignee{color:#666;font-size:12px}
+.col-cost{font-family:'SF Mono',Monaco,monospace;font-size:11px;line-height:1.6;color:#333;text-align:right}
+.col-approver{color:#666;font-size:12px}
+.col-scope{color:#666;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.col-followup{color:#1890ff;font-size:12px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>FY26 Intake Cost 报表系统</h1>
+<div class="subtitle">监控项目进度、费用及 SLA 风险状态 | 生成时间: 2026-03-26 12:01</div>
+<div class="header-actions">
+<button class="btn btn-primary" onclick="window.print()">🖨️ 打印 / PDF</button>
+</div>
+</div>
+
+<!-- 汇率设置 -->
+<div class="rate-setting">
+<label>💱 汇率设置 (RMB → USD):</label>
+<input type="number" id="exchangeRate" value="0.135" step="0.001" min="0" max="1" onchange="updateRate()">
+<span class="rate-info">当前: 1 RMB = 0.135 USD | Cost = InitiativeChildCount × 汇率</span>
+</div>
+
+<div class="stats-cards">
+<div class="stat-card total"><div class="stat-label">总数</div><div class="stat-value">155</div></div>
+<div class="stat-card"><div class="stat-label">未开始</div><div class="stat-value blue">17</div></div>
+<div class="stat-card"><div class="stat-label">进行中</div><div class="stat-value orange">91</div></div>
+<div class="stat-card"><div class="stat-label">已关闭</div><div class="stat-value green">47</div></div>
+<div class="stat-card"><div class="stat-label">已取消</div><div class="stat-value red">0</div></div>
+</div>
+
+<div class="charts-section">
+<div class="chart-card">
+<div class="chart-title">Intake 状态占比</div>
+<div class="donut-chart">
+<svg width="200" height="200" viewBox="0 0 100 100"><path d="M50,50 L50.00,10.00 A40,40 0 0,1 68.70,14.64 Z" fill="#5470c6" /><path d="M50,50 L68.70,14.64 A40,40 0 1,1 19.39,75.75 Z" fill="#91cc75" /><path d="M50,50 L19.39,75.75 A40,40 0 0,1 32.75,13.91 Z" fill="#fac858" /><path d="M50,50 L32.75,13.91 A40,40 0 0,1 40.37,11.18 Z" fill="#ee6666" /><path d="M50,50 L40.37,11.18 A40,40 0 0,1 46.76,10.13 Z" fill="#73c0de" /><path d="M50,50 L46.76,10.13 A40,40 0 0,1 50.00,10.00 Z" fill="#5470c6" /><circle cx="50" cy="50" r="25" fill="#fff"/></svg>
+<div class="donut-center"><div class="number">155</div><div class="label">总数</div></div>
+</div>
+<div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#5470c6"></div><span>New 12</span></div><div class="legend-item"><div class="legend-dot" style="background:#91cc75"></div><span>Discovery 87</span></div><div class="legend-item"><div class="legend-dot" style="background:#fac858"></div><span>Done 45</span></div><div class="legend-item"><div class="legend-dot" style="background:#ee6666"></div><span>Strategy 5</span></div><div class="legend-item"><div class="legend-dot" style="background:#73c0de"></div><span>Execution 4</span></div><div class="legend-item"><div class="legend-dot" style="background:#5470c6"></div><span>Cancelled 2</span></div></div>
+</div>
+<div class="chart-card">
+<div class="chart-title">状态分布</div>
+<div class="bar-chart"><div class="bar-item"><div class="bar-label">New</div><div class="bar-track"><div class="bar-fill" style="width:7.741935483870968%"></div><span class="bar-value">12</span></div></div><div class="bar-item"><div class="bar-label">Discovery</div><div class="bar-track"><div class="bar-fill" style="width:56.12903225806451%"></div><span class="bar-value">87</span></div></div><div class="bar-item"><div class="bar-label">Done</div><div class="bar-track"><div class="bar-fill" style="width:29.03225806451613%"></div><span class="bar-value">45</span></div></div><div class="bar-item"><div class="bar-label">Strategy</div><div class="bar-track"><div class="bar-fill" style="width:3.225806451612903%"></div><span class="bar-value">5</span></div></div><div class="bar-item"><div class="bar-label">Execution</div><div class="bar-track"><div class="bar-fill" style="width:2.5806451612903225%"></div><span class="bar-value">4</span></div></div><div class="bar-item"><div class="bar-label">Cancelled</div><div class="bar-track"><div class="bar-fill" style="width:1.2903225806451613%"></div><span class="bar-value">2</span></div></div></div>
+</div>
+</div>
+
+<div class="table-section">
+<div class="table-header">
+<div>Intake<br><small>Ticket / Summary / Date</small></div>
+<div>Type</div>
+<div>SLA</div>
+<div>Status</div>
+<div>Assignee</div>
+<div>Cost<br><small>CNY / USD</small></div>
+<div>Approver</div>
+<div>Scope</div>
+<div>Follow up</div>
+</div>
+
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1134" class="ticket-key" target="_blank">CNTIN-1134</a>
+                <span class="ticket-label">RITM1840742 -  Xstore Enhancem...</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">1d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Jony Li</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Bin Jin
+Requestor's Line Manager: Jony Li
+Requested for: Edward Pan
+Why we need this new ...">Requestor: Bin Jin
+Requestor's Line Manager: Jony Li
+Requested for: Edward Pan
+Why we need this new ...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1133" class="ticket-key" target="_blank">CNTIN-1133</a>
+                <span class="ticket-label">RITM1840698 - three‑flow align...</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">1d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Charley Sun</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Lynn Ouyang
+Requestor's Line Manager: Candy Tian
+Why we need this new case?: We have iden...">Requestor: Lynn Ouyang
+Requestor's Line Manager: Candy Tian
+Why we need this new case?: We have iden...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1132" class="ticket-key" target="_blank">CNTIN-1132</a>
+                <span class="ticket-label">RITM1839557 - Reduce the usage...</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">1d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Charley Sun</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Pengchao Guo
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: To reduce the...">Requestor: Pengchao Guo
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: To reduce the...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1131" class="ticket-key" target="_blank">CNTIN-1131</a>
+                <span class="ticket-label">RITM1839553 - SSC network impr...</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">1d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">David Du</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Roger Shen
+Requestor's Line Manager: David Du
+Why we need this new case?: Optimize the ne...">Requestor: Roger Shen
+Requestor's Line Manager: David Du
+Why we need this new case?: Optimize the ne...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1130" class="ticket-key" target="_blank">CNTIN-1130</a>
+                <span class="ticket-label">RITM1838197 - LSP operation an...</span>
+                <span class="ticket-date">2026-03-24</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">1d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Charley Sun</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Pinkie Diao
+Requestor's Line Manager: Jessie Lin
+Why we need this new case?: Outbound Log...">Requestor: Pinkie Diao
+Requestor's Line Manager: Jessie Lin
+Why we need this new case?: Outbound Log...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1124" class="ticket-key" target="_blank">CNTIN-1124</a>
+                <span class="ticket-label">RITM1838053 - Monitor Platform...</span>
+                <span class="ticket-date">2026-03-22</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">2d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Roger Shen</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Roger Shen
+Requestor's Line Manager: David Du
+Why we need this new case?: Traditional net...">Requestor: Roger Shen
+Requestor's Line Manager: David Du
+Why we need this new case?: Traditional net...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1123" class="ticket-key" target="_blank">CNTIN-1123</a>
+                <span class="ticket-label">RITM1835701 - CNDAM system mig...</span>
+                <span class="ticket-date">2026-03-22</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla ">2d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">James Chen</div>
+            <div class="col-cost">¥8.04e+05<br>$1.09e+05</div>
+            <div class="col-approver">James Chen</div>
+            <div class="col-scope" title="transite cnDAM system from Nuxeo’s current proprietary licensed version to an open-source alternativ...">transite cnDAM system from Nuxeo’s current proprietary licensed version to an open-source alternativ...</div>
+            <div class="col-followup">CNTIN-1125</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1121" class="ticket-key" target="_blank">CNTIN-1121</a>
+                <span class="ticket-label">RITM1837893 - Jira&Confluence ...</span>
+                <span class="ticket-date">2026-03-22</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">3d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Ian Wang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Yolanda Xiao
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: For Tech...">Requestor: Yolanda Xiao
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: For Tech...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1120" class="ticket-key" target="_blank">CNTIN-1120</a>
+                <span class="ticket-label">RITM1815622 - Help for a regre...</span>
+                <span class="ticket-date">2026-03-22</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">3d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Charley Sun</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Rhea Patton
+Requestor's Line Manager: Ujjwal Sharma
+Why we need this new case?: Help for ...">Requestor: Rhea Patton
+Requestor's Line Manager: Ujjwal Sharma
+Why we need this new case?: Help for ...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1118" class="ticket-key" target="_blank">CNTIN-1118</a>
+                <span class="ticket-label">RITM1833164 - FY26 SMD Dashboa...</span>
+                <span class="ticket-date">2026-03-20</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">5d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Summer MD timeli...">Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Summer MD timeli...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1116" class="ticket-key" target="_blank">CNTIN-1116</a>
+                <span class="ticket-label">RITM1834163 -  IT长期使用资产流程优化</span>
+                <span class="ticket-date">2026-03-18</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">6d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Rex Mao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Rex Mao
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: 为了解决“长期使用资产在申...">Requestor: Rex Mao
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: 为了解决“长期使用资产在申...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1115" class="ticket-key" target="_blank">CNTIN-1115</a>
+                <span class="ticket-label">RITM1831624 - Gift card report...</span>
+                <span class="ticket-date">2026-03-18</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">6d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Jony Li</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Kristen Qi
+Requestor's Line Manager: Virginia Chen
+Why we need this new case?: 1. Since i...">Requestor: Kristen Qi
+Requestor's Line Manager: Virginia Chen
+Why we need this new case?: 1. Since i...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1114" class="ticket-key" target="_blank">CNTIN-1114</a>
+                <span class="ticket-label">RITM1831567 - Expand data scop...</span>
+                <span class="ticket-date">2026-03-18</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">6d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Lisa Liu
+Requestor's Line Manager: Joey Li
+Why we need this new case?: To get more accura...">Requestor: Lisa Liu
+Requestor's Line Manager: Joey Li
+Why we need this new case?: To get more accura...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1113" class="ticket-key" target="_blank">CNTIN-1113</a>
+                <span class="ticket-label">RITM1829859 -  WMP backend new...</span>
+                <span class="ticket-date">2026-03-18</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla ">6d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">James Chen</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: WMP backend...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: WMP backend...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1096" class="ticket-key" target="_blank">CNTIN-1096</a>
+                <span class="ticket-label">RITM1829787 - Sibling for UCS ...</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-warning">9d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Ian Wang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To convert ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To convert ...</div>
+            <div class="col-followup">CNTIN-776, CNTIN-1097</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1095" class="ticket-key" target="_blank">CNTIN-1095</a>
+                <span class="ticket-label">RITM1827642 - Own Channel BI d...</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-warning">9d</div>
+            <div><span class="col-status status-todo">New</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requested for: Danni Yang
+Requested for Manager: Jasmine Zhou
+Function: Digital
+Business Sponsor: An...">Requested for: Danni Yang
+Requested for Manager: Jasmine Zhou
+Function: Digital
+Business Sponsor: An...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1094" class="ticket-key" target="_blank">CNTIN-1094</a>
+                <span class="ticket-label">RITM1829692 - Baobai Project</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-warning">10d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-assignee">James Chen</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Harper Yang
+Requestor's Line Manager: Becca Zhao
+Why we need this new case?: gaobai proje...">Requestor: Harper Yang
+Requestor's Line Manager: Becca Zhao
+Why we need this new case?: gaobai proje...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1093" class="ticket-key" target="_blank">CNTIN-1093</a>
+                <span class="ticket-label">RITM1824914 - WMP role integra...</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-warning">10d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: WMP to bui...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: WMP to bui...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1092" class="ticket-key" target="_blank">CNTIN-1092</a>
+                <span class="ticket-label">RITM1826337 - To add the purch...</span>
+                <span class="ticket-date">2026-03-15</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-warning">10d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">James Chen</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To add the ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To add the ...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1085" class="ticket-key" target="_blank">CNTIN-1085</a>
+                <span class="ticket-label">RITM1823692 - Yoga mat persona...</span>
+                <span class="ticket-date">2026-03-10</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">15d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">James Chen</div>
+            <div class="col-cost">¥9,090<br>$1,227.15</div>
+            <div class="col-approver">Franck Feng</div>
+            <div class="col-scope" title="Existed capability enhancement: Follow run campaign , upgrade the personalization materials.">Existed capability enhancement: Follow run campaign , upgrade the personalization materials.</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1084" class="ticket-key" target="_blank">CNTIN-1084</a>
+                <span class="ticket-label">RITM1823556 - Automated System...</span>
+                <span class="ticket-date">2026-03-10</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">15d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Julius Zhu</div>
+            <div class="col-cost">¥5.47e+06<br>$7.38e+05</div>
+            <div class="col-approver">Ian Wang</div>
+            <div class="col-scope" title="Configuration as Code (CaC).Adoption of GitOps Methodology.Self‑Service Experiences for End Users.Un...">Configuration as Code (CaC).Adoption of GitOps Methodology.Self‑Service Experiences for End Users.Un...</div>
+            <div class="col-followup">CNTIN-719, CNTIN-800, CNTIN-801 (+2)</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1083" class="ticket-key" target="_blank">CNTIN-1083</a>
+                <span class="ticket-label">RITM1819300 - FP&A Sales x cit...</span>
+                <span class="ticket-date">2026-03-09</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">16d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Chris Xu
+Requestor's Line Manager: Cecilia Chen
+Why we need this new case?: FP&A Sales x ...">Requestor: Chris Xu
+Requestor's Line Manager: Cecilia Chen
+Why we need this new case?: FP&A Sales x ...</div>
+            <div class="col-followup">CNTD-6997</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1080" class="ticket-key" target="_blank">CNTIN-1080</a>
+                <span class="ticket-label">RITM1819614 - Product Transiti...</span>
+                <span class="ticket-date">2026-03-08</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">17d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Jony Guo</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Leah Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Ask/Objective:...">Requestor: Leah Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Ask/Objective:...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1079" class="ticket-key" target="_blank">CNTIN-1079</a>
+                <span class="ticket-label">RITM1819516 - CRM data encrypt...</span>
+                <span class="ticket-date">2026-03-08</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">17d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Vic Tan</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: CRM as the...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: CRM as the...</div>
+            <div class="col-followup">CNCRM-1338</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1078" class="ticket-key" target="_blank">CNTIN-1078</a>
+                <span class="ticket-label">RITM1819547 - Outlets Stores F...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">19d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: for outlet sto...">Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: for outlet sto...</div>
+            <div class="col-followup">CSCOP-952</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1077" class="ticket-key" target="_blank">CNTIN-1077</a>
+                <span class="ticket-label">RITM1819522 - Employee contact...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">19d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: The AI-IS ...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: The AI-IS ...</div>
+            <div class="col-followup">CSCOP-949, CDM-3376, CNTIN-1100</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1076" class="ticket-key" target="_blank">CNTIN-1076</a>
+                <span class="ticket-label">RITM1819271 - nso airport stor...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">20d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jodie Zhang
+Requestor's Line Manager: Rex Mao
+Why we need this new case?: need Data team'...">Requestor: Jodie Zhang
+Requestor's Line Manager: Rex Mao
+Why we need this new case?: need Data team'...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1074" class="ticket-key" target="_blank">CNTIN-1074</a>
+                <span class="ticket-label">RITM1818616 - CN Store Cluster...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">20d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">Pravav Limaye</div>
+            <div class="col-scope" title="Merged intake.">Merged intake.</div>
+            <div class="col-followup">CSCOP-950, CNTD-6558, CNTIN-560</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1073" class="ticket-key" target="_blank">CNTIN-1073</a>
+                <span class="ticket-label">RITM1818297 -  PT Survey set u...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-type ">Configuration</div>
+            <div class="col-sla sla-danger">20d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥5,000<br>$675.00</div>
+            <div class="col-approver">Becca Zhao</div>
+            <div class="col-scope" title="PT Survey set up in stores">PT Survey set up in stores</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1072" class="ticket-key" target="_blank">CNTIN-1072</a>
+                <span class="ticket-label">RITM1817832 - Coupon overview ...</span>
+                <span class="ticket-date">2026-03-05</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">20d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Iris Li-Tech</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Optimize co...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Optimize co...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1071" class="ticket-key" target="_blank">CNTIN-1071</a>
+                <span class="ticket-label">RITM1817995 - account taken-ov...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">20d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To avoid th...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: To avoid th...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1070" class="ticket-key" target="_blank">CNTIN-1070</a>
+                <span class="ticket-label">RITM1817821 -  AP Replacement ...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">20d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Ian Wang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: Meraki MR42 Acc...">Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: Meraki MR42 Acc...</div>
+            <div class="col-followup">CNTIN-720</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1069" class="ticket-key" target="_blank">CNTIN-1069</a>
+                <span class="ticket-label">RITM1816409 - Single Store Net...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">20d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Jony Guo</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: China Single St...">Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: China Single St...</div>
+            <div class="col-followup">CNTIN-720, CNTEST-8844, CNTEST-8845</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1068" class="ticket-key" target="_blank">CNTIN-1068</a>
+                <span class="ticket-label">RITM1816475 - IOS-XE Migration...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">20d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Ian Wang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: IOS‑XE Migratio...">Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: IOS‑XE Migratio...</div>
+            <div class="col-followup">CNTIN-720</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1067" class="ticket-key" target="_blank">CNTIN-1067</a>
+                <span class="ticket-label">RITM1816973 - Power BI premium...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">21d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Allan Oue
+Requestor's Line Manager: Randy Wong
+Why we need this new case?: Power BI premi...">Requestor: Allan Oue
+Requestor's Line Manager: Randy Wong
+Why we need this new case?: Power BI premi...</div>
+            <div class="col-followup">CNTD-6886</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1066" class="ticket-key" target="_blank">CNTIN-1066</a>
+                <span class="ticket-label">RITM1816820 - AMB Hub Activity...</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">21d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Amanda Xu</div>
+            <div class="col-cost">¥2.54e+05<br>$3.43e+04</div>
+            <div class="col-approver">Peter Wolkowicz</div>
+            <div class="col-scope" title="Eenhance the activity management functionality on Ambassador Hub">Eenhance the activity management functionality on Ambassador Hub</div>
+            <div class="col-followup">CNTIN-1036</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1064" class="ticket-key" target="_blank">CNTIN-1064</a>
+                <span class="ticket-label">RITM1816371 - WMP PLP</span>
+                <span class="ticket-date">2026-03-04</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">21d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥2,000<br>$270.00</div>
+            <div class="col-approver">Jasmine Zhou</div>
+            <div class="col-scope" title="Why we need this new case?: WMP PLP top search banner user journey optimize, click search icon, go t...">Why we need this new case?: WMP PLP top search banner user journey optimize, click search icon, go t...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1063" class="ticket-key" target="_blank">CNTIN-1063</a>
+                <span class="ticket-label">RITM1816415 - RMP product spli...</span>
+                <span class="ticket-date">2026-03-03</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">21d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥1.50e+04<br>$2,025.00</div>
+            <div class="col-approver">Jasmine Zhou</div>
+            <div class="col-scope" title="RMP existed capability enhancement: By cc level could have different tags within on style.">RMP existed capability enhancement: By cc level could have different tags within on style.</div>
+            <div class="col-followup">CNTIN-1129</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1056" class="ticket-key" target="_blank">CNTIN-1056</a>
+                <span class="ticket-label">RITM1773954 - one single sourc...</span>
+                <span class="ticket-date">2026-03-02</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Lin ZHANG
+Requestor's Line Manager: Sophie Hong
+Why we need this new case?: one part of t...">Requestor: Lin ZHANG
+Requestor's Line Manager: Sophie Hong
+Why we need this new case?: one part of t...</div>
+            <div class="col-followup">CSCOP-943</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1051" class="ticket-key" target="_blank">CNTIN-1051</a>
+                <span class="ticket-label">RITM1813528 -  NPS in WMP and ...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: NPS service...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: NPS service...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1050" class="ticket-key" target="_blank">CNTIN-1050</a>
+                <span class="ticket-label">RITM1813334 - GWP Cache Invent...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥6.26e+04<br>$8,448.30</div>
+            <div class="col-approver">Jasmine Zhou</div>
+            <div class="col-scope" title="Existed capability enhancement: To increase the operation efficiency and meet the business timeline ...">Existed capability enhancement: To increase the operation efficiency and meet the business timeline ...</div>
+            <div class="col-followup">CNTIN-1122</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1049" class="ticket-key" target="_blank">CNTIN-1049</a>
+                <span class="ticket-label">RITM1810646 - DC to store port...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: based on dispo...">Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: based on dispo...</div>
+            <div class="col-followup">CSCOP-951</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1047" class="ticket-key" target="_blank">CNTIN-1047</a>
+                <span class="ticket-label">RITM1810913 -  Impact of Keyst...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aki Zhu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Shirley Hsu
+Requestor's Line Manager: Holly Geant
+Why we need this new case?: Keystone Pr...">Requestor: Shirley Hsu
+Requestor's Line Manager: Holly Geant
+Why we need this new case?: Keystone Pr...</div>
+            <div class="col-followup">CSCOP-944</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1045" class="ticket-key" target="_blank">CNTIN-1045</a>
+                <span class="ticket-label">RITM1809045 - CN application m...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Jay Wu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jay Wu
+Requestor's Line Manager: David Du
+Why we need this new case?: CN application migr...">Requestor: Jay Wu
+Requestor's Line Manager: David Du
+Why we need this new case?: CN application migr...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1044" class="ticket-key" target="_blank">CNTIN-1044</a>
+                <span class="ticket-label">RITM1805923 - GDAP EDE Data Ch...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Anubha Bais
+Requestor Email: abais@lululemon.com
+Requestor's Line Manager: Vani Birlangi
+...">Requestor: Anubha Bais
+Requestor Email: abais@lululemon.com
+Requestor's Line Manager: Vani Birlangi
+...</div>
+            <div class="col-followup">DAIMAIN-10252</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1043" class="ticket-key" target="_blank">CNTIN-1043</a>
+                <span class="ticket-label">RITM1807736 - Product Informat...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Transfer pr...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Transfer pr...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1042" class="ticket-key" target="_blank">CNTIN-1042</a>
+                <span class="ticket-label">RITM1807646 - Cloud Automation...</span>
+                <span class="ticket-date">2026-03-01</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">23d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Ian Wang</div>
+            <div class="col-cost">¥2.83e+06<br>$3.83e+05</div>
+            <div class="col-approver">Ian Wang</div>
+            <div class="col-scope" title="Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: Cloud Automatio...">Requestor: Julius Zhu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: Cloud Automatio...</div>
+            <div class="col-followup">CNTIN-804, CNTIN-808, CNTIN-809 (+3)</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1020" class="ticket-key" target="_blank">CNTIN-1020</a>
+                <span class="ticket-label">RITM1806483 - Azure cost savin...</span>
+                <span class="ticket-date">2026-02-24</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">28d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Leo Wang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Leo Wang
+Requestor's Line Manager: Kano Zhang
+Why we need this new case?: Cost efficiency...">Requestor: Leo Wang
+Requestor's Line Manager: Kano Zhang
+Why we need this new case?: Cost efficiency...</div>
+            <div class="col-followup">CNTD-6799</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1014" class="ticket-key" target="_blank">CNTIN-1014</a>
+                <span class="ticket-label">RITM1792036 - SFS FY26 Roll ou...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">30d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS FY26 roll o...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS FY26 roll o...</div>
+            <div class="col-followup">OF-2567, CSCOP-954</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1013" class="ticket-key" target="_blank">CNTIN-1013</a>
+                <span class="ticket-label">RITM1792047 - SFS Operation Ha...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">30d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">ryan xu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Operation Ha...">Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Operation Ha...</div>
+            <div class="col-followup">OF-2568, CSCOP-945, CNSCO-2728</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1012" class="ticket-key" target="_blank">CNTIN-1012</a>
+                <span class="ticket-label">RITM1792041 - one‑page dashboa...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">30d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: AD/RM need a on...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: AD/RM need a on...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1011" class="ticket-key" target="_blank">CNTIN-1011</a>
+                <span class="ticket-label">RITM1792038 - omni booster for...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">30d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: we need to stud...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: we need to stud...</div>
+            <div class="col-followup">CSCOP-946</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1010" class="ticket-key" target="_blank">CNTIN-1010</a>
+                <span class="ticket-label">RITM1791997 - Helios‑embedded ...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">30d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">ryan xu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: The curren...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: The curren...</div>
+            <div class="col-followup">CSCOP-953</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1009" class="ticket-key" target="_blank">CNTIN-1009</a>
+                <span class="ticket-label">RITM1795481 - GWP function to ...</span>
+                <span class="ticket-date">2026-02-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">30d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Need GWP fu...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Need GWP fu...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-1007" class="ticket-key" target="_blank">CNTIN-1007</a>
+                <span class="ticket-label">RITM1807433 - Snowflake Platfo...</span>
+                <span class="ticket-date">2026-02-16</span>
+            </div>
+            <div class="col-type ">Configuration</div>
+            <div class="col-sla sla-danger">37d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="**ServiceNow ticket: ****TASK2242305**Per Sec-team audits, two updates require implementation. Once ...">**ServiceNow ticket: ****TASK2242305**Per Sec-team audits, two updates require implementation. Once ...</div>
+            <div class="col-followup">CNTD-6881</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-998" class="ticket-key" target="_blank">CNTIN-998</a>
+                <span class="ticket-label">RITM1795307 - Retail Hardware ...</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">41d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Jony Guo</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Mike Dong
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: We need to prepa...">Requestor: Mike Dong
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: We need to prepa...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-997" class="ticket-key" target="_blank">CNTIN-997</a>
+                <span class="ticket-label">RITM1794624 -  Weekly Store Re...</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">41d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Vida Tian
+Requestor's Line Manager: Michael Pang
+Why we need this new case?: Currently, t...">Requestor: Vida Tian
+Requestor's Line Manager: Michael Pang
+Why we need this new case?: Currently, t...</div>
+            <div class="col-followup">CNTD-6939</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-996" class="ticket-key" target="_blank">CNTIN-996</a>
+                <span class="ticket-label">RITM1790736 - Unified Frontend...</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">41d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Naico Wang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Naico Wang
+Requestor's Line Manager: Ian Wang
+Why we need this new case?Fontend Middlewar...">Requestor: Naico Wang
+Requestor's Line Manager: Ian Wang
+Why we need this new case?Fontend Middlewar...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-995" class="ticket-key" target="_blank">CNTIN-995</a>
+                <span class="ticket-label">RITM1790705 - Standard as Code</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">41d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Gray Yang</div>
+            <div class="col-cost">¥3.31e+06<br>$4.46e+05</div>
+            <div class="col-approver">Ian Wang</div>
+            <div class="col-scope" title="Requestor: Gray Yang
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: 
+Enforce &quot;Standa...">Requestor: Gray Yang
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: 
+Enforce &quot;Standa...</div>
+            <div class="col-followup">CNTIN-766</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-994" class="ticket-key" target="_blank">CNTIN-994</a>
+                <span class="ticket-label">RITM1792841 - Store Portal Enh...</span>
+                <span class="ticket-date">2026-02-12</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">41d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aki Zhu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Juliette Zhu
+Requestor's Line Manager: Lilly Chau
+Why we need this new case?: Currently, ...">Requestor: Juliette Zhu
+Requestor's Line Manager: Lilly Chau
+Why we need this new case?: Currently, ...</div>
+            <div class="col-followup">CSCOP-941</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-991" class="ticket-key" target="_blank">CNTIN-991</a>
+                <span class="ticket-label">RITM1791955 - SFS Inventory Ex...</span>
+                <span class="ticket-date">2026-02-11</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">41d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Inventory Ex...">Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Inventory Ex...</div>
+            <div class="col-followup">CSCOP-947</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-990" class="ticket-key" target="_blank">CNTIN-990</a>
+                <span class="ticket-label">RITM1791950 - SFS Capacity Usa...</span>
+                <span class="ticket-date">2026-02-11</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">41d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Capacity Usa...">Requestor: Nelson Luo
+Requestor's Line Manager: Eric Li
+Why we need this new case?: SFS Capacity Usa...</div>
+            <div class="col-followup">CSCOP-948</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-978" class="ticket-key" target="_blank">CNTIN-978</a>
+                <span class="ticket-label">RITM1790592 - Add Paid Class F...</span>
+                <span class="ticket-date">2026-02-09</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">44d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥4.70e+05<br>$6.35e+04</div>
+            <div class="col-approver">Ada Tang</div>
+            <div class="col-scope" title="Need to add paid class function to inprove attendace rate and enhance cuxtomer experience">Need to add paid class function to inprove attendace rate and enhance cuxtomer experience</div>
+            <div class="col-followup">CNTIN-1032</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-977" class="ticket-key" target="_blank">CNTIN-977</a>
+                <span class="ticket-label">RITM1767652 - Finance Document...</span>
+                <span class="ticket-date">2026-02-09</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">44d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Yvette Liu
+Requestor's Line Manager: Candy Tian
+Why we need this new case?: The current p...">Requestor: Yvette Liu
+Requestor's Line Manager: Candy Tian
+Why we need this new case?: The current p...</div>
+            <div class="col-followup">CSCOP-937</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-976" class="ticket-key" target="_blank">CNTIN-976</a>
+                <span class="ticket-label">RITM1790681 - Financial interc...</span>
+                <span class="ticket-date">2026-02-09</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">44d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Issue DescriptionF...">Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Issue DescriptionF...</div>
+            <div class="col-followup">CSCOP-936</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-975" class="ticket-key" target="_blank">CNTIN-975</a>
+                <span class="ticket-label">RITM1790689 - 24/7 automated s...</span>
+                <span class="ticket-date">2026-02-09</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">44d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Currently finance ...">Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Currently finance ...</div>
+            <div class="col-followup">CSCOP-934, CNTIN-859</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-973" class="ticket-key" target="_blank">CNTIN-973</a>
+                <span class="ticket-label">RITM1787727 - NA Kafka client ...</span>
+                <span class="ticket-date">2026-02-08</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">45d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-assignee">Jay Wu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jay Wu
+Requestor's Line Manager: David Du
+Why we need this new case?: kafka client, schem...">Requestor: Jay Wu
+Requestor's Line Manager: David Du
+Why we need this new case?: kafka client, schem...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-972" class="ticket-key" target="_blank">CNTIN-972</a>
+                <span class="ticket-label">RITM1787061 - Hemming Enhancem...</span>
+                <span class="ticket-date">2026-02-08</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">45d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Briddy Yang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Leah Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Hemming emhanc...">Requestor: Leah Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Hemming emhanc...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-970" class="ticket-key" target="_blank">CNTIN-970</a>
+                <span class="ticket-label">RITM1785739 - China Service Ce...</span>
+                <span class="ticket-date">2026-02-04</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">49d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="**Requestor**Minglei Sun**Requestor's Line Manager**Kenneth Rao**Why we need this new case?** Wuhan ...">**Requestor**Minglei Sun**Requestor's Line Manager**Kenneth Rao**Why we need this new case?** Wuhan ...</div>
+            <div class="col-followup">CSCOP-935, CNDIN-2038, CNRTPRJ-1304 (+1)</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-968" class="ticket-key" target="_blank">CNTIN-968</a>
+                <span class="ticket-label">RITM1782342 -  China FY26 Peak...</span>
+                <span class="ticket-date">2026-02-01</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">51d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Roberto Cheng</div>
+            <div class="col-cost">¥7.38e+05<br>$9.96e+04</div>
+            <div class="col-approver">Jobs Zheng</div>
+            <div class="col-scope" title="Peak Readiness is made of 4 pillars in 2025: Risk Management, Vendor Management, Capacity Planning, ...">Peak Readiness is made of 4 pillars in 2025: Risk Management, Vendor Management, Capacity Planning, ...</div>
+            <div class="col-followup">CNTIN-696</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-967" class="ticket-key" target="_blank">CNTIN-967</a>
+                <span class="ticket-label">RITM1779184 -  Kafka across ap...</span>
+                <span class="ticket-date">2026-02-01</span>
+            </div>
+            <div class="col-type ">Configuration</div>
+            <div class="col-sla sla-danger">51d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">David Du</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Fiona Leung
+Requestor's Line Manager: Sundar Muthuvelu
+Requested for: Roberto Cheng
+Why w...">Requestor: Fiona Leung
+Requestor's Line Manager: Sundar Muthuvelu
+Requested for: Roberto Cheng
+Why w...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-966" class="ticket-key" target="_blank">CNTIN-966</a>
+                <span class="ticket-label">RITM1619821 - UCS Management P...</span>
+                <span class="ticket-date">2026-02-01</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">52d</div>
+            <div><span class="col-status status-cancel">Cancelled</span></div>
+            <div class="col-assignee">Ian Wang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Alex Dong
+Requestor's Line Manager: James Chen
+Why we need this new case?: WMP, RMP, 官网, ...">Requestor: Alex Dong
+Requestor's Line Manager: James Chen
+Why we need this new case?: WMP, RMP, 官网, ...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-965" class="ticket-key" target="_blank">CNTIN-965</a>
+                <span class="ticket-label">RITM1776229 - Product personal...</span>
+                <span class="ticket-date">2026-02-01</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">52d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">James Chen</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jacky Xie
+Requestor's Line Manager: Patrick Bren
+Why we need this new case?: Guests in Ch...">Requestor: Jacky Xie
+Requestor's Line Manager: Patrick Bren
+Why we need this new case?: Guests in Ch...</div>
+            <div class="col-followup">CSCOP-927</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-958" class="ticket-key" target="_blank">CNTIN-958</a>
+                <span class="ticket-label">RITM1778324 - Inventory Effici...</span>
+                <span class="ticket-date">2026-01-30</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">54d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: With Charley...">Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: With Charley...</div>
+            <div class="col-followup">CSCOP-926, CSCOP-783</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-957" class="ticket-key" target="_blank">CNTIN-957</a>
+                <span class="ticket-label">RITM1778426 - Channel rebalanc...</span>
+                <span class="ticket-date">2026-01-30</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">54d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: Channel reba...">Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: Channel reba...</div>
+            <div class="col-followup">CSCOP-925, CSCOP-940</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-956" class="ticket-key" target="_blank">CNTIN-956</a>
+                <span class="ticket-label">RITM1776321 - OTB Report Autom...</span>
+                <span class="ticket-date">2026-01-30</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">54d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥3.43e+05<br>$4.63e+04</div>
+            <div class="col-approver">Sophie Hong</div>
+            <div class="col-scope" title="Automate the Open to Buy Rolling Visualization generation through SharePoint">Automate the Open to Buy Rolling Visualization generation through SharePoint</div>
+            <div class="col-followup">CSCOP-924, CNTIN-1098</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-952" class="ticket-key" target="_blank">CNTIN-952</a>
+                <span class="ticket-label">RITM1775956 - API Governance</span>
+                <span class="ticket-date">2026-01-28</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">55d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Ian Wang</div>
+            <div class="col-cost">¥2.06e+05<br>$2.79e+04</div>
+            <div class="col-approver">Jobs Zheng</div>
+            <div class="col-scope" title="All of the existing application's API need to be reviewed and classified by API tiers, all new APIs ...">All of the existing application's API need to be reviewed and classified by API tiers, all new APIs ...</div>
+            <div class="col-followup">CNTIN-936</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-951" class="ticket-key" target="_blank">CNTIN-951</a>
+                <span class="ticket-label">RITM1775973 - IP Protection</span>
+                <span class="ticket-date">2026-01-28</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">55d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Ian Wang</div>
+            <div class="col-cost">¥2.16e+06<br>$2.91e+05</div>
+            <div class="col-approver">Ian Wang</div>
+            <div class="col-scope" title="Requestor: Ian Wang
+Requestor's Line Manager: Jobs Zheng
+Why we need this new case?: To protect our ...">Requestor: Ian Wang
+Requestor's Line Manager: Jobs Zheng
+Why we need this new case?: To protect our ...</div>
+            <div class="col-followup">CNTIN-937</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-950" class="ticket-key" target="_blank">CNTIN-950</a>
+                <span class="ticket-label">RITM1773921 - product info to ...</span>
+                <span class="ticket-date">2026-01-28</span>
+            </div>
+            <div class="col-type ">Task</div>
+            <div class="col-sla sla-danger">56d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">James Chen</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">Ann Zeng</div>
+            <div class="col-scope" title="Requestor: Rachel Yuan
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: To support tea...">Requestor: Rachel Yuan
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: To support tea...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-949" class="ticket-key" target="_blank">CNTIN-949</a>
+                <span class="ticket-label">RITM1771305 - centralized prod...</span>
+                <span class="ticket-date">2026-01-28</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">56d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alex Dong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Sasa Yang
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Need for a centr...">Requestor: Sasa Yang
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Need for a centr...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-948" class="ticket-key" target="_blank">CNTIN-948</a>
+                <span class="ticket-label">RITM1771363 - Store to store r...</span>
+                <span class="ticket-date">2026-01-26</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">58d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Vida Tian
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Store to Stor...">Requestor: Vida Tian
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: Store to Stor...</div>
+            <div class="col-followup">CSCOP-878</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-947" class="ticket-key" target="_blank">CNTIN-947</a>
+                <span class="ticket-label">RITM1771311 - SP26 Running Cam...</span>
+                <span class="ticket-date">2026-01-26</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">58d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥4.80e+04<br>$6,480.00</div>
+            <div class="col-approver">Ada Tang</div>
+            <div class="col-scope" title="Requestor: Simmy Wang
+Requestor's Line Manager: Ada Tang
+Why we need this new case?: Deliver SP26 ru...">Requestor: Simmy Wang
+Requestor's Line Manager: Ada Tang
+Why we need this new case?: Deliver SP26 ru...</div>
+            <div class="col-followup">CNTIN-1030</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-946" class="ticket-key" target="_blank">CNTIN-946</a>
+                <span class="ticket-label">RITM1769127 - Monthly Store Sa...</span>
+                <span class="ticket-date">2026-01-25</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">59d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Hi Team , we reque...">Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Hi Team , we reque...</div>
+            <div class="col-followup">CSCOP-917, CNTIN-862</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-945" class="ticket-key" target="_blank">CNTIN-945</a>
+                <span class="ticket-label">RITM1767940 - automatic FOH/BO...</span>
+                <span class="ticket-date">2026-01-25</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">59d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥3.65e+05<br>$4.93e+04</div>
+            <div class="col-approver">Cecillia Chen</div>
+            <div class="col-scope" title="Fulfillment requires enhancement on Agile Fulfillment - FOH BOH engine to cover 2 functionalities: 1...">Fulfillment requires enhancement on Agile Fulfillment - FOH BOH engine to cover 2 functionalities: 1...</div>
+            <div class="col-followup">CSCOP-918, CNTIN-915, CNTIN-832</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-944" class="ticket-key" target="_blank">CNTIN-944</a>
+                <span class="ticket-label">RITM1766185 -  China Avature E...</span>
+                <span class="ticket-date">2026-01-21</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">62d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Andrea Wang
+Requestor's Line Manager: Emily Qiu
+Why we need this new case?: To roll out S...">Requestor: Andrea Wang
+Requestor's Line Manager: Emily Qiu
+Why we need this new case?: To roll out S...</div>
+            <div class="col-followup">CSCOP-916, CNTIN-875</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-943" class="ticket-key" target="_blank">CNTIN-943</a>
+                <span class="ticket-label">RITM1764158 - Data Accuracy </span>
+                <span class="ticket-date">2026-01-20</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">64d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Emily Wang
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Adding impor...">Requestor: Emily Wang
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Adding impor...</div>
+            <div class="col-followup">CNTD-6764</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-942" class="ticket-key" target="_blank">CNTIN-942</a>
+                <span class="ticket-label">RITM1764161 - Big Events Sales...</span>
+                <span class="ticket-date">2026-01-20</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">64d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">Eric Li</div>
+            <div class="col-scope" title="Merged intake.">Merged intake.</div>
+            <div class="col-followup">CNTD-6674, CNTIN-918</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-941" class="ticket-key" target="_blank">CNTIN-941</a>
+                <span class="ticket-label">RITM1764154 - China daily sale...</span>
+                <span class="ticket-date">2026-01-20</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">64d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Emily Wang
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Need to chan...">Requestor: Emily Wang
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Need to chan...</div>
+            <div class="col-followup">CNTD-6765</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-940" class="ticket-key" target="_blank">CNTIN-940</a>
+                <span class="ticket-label">RITM1761432 -  Establish robus...</span>
+                <span class="ticket-date">2026-01-18</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">66d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: In 2025, the Chi...">Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: In 2025, the Chi...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-939" class="ticket-key" target="_blank">CNTIN-939</a>
+                <span class="ticket-label">RITM1761429 - PI Data Governan...</span>
+                <span class="ticket-date">2026-01-18</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">66d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: Ensure the China...">Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: Ensure the China...</div>
+            <div class="col-followup">CSCOP-922</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-938" class="ticket-key" target="_blank">CNTIN-938</a>
+                <span class="ticket-label">RITM1761420 - PI Data governan...</span>
+                <span class="ticket-date">2026-01-18</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">66d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: Ensure the China...">Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: Ensure the China...</div>
+            <div class="col-followup">CSCOP-915</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-934" class="ticket-key" target="_blank">CNTIN-934</a>
+                <span class="ticket-label">RITM1757443 - Omni Operation P...</span>
+                <span class="ticket-date">2026-01-14</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">70d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Use system-driv...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Use system-driv...</div>
+            <div class="col-followup">CSCOP-914</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-933" class="ticket-key" target="_blank">CNTIN-933</a>
+                <span class="ticket-label">RITM1757525 - 慢SQL优化</span>
+                <span class="ticket-date">2026-01-14</span>
+            </div>
+            <div class="col-type ">Task</div>
+            <div class="col-sla sla-danger">70d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">ryan xu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">Ian Wang</div>
+            <div class="col-scope" title="Requestor: XingPeng Liu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: reporting的数据库...">Requestor: XingPeng Liu
+Requestor's Line Manager: Ian Wang
+Why we need this new case?: reporting的数据库...</div>
+            <div class="col-followup">CSCOP-913</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-932" class="ticket-key" target="_blank">CNTIN-932</a>
+                <span class="ticket-label">RITM1757417 -  B2B Inventory </span>
+                <span class="ticket-date">2026-01-14</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">70d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aki Zhu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Virginia Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Currently, B2...">Requestor: Virginia Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Currently, B2...</div>
+            <div class="col-followup">CSCOP-912</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-929" class="ticket-key" target="_blank">CNTIN-929</a>
+                <span class="ticket-label">RITM1757407 - Chart Attribute ...</span>
+                <span class="ticket-date">2026-01-13</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">71d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥5.62e+04<br>$7,584.30</div>
+            <div class="col-approver">Erans Fan</div>
+            <div class="col-scope" title="Change the deck layout and chart attribute for dashboard to PPT automation process, and update Share...">Change the deck layout and chart attribute for dashboard to PPT automation process, and update Share...</div>
+            <div class="col-followup">CSCOP-938, CNTIN-853</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-919" class="ticket-key" target="_blank">CNTIN-919</a>
+                <span class="ticket-label">RITM1758259 - China Transactio...</span>
+                <span class="ticket-date">2026-01-12</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">72d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kino Wang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Elizabeth Parra Gomez
+Requestor's Line Manager: Mohit Goel
+Why we need this new case?: In...">Requestor: Elizabeth Parra Gomez
+Requestor's Line Manager: Mohit Goel
+Why we need this new case?: In...</div>
+            <div class="col-followup">CSCOP-911</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-918" class="ticket-key" target="_blank">CNTIN-918</a>
+                <span class="ticket-label">RITM1748996 - Update the data ...</span>
+                <span class="ticket-date">2026-01-11</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">73d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥1.50e+05<br>$2.02e+04</div>
+            <div class="col-approver">Eric Li</div>
+            <div class="col-scope" title="Update the data for FY26 each sales initiative dashboard">Update the data for FY26 each sales initiative dashboard</div>
+            <div class="col-followup">CNTIN-942</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-917" class="ticket-key" target="_blank">CNTIN-917</a>
+                <span class="ticket-label">RITM1751714 - Educator trainin...</span>
+                <span class="ticket-date">2026-01-11</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">73d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Qi Li
+Requestor Email: qli@lululemon.com
+Requestor's Line Manager: Rachel Mathia
+Requeste...">Requestor: Qi Li
+Requestor Email: qli@lululemon.com
+Requestor's Line Manager: Rachel Mathia
+Requeste...</div>
+            <div class="col-followup">CSCOP-909</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-916" class="ticket-key" target="_blank">CNTIN-916</a>
+                <span class="ticket-label">RITM1753062 - Improve efficien...</span>
+                <span class="ticket-date">2026-01-09</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">75d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥2.98e+05<br>$4.02e+04</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Charlotte QIN
+Requestor's Line Manager: Jaco Chen
+Why we need this new case?: To improve ...">Requestor: Charlotte QIN
+Requestor's Line Manager: Jaco Chen
+Why we need this new case?: To improve ...</div>
+            <div class="col-followup">CSCOP-939, CNTIN-1065</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-915" class="ticket-key" target="_blank">CNTIN-915</a>
+                <span class="ticket-label">RITM1753101 -  Split FOH/BOH D...</span>
+                <span class="ticket-date">2026-01-09</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">75d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">Cecillia Chen</div>
+            <div class="col-scope" title="Merged intake.">Merged intake.</div>
+            <div class="col-followup">CSCOP-910, CSCOP-909, CNTIN-945</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-914" class="ticket-key" target="_blank">CNTIN-914</a>
+                <span class="ticket-label">RITM1751697 - AP WMP backend d...</span>
+                <span class="ticket-date">2026-01-09</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">75d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Louie Sun
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: To renew AP We...">Requestor: Louie Sun
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: To renew AP We...</div>
+            <div class="col-followup">CSCOP-908, CDM-3205</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-913" class="ticket-key" target="_blank">CNTIN-913</a>
+                <span class="ticket-label">RITM1750314 - Integrate Yuyi w...</span>
+                <span class="ticket-date">2026-01-08</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">76d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Donna Zhou</div>
+            <div class="col-cost">¥1.06e+05<br>$1.42e+04</div>
+            <div class="col-approver">Angie Yeh</div>
+            <div class="col-scope" title="Integrating WeCom customer service 1v1 dialogues with Yuyi AI（6 accounts） Customer Service Quality I...">Integrating WeCom customer service 1v1 dialogues with Yuyi AI（6 accounts） Customer Service Quality I...</div>
+            <div class="col-followup">CNTIN-1015</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-912" class="ticket-key" target="_blank">CNTIN-912</a>
+                <span class="ticket-label">RITM1750318 - Own Channel gues...</span>
+                <span class="ticket-date">2026-01-08</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">76d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Donna Zhou</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Zita Wang
+Requestor's Line Manager: Angie Yeh
+Why we need this new case?: Improve guest r...">Requestor: Zita Wang
+Requestor's Line Manager: Angie Yeh
+Why we need this new case?: Improve guest r...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-911" class="ticket-key" target="_blank">CNTIN-911</a>
+                <span class="ticket-label">RITM1750316 - GEC after-sales ...</span>
+                <span class="ticket-date">2026-01-08</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">76d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Donna Zhou</div>
+            <div class="col-cost">¥2.74e+05<br>$3.70e+04</div>
+            <div class="col-approver">Zita Wang</div>
+            <div class="col-scope" title="3 Own-Channel after-sales orders ：WMP/RMP/.CN 5 Scenarios：请客人提供正确退货物流单号/请客人提供商品图片/通知客人寄出换货 商品/通知客人换货...">3 Own-Channel after-sales orders ：WMP/RMP/.CN 5 Scenarios：请客人提供正确退货物流单号/请客人提供商品图片/通知客人寄出换货 商品/通知客人换货...</div>
+            <div class="col-followup">CNTIN-971</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-909" class="ticket-key" target="_blank">CNTIN-909</a>
+                <span class="ticket-label">RITM1747159 - 企微群for SSC</span>
+                <span class="ticket-date">2026-01-04</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">80d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Amanda Xu</div>
+            <div class="col-cost">¥8.30e+04<br>$1.12e+04</div>
+            <div class="col-approver">San Yan Ng</div>
+            <div class="col-scope" title="Requestor: Stephanie Li
+Requestor Email: stephanieli@lululemon.com
+Requestor's Line Manager: San Yan...">Requestor: Stephanie Li
+Requestor Email: stephanieli@lululemon.com
+Requestor's Line Manager: San Yan...</div>
+            <div class="col-followup">CNTIN-964</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-904" class="ticket-key" target="_blank">CNTIN-904</a>
+                <span class="ticket-label">RITM1741316 - Trade Compliance...</span>
+                <span class="ticket-date">2025-12-28</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">86d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Aki Zhu</div>
+            <div class="col-cost">¥6.20e+05<br>$8.37e+04</div>
+            <div class="col-approver">Simon Ma</div>
+            <div class="col-scope" title="At present, Trade Compliance monitoring relied heavily on brokers manually maintaining and reporting...">At present, Trade Compliance monitoring relied heavily on brokers manually maintaining and reporting...</div>
+            <div class="col-followup">CSCOP-907, CNTIN-1090</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-903" class="ticket-key" target="_blank">CNTIN-903</a>
+                <span class="ticket-label">RITM1721664 - GB Testing data ...</span>
+                <span class="ticket-date">2025-12-28</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">87d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aki Zhu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Brittany Mardon
+Requestor's Line Manager: Kapil Tijare
+Why we need this new case?: Reduce...">Requestor: Brittany Mardon
+Requestor's Line Manager: Kapil Tijare
+Why we need this new case?: Reduce...</div>
+            <div class="col-followup">CSCOP-906</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-902" class="ticket-key" target="_blank">CNTIN-902</a>
+                <span class="ticket-label">RITM1738750 - POC for AI agent...</span>
+                <span class="ticket-date">2025-12-25</span>
+            </div>
+            <div class="col-type ">POC</div>
+            <div class="col-sla sla-danger">90d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Julius Zhu</div>
+            <div class="col-cost">¥1.44e+04<br>$1,944.00</div>
+            <div class="col-approver">Harry Zhuang</div>
+            <div class="col-scope" title="Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: To enable ...">Requestor: Lindsay Liu
+Requestor's Line Manager: Harry Zhuang
+Why we need this new case?: To enable ...</div>
+            <div class="col-followup">CNTIN-813</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-901" class="ticket-key" target="_blank">CNTIN-901</a>
+                <span class="ticket-label">RITM1737748 - Legal Hub Report...</span>
+                <span class="ticket-date">2025-12-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">91d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Patrick Zhang
+Requestor's Line Manager: Celine Xia
+Why we need this new case?: The legal ...">Requestor: Patrick Zhang
+Requestor's Line Manager: Celine Xia
+Why we need this new case?: The legal ...</div>
+            <div class="col-followup">CSCOP-905</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-900" class="ticket-key" target="_blank">CNTIN-900</a>
+                <span class="ticket-label">RITM1737730 - EC Data Quality</span>
+                <span class="ticket-date">2025-12-23</span>
+            </div>
+            <div class="col-type ">Task</div>
+            <div class="col-sla sla-danger">91d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥2.70e+05<br>$3.64e+04</div>
+            <div class="col-approver">Liz Li</div>
+            <div class="col-scope" title="Why we need this new case?: As EC data has been through some quality issue, request for a quality ba...">Why we need this new case?: As EC data has been through some quality issue, request for a quality ba...</div>
+            <div class="col-followup">CNTD-5969</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-898" class="ticket-key" target="_blank">CNTIN-898</a>
+                <span class="ticket-label">RITM1731896 - Store Community ...</span>
+                <span class="ticket-date">2025-12-19</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">96d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Meave Qian</div>
+            <div class="col-cost">¥2.20e+05<br>$2.97e+04</div>
+            <div class="col-approver">Leah Zhu</div>
+            <div class="col-scope" title="The activity creation platform needs to add a judgment mechanism for whether insurance is required. ...">The activity creation platform needs to add a judgment mechanism for whether insurance is required. ...</div>
+            <div class="col-followup">CNTIN-1128</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-897" class="ticket-key" target="_blank">CNTIN-897</a>
+                <span class="ticket-label">RITM1730601 - Integrated Inven...</span>
+                <span class="ticket-date">2025-12-19</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">96d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Alice Yan
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Inventory has...">Requestor: Alice Yan
+Requestor's Line Manager: Jasmine Gan
+Why we need this new case?: Inventory has...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-761" class="ticket-key" target="_blank">CNTIN-761</a>
+                <span class="ticket-label">RITM1730959 -  Oracle RMS SaaS...</span>
+                <span class="ticket-date">2025-12-17</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">98d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">David Du</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Elizabeth Parra Gomez
+Requestor's Line Manager: Mohit Goel
+Why we need this new case?: En...">Requestor: Elizabeth Parra Gomez
+Requestor's Line Manager: Mohit Goel
+Why we need this new case?: En...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-758" class="ticket-key" target="_blank">CNTIN-758</a>
+                <span class="ticket-label">RITM1727881 - Price Recon Aler...</span>
+                <span class="ticket-date">2025-12-17</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">98d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Luffy Ge
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: The current ...">Requestor: Luffy Ge
+Requestor's Line Manager: Roberto Cheng
+Why we need this new case?: The current ...</div>
+            <div class="col-followup">CNTD-5483</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-741" class="ticket-key" target="_blank">CNTIN-741</a>
+                <span class="ticket-label">RITM1725631 - Fix R&D false ap...</span>
+                <span class="ticket-date">2025-12-14</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">100d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-assignee">Amanda Xu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Louie Sun
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Fixing R&D fal...">Requestor: Louie Sun
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Fixing R&D fal...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-739" class="ticket-key" target="_blank">CNTIN-739</a>
+                <span class="ticket-label">RITM1723783 - subscription mes...</span>
+                <span class="ticket-date">2025-12-11</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">103d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥5.34e+04<br>$7,203.60</div>
+            <div class="col-approver">Jasmine Zhou</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to ...</div>
+            <div class="col-followup">CNTIN-1024</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-738" class="ticket-key" target="_blank">CNTIN-738</a>
+                <span class="ticket-label">RITM1723802 - pre-sell functio...</span>
+                <span class="ticket-date">2025-12-11</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">103d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to ...</div>
+            <div class="col-followup">CNTIN-1025, CNTIN-1026, EPCH-2341 (+1)</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-737" class="ticket-key" target="_blank">CNTIN-737</a>
+                <span class="ticket-label"> RITM1723812 - PDP enhancement</span>
+                <span class="ticket-date">2025-12-11</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">103d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to ...">Requestor: Jimmy Chen
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: We want to ...</div>
+            <div class="col-followup">CNTIN-1027</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-733" class="ticket-key" target="_blank">CNTIN-733</a>
+                <span class="ticket-label">RITM1696927 - Legal Tenancy Ag...</span>
+                <span class="ticket-date">2025-12-10</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">105d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Erin Liu
+Requestor's Line Manager: Carrie Yu
+Why we need this new case?: To digitalize fu...">Requestor: Erin Liu
+Requestor's Line Manager: Carrie Yu
+Why we need this new case?: To digitalize fu...</div>
+            <div class="col-followup">CSCOP-894, CNTIN-864, CDM-1698</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-732" class="ticket-key" target="_blank">CNTIN-732</a>
+                <span class="ticket-label">RITM1722394 - Unified platform...</span>
+                <span class="ticket-date">2025-12-10</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">105d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Meave Qian</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Tony Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: The increasing...">Requestor: Tony Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: The increasing...</div>
+            <div class="col-followup">CNTIN-746</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-676" class="ticket-key" target="_blank">CNTIN-676</a>
+                <span class="ticket-label">RITM1719780 - AP RFID anti-the...</span>
+                <span class="ticket-date">2025-12-08</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">107d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Jony Guo</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jack Fernyhough
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Explorin...">Requestor: Jack Fernyhough
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Explorin...</div>
+            <div class="col-followup">CNRTPRJ-1126</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-673" class="ticket-key" target="_blank">CNTIN-673</a>
+                <span class="ticket-label">RITM1717536 - Inquiry on RPA A...</span>
+                <span class="ticket-date">2025-12-07</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">108d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Grace JIA
+Requestor's Line Manager: Helen Wang
+Why we need this new case?: our global Vib...">Requestor: Grace JIA
+Requestor's Line Manager: Helen Wang
+Why we need this new case?: our global Vib...</div>
+            <div class="col-followup">CSCOP-888</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-672" class="ticket-key" target="_blank">CNTIN-672</a>
+                <span class="ticket-label">RITM1716330 - Tax Automation N...</span>
+                <span class="ticket-date">2025-12-04</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">111d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Background: Based ...">Requestor: Nana Wu
+Requestor's Line Manager: Carol Li
+Why we need this new case?: Background: Based ...</div>
+            <div class="col-followup">CSCOP-889, CNTIN-858</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-668" class="ticket-key" target="_blank">CNTIN-668</a>
+                <span class="ticket-label">RITM1715010 - Assets protectio...</span>
+                <span class="ticket-date">2025-12-03</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">112d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jack Fernyhough
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Adding a...">Requestor: Jack Fernyhough
+Requestor's Line Manager: Sean Bonar
+Why we need this new case?: Adding a...</div>
+            <div class="col-followup">CSCOP-891, CNTIN-867, CDM-3208</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-666" class="ticket-key" target="_blank">CNTIN-666</a>
+                <span class="ticket-label">RITM1712520 - Security Risk</span>
+                <span class="ticket-date">2025-12-03</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">112d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Julius Zhu</div>
+            <div class="col-cost">¥2.88e+04<br>$3,888.00</div>
+            <div class="col-approver">Aina Han</div>
+            <div class="col-scope" title="1. Actionable data security baseline with configuration guidanceIntegration of the Data Security Bas...">1. Actionable data security baseline with configuration guidanceIntegration of the Data Security Bas...</div>
+            <div class="col-followup">CNTIN-910</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-658" class="ticket-key" target="_blank">CNTIN-658</a>
+                <span class="ticket-label">RITM1709839 - Provide China gu...</span>
+                <span class="ticket-date">2025-11-30</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">115d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Aaron Petry
+Requestor's Line Manager: Brett Rinehold
+Why we need this new case?: China gu...">Requestor: Aaron Petry
+Requestor's Line Manager: Brett Rinehold
+Why we need this new case?: China gu...</div>
+            <div class="col-followup">CNTD-2269</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-652" class="ticket-key" target="_blank">CNTIN-652</a>
+                <span class="ticket-label">RITM1705443 - Add Bags Options...</span>
+                <span class="ticket-date">2025-11-25</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">120d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Briddy Yang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Ray Jin
+Requestor's Line Manager: Milla Wang
+Why we need this new case?: Add bag options ...">Requestor: Ray Jin
+Requestor's Line Manager: Milla Wang
+Why we need this new case?: Add bag options ...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-651" class="ticket-key" target="_blank">CNTIN-651</a>
+                <span class="ticket-label">RITM1704141 - Inventory loss c...</span>
+                <span class="ticket-date">2025-11-24</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">120d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: Let stores kno...">Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: Let stores kno...</div>
+            <div class="col-followup">CNTD-5825</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-643" class="ticket-key" target="_blank">CNTIN-643</a>
+                <span class="ticket-label">RITM1699952 -  SFS order loss ...</span>
+                <span class="ticket-date">2025-11-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">122d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Since September...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Since September...</div>
+            <div class="col-followup">CSCOP-884</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-642" class="ticket-key" target="_blank">CNTIN-642</a>
+                <span class="ticket-label">RITM1699939 - SFS block order ...</span>
+                <span class="ticket-date">2025-11-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">122d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: After analyzing...">Requestor: Carrie Chen
+Requestor's Line Manager: Eric Li
+Why we need this new case?: After analyzing...</div>
+            <div class="col-followup">CSCOP-883</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-630" class="ticket-key" target="_blank">CNTIN-630</a>
+                <span class="ticket-label">RITM1698130 - Infra cost and u...</span>
+                <span class="ticket-date">2025-11-19</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">125d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">David Du</div>
+            <div class="col-cost">¥3.00e+05<br>$4.05e+04</div>
+            <div class="col-approver">Jobs Zheng</div>
+            <div class="col-scope" title="Refresh infra resource cost from monthly cadence to be weekly.Abstract infra resource usage percenta...">Refresh infra resource cost from monthly cadence to be weekly.Abstract infra resource usage percenta...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-627" class="ticket-key" target="_blank">CNTIN-627</a>
+                <span class="ticket-label">RITM1698000 - APS Report CR</span>
+                <span class="ticket-date">2025-11-19</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">126d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">Jaco Chen</div>
+            <div class="col-scope" title="Exist capacity enhancement: Each new quarter automatically retains the data from the final week of t...">Exist capacity enhancement: Each new quarter automatically retains the data from the final week of t...</div>
+            <div class="col-followup">CSCOP-881, CNTIN-851</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-608" class="ticket-key" target="_blank">CNTIN-608</a>
+                <span class="ticket-label">RITM1689427 - China Inventory ...</span>
+                <span class="ticket-date">2025-11-12</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">132d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Jing Sun</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: After 2 mont...">Requestor: Jessie SUN
+Requestor's Line Manager: Vicki Chung
+Why we need this new case?: After 2 mont...</div>
+            <div class="col-followup">CNTD-5401</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-607" class="ticket-key" target="_blank">CNTIN-607</a>
+                <span class="ticket-label">RITM1688323 - guest segmentati...</span>
+                <span class="ticket-date">2025-11-12</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">132d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Amanda Xu</div>
+            <div class="col-cost">¥1.26e+06<br>$1.70e+05</div>
+            <div class="col-approver">Mel Chau</div>
+            <div class="col-scope" title="Build reliable data foundation and automated guest segmentation calculation mechanism Provide produc...">Build reliable data foundation and automated guest segmentation calculation mechanism Provide produc...</div>
+            <div class="col-followup">CNTIN-736</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-593" class="ticket-key" target="_blank">CNTIN-593</a>
+                <span class="ticket-label">RITM1686664 - NPS response imp...</span>
+                <span class="ticket-date">2025-11-09</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">136d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Briddy Yang</div>
+            <div class="col-cost">¥1.50e+05<br>$2.02e+04</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Tony Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: In order to en...">Requestor: Tony Zhu
+Requestor's Line Manager: Franck Feng
+Why we need this new case?: In order to en...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-591" class="ticket-key" target="_blank">CNTIN-591</a>
+                <span class="ticket-label">RITM1683834 - Buyers' assortme...</span>
+                <span class="ticket-date">2025-11-09</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">136d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥4.91e+04<br>$6,629.04</div>
+            <div class="col-approver">Helen Wang</div>
+            <div class="col-scope" title="To support the demand for multi-dimensional assortment reviews, User would like to make enhancements...">To support the demand for multi-dimensional assortment reviews, User would like to make enhancements...</div>
+            <div class="col-followup">CSCOP-862, CNTIN-854</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-579" class="ticket-key" target="_blank">CNTIN-579</a>
+                <span class="ticket-label">RITM1675817 - Customs Portal I...</span>
+                <span class="ticket-date">2025-11-03</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">142d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aki Zhu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Desree Chen
+Requestor's Line Manager: Kenneth Rao
+Why we need this new case?: Customs Por...">Requestor: Desree Chen
+Requestor's Line Manager: Kenneth Rao
+Why we need this new case?: Customs Por...</div>
+            <div class="col-followup">CSCOP-861</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-577" class="ticket-key" target="_blank">CNTIN-577</a>
+                <span class="ticket-label">RITM1675811 - Customs Portal A...</span>
+                <span class="ticket-date">2025-11-03</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">142d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Aki Zhu</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Desree Chen
+Requestor's Line Manager: Kenneth Rao
+Why we need this new case?: New Entry V...">Requestor: Desree Chen
+Requestor's Line Manager: Kenneth Rao
+Why we need this new case?: New Entry V...</div>
+            <div class="col-followup">CSCOP-860</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-571" class="ticket-key" target="_blank">CNTIN-571</a>
+                <span class="ticket-label">RITM1671612 - Business Databas...</span>
+                <span class="ticket-date">2025-11-02</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">143d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Sophie Hong
+Requestor's Line Manager: Odette Yip
+Why we need this new case?: To standardi...">Requestor: Sophie Hong
+Requestor's Line Manager: Odette Yip
+Why we need this new case?: To standardi...</div>
+            <div class="col-followup">CSCOP-851</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-565" class="ticket-key" target="_blank">CNTIN-565</a>
+                <span class="ticket-label">RITM1667895 - Wecom Evolution ...</span>
+                <span class="ticket-date">2025-10-29</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">146d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Amanda Xu</div>
+            <div class="col-cost">¥1.71e+06<br>$2.31e+05</div>
+            <div class="col-approver">Mel Chau</div>
+            <div class="col-scope" title="Elevate the existing tools (企微智能助手& 企微商城)to enhance Guest Engagement and omni-channel experience cap...">Elevate the existing tools (企微智能助手& 企微商城)to enhance Guest Engagement and omni-channel experience cap...</div>
+            <div class="col-followup">CNTIN-566</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-561" class="ticket-key" target="_blank">CNTIN-561</a>
+                <span class="ticket-label">RITM1657362 -  Guest Communica...</span>
+                <span class="ticket-date">2025-10-26</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">149d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Briddy Yang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Aaron Zhang
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Currently, the ...">Requestor: Aaron Zhang
+Requestor's Line Manager: Eric Li
+Why we need this new case?: Currently, the ...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-560" class="ticket-key" target="_blank">CNTIN-560</a>
+                <span class="ticket-label">RITM1660901 - Store clustering...</span>
+                <span class="ticket-date">2025-10-26</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">149d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Min Hong</div>
+            <div class="col-cost">¥6.36e+05<br>$8.59e+04</div>
+            <div class="col-approver">Odette Yip</div>
+            <div class="col-scope" title="Ingest External Proximity & Followgraph data for store clustering modeling, add new store cluster – ...">Ingest External Proximity & Followgraph data for store clustering modeling, add new store cluster – ...</div>
+            <div class="col-followup">CNTIN-1062, CSCOP-886, CNTIN-1074</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-558" class="ticket-key" target="_blank">CNTIN-558</a>
+                <span class="ticket-label">RITM1660312 - Store Pull back ...</span>
+                <span class="ticket-date">2025-10-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">153d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-assignee">Jony Guo</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: Improve store ...">Requestor: Jessica Zhu
+Requestor's Line Manager: Leah Zhu
+Why we need this new case?: Improve store ...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-557" class="ticket-key" target="_blank">CNTIN-557</a>
+                <span class="ticket-label">RITM1658799 - High-level peopl...</span>
+                <span class="ticket-date">2025-10-23</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">153d</div>
+            <div><span class="col-status status-cancel">Cancelled</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: To support with ...">Requestor: Gary Li
+Requestor's Line Manager: Shahar Gur
+Why we need this new case?: To support with ...</div>
+            <div class="col-followup">CSCOP-942</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-556" class="ticket-key" target="_blank">CNTIN-556</a>
+                <span class="ticket-label">RITM1658630 - Digital Privacy ...</span>
+                <span class="ticket-date">2025-10-23</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">153d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥9.30e+05<br>$1.26e+05</div>
+            <div class="col-approver">Celine Xia</div>
+            <div class="col-scope" title="a digitalized system flow where it can realize an on-line full circle of PIA process.">a digitalized system flow where it can realize an on-line full circle of PIA process.</div>
+            <div class="col-followup">CNTIN-863</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-544" class="ticket-key" target="_blank">CNTIN-544</a>
+                <span class="ticket-label">RITM1658859 - New SSC外派人员门禁项目</span>
+                <span class="ticket-date">2025-10-21</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">155d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Bingbing Zhao</div>
+            <div class="col-cost">¥3.49e+05<br>$4.71e+04</div>
+            <div class="col-approver">James Chen</div>
+            <div class="col-scope" title="Provide a secure, identity-bound way for vendor staff without corporate email (e.g., office janitors...">Provide a secure, identity-bound way for vendor staff without corporate email (e.g., office janitors...</div>
+            <div class="col-followup">CSCOP-847, CNTIN-871, CDM-2956</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-533" class="ticket-key" target="_blank">CNTIN-533</a>
+                <span class="ticket-label">RITM1652338 - Enhance the memb...</span>
+                <span class="ticket-date">2025-10-19</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">157d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-assignee">Aron Feng</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Winter Qi
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Enhance the ...">Requestor: Winter Qi
+Requestor's Line Manager: Jasmine Zhou
+Why we need this new case?: Enhance the ...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-531" class="ticket-key" target="_blank">CNTIN-531</a>
+                <span class="ticket-label">RITM1650578 - new API is neede...</span>
+                <span class="ticket-date">2025-10-19</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">157d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Kano Zhang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Murial Ho
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Due to changes i...">Requestor: Murial Ho
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Due to changes i...</div>
+            <div class="col-followup">-</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-527" class="ticket-key" target="_blank">CNTIN-527</a>
+                <span class="ticket-label">RITM1648902 - more than 1 box ...</span>
+                <span class="ticket-date">2025-10-19</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">157d</div>
+            <div><span class="col-status status-cancel">Strategy</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Pinkie Diao
+Requestor's Line Manager: Jessie LinWhy we need this new case?: We may need m...">Requestor: Pinkie Diao
+Requestor's Line Manager: Jessie LinWhy we need this new case?: We may need m...</div>
+            <div class="col-followup">CNTIN-835</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-525" class="ticket-key" target="_blank">CNTIN-525</a>
+                <span class="ticket-label">RITM1648871 - Enhancement of C...</span>
+                <span class="ticket-date">2025-10-19</span>
+            </div>
+            <div class="col-type ">Enhancement</div>
+            <div class="col-sla sla-danger">157d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥8.50e+05<br>$1.15e+05</div>
+            <div class="col-approver">Jonathan Hui</div>
+            <div class="col-scope" title="New DC in Wuhan at Central China to increase the delivery efficiency. • CNDC3 configuration would be...">New DC in Wuhan at Central China to increase the delivery efficiency. • CNDC3 configuration would be...</div>
+            <div class="col-followup">CNTIN-838</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-522" class="ticket-key" target="_blank">CNTIN-522</a>
+                <span class="ticket-label">RITM1647911 - RFID in All 3 DC...</span>
+                <span class="ticket-date">2025-10-15</span>
+            </div>
+            <div class="col-type ">New Dev</div>
+            <div class="col-sla sla-danger">161d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥1.03e+06<br>$1.39e+05</div>
+            <div class="col-approver">Kenneth Rao</div>
+            <div class="col-scope" title="Inbound: manual scanning to put-away / seamless receiving and put-away by RFID tunnel and automated ...">Inbound: manual scanning to put-away / seamless receiving and put-away by RFID tunnel and automated ...</div>
+            <div class="col-followup">CNTIN-829, CNTIN-836, CNTIN-1038 (+1)</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-515" class="ticket-key" target="_blank">CNTIN-515</a>
+                <span class="ticket-label">RITM1645275 - Optimize the sec...</span>
+                <span class="ticket-date">2025-10-12</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">164d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Jony Guo</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Murial Ho
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Optimize the sec...">Requestor: Murial Ho
+Requestor's Line Manager: Ann Zeng
+Why we need this new case?: Optimize the sec...</div>
+            <div class="col-followup">OF-2583</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-499" class="ticket-key" target="_blank">CNTIN-499</a>
+                <span class="ticket-label">RITM1626854 - China 3rd DC</span>
+                <span class="ticket-date">2025-09-28</span>
+            </div>
+            <div class="col-type ">New Application</div>
+            <div class="col-sla sla-danger">177d</div>
+            <div><span class="col-status status-done">Done</span></div>
+            <div class="col-assignee">Alice Lang</div>
+            <div class="col-cost">¥4.34e+06<br>$5.86e+05</div>
+            <div class="col-approver">Jonathan Hui</div>
+            <div class="col-scope" title="CN 3rd DC foundation setup which mainly replicate as-is CNDC1 and CNDC2 functionality with CN Adopti...">CN 3rd DC foundation setup which mainly replicate as-is CNDC1 and CNDC2 functionality with CN Adopti...</div>
+            <div class="col-followup">CNTIN-828, CNTIN-754, CNTIN-834 (+1)</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-423" class="ticket-key" target="_blank">CNTIN-423</a>
+                <span class="ticket-label">RITM1568537 - AP , in conjunct...</span>
+                <span class="ticket-date">2025-08-10</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">226d</div>
+            <div><span class="col-status status-cancel">Execution</span></div>
+            <div class="col-assignee">Jony Li</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="Requestor: Jack Fernyhough
+Requestor Email: jfernyhough@lululemon.com
+Requestor's Line Manager: Sean...">Requestor: Jack Fernyhough
+Requestor Email: jfernyhough@lululemon.com
+Requestor's Line Manager: Sean...</div>
+            <div class="col-followup">CNTIN-422</div>
+        </div>
+        <div class="table-row">
+            <div class="col-intake">
+                <a href="https://lululemon.atlassian.net/browse/CNTIN-325" class="ticket-key" target="_blank">CNTIN-325</a>
+                <span class="ticket-label">Smart Subsidy Flow</span>
+                <span class="ticket-date">2025-06-22</span>
+            </div>
+            <div class="col-type tbd">TBD</div>
+            <div class="col-sla sla-danger">275d</div>
+            <div><span class="col-status status-cancel">Discovery</span></div>
+            <div class="col-assignee">Jony Li</div>
+            <div class="col-cost">¥0<br>$0</div>
+            <div class="col-approver">-</div>
+            <div class="col-scope" title="**2025.7 Updated: **Assign to@Meave Qian from Retail Team: Wait for SC review.**2025.6 Ticket:RITM15...">**2025.7 Updated: **Assign to@Meave Qian from Retail Team: Wait for SC review.**2025.6 Ticket:RITM15...</div>
+            <div class="col-followup">CNTIN-747</div>
+        </div>
+</div>
+</div>
+
+<script>
+function updateRate(){
+    const rate = document.getElementById('exchangeRate').value;
+    document.querySelector('.rate-info').textContent = '当前: 1 RMB = ' + rate + ' USD | Cost = InitiativeChildCount × 汇率';
+}
+</script>
+</body>
+</html>
