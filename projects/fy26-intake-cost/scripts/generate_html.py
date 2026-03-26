@@ -430,6 +430,8 @@ let activeFilters = {{
   pillars: [],
   search: ''
 }};
+let currentPage = 1;
+const PAGE_SIZE = 50;
 
 // i18n
 const i18n = {{
@@ -519,9 +521,9 @@ function updateExchangeRate() {{
 }}
 
 function getStatusClass(status) {{
-  if (['To Do', 'Open', 'New'].includes(status)) return 'status-todo';
-  if (['In Progress'].includes(status)) return 'status-progress';
-  if (['Done', 'Closed', 'Resolved'].includes(status)) return 'status-done';
+  if (['New'].includes(status)) return 'status-todo';
+  if (['Discovery', 'Strategy', 'Execution'].includes(status)) return 'status-progress';
+  if (['Done'].includes(status)) return 'status-done';
   return 'status-cancel';
 }}
 
@@ -552,16 +554,28 @@ function togglePillar(pillar) {{
 
 function filterByStatus(status) {{
   activeFilters.status = status;
+  currentPage = 1;
   document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active'));
   event.currentTarget.classList.add('active');
-  applyFilters();
+  
+  // Clear dropdown to avoid conflict
+  document.getElementById('filterStatus').value = '';
+  
+  renderTable();
+  updateCharts();
 }}
 
 function applyFilters() {{
   activeFilters.search = document.getElementById('searchTicket').value.toLowerCase();
-  const statusFilter = document.getElementById('filterStatus').value;
-  if (statusFilter) activeFilters.status = statusFilter;
   
+  // Only update status from dropdown if it's not empty and no card filter is active
+  const statusFilter = document.getElementById('filterStatus').value;
+  if (statusFilter) {{
+    activeFilters.status = statusFilter;
+    document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active'));
+  }}
+  
+  currentPage = 1; // Reset to first page
   renderTable();
   updateCharts();
 }}
@@ -594,10 +608,10 @@ function renderTable() {{
     // Status filter
     if (activeFilters.status && activeFilters.status !== 'all') {{
       const statusMapping = {{
-        'not_started': ['To Do', 'Open', 'New'],
-        'in_progress': ['In Progress', 'In Review'],
-        'closed': ['Done', 'Closed', 'Resolved'],
-        'cancelled': ['Cancelled', 'Canceled']
+        'not_started': ['New'],
+        'in_progress': ['Discovery', 'Strategy', 'Execution'],
+        'closed': ['Done'],
+        'cancelled': ['Cancelled']
       }};
       
       let statusList;
