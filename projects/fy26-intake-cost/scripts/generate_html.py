@@ -254,9 +254,12 @@ body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC
 .donut-center .number {{ font-size: 32px; font-weight: 600; }}
 .donut-center .label {{ font-size: 12px; color: #666; }}
 .chart-legend {{ display: flex; justify-content: center; gap: 16px; margin-top: 16px; flex-wrap: wrap; }}
-.legend-item {{ display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s; }}
+.legend-item {{ display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: all 0.2s; }}
 .legend-item:hover {{ background: #f0f0f0; }}
 .legend-item.disabled {{ opacity: 0.4; }}
+.legend-item.active {{ background: #1890ff; color: white; }}
+.legend-item.active .legend-dot {{ box-shadow: 0 0 0 2px white; }}
+.legend-item.dimmed {{ opacity: 0.4; }}
 .legend-dot {{ width: 8px; height: 8px; border-radius: 50%; }}
 .bar-chart {{ display: flex; flex-direction: column; gap: 10px; }}
 .bar-item {{ display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 4px; border-radius: 4px; transition: background 0.2s; }}
@@ -430,6 +433,7 @@ let activeFilters = {{
   pillars: [],
   search: ''
 }};
+let activeStatusChart = null;  // 当前选中的状态
 let currentPage = 1;
 const PAGE_SIZE = 50;
 
@@ -554,11 +558,32 @@ function togglePillar(pillar) {{
 
 function filterByStatus(status) {{
   activeFilters.status = status;
+  activeStatusChart = null;  // 清除图表选中状态
   currentPage = 1;
   document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active'));
   event.currentTarget.classList.add('active');
   
   // Clear dropdown to avoid conflict
+  document.getElementById('filterStatus').value = '';
+  
+  renderTable();
+  updateCharts();
+}}
+
+// 从图表点击筛选状态
+function filterByStatusFromChart(status) {{
+  if (activeStatusChart === status) {{
+    // 再次点击取消筛选
+    activeStatusChart = null;
+    activeFilters.status = 'all';
+  }} else {{
+    activeStatusChart = status;
+    activeFilters.status = status;
+  }}
+  currentPage = 1;
+  
+  // 清除其他筛选器的激活状态
+  document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active'));
   document.getElementById('filterStatus').value = '';
   
   renderTable();
@@ -582,6 +607,7 @@ function applyFilters() {{
 
 function clearFilters() {{
   activeFilters = {{ status: 'all', pillars: [], search: '' }};
+  activeStatusChart = null;  // 清除图表选中状态
   document.getElementById('searchTicket').value = '';
   document.getElementById('filterStatus').value = '';
   document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active'));
@@ -728,7 +754,14 @@ function updateCharts() {{
     const largeArc = angle > 180 ? 1 : 0;
     
     const path = `M 100 100 L ${{x1}} ${{y1}} A 80 80 0 ${{largeArc}} 1 ${{x2}} ${{y2}} Z`;
-    svgContent += `<path d="${{path}}" fill="${{colors[i % 7]}}" stroke="#fff" stroke-width="2" />`;
+    const isActive = activeStatusChart === status;
+    const opacity = activeStatusChart && !isActive ? 0.3 : 1;
+    
+    svgContent += `<path d="${{path}}" fill="${{colors[i % 7]}}" stroke="#fff" stroke-width="2" 
+      style="cursor: pointer; opacity: ${{opacity}}; transition: opacity 0.2s;"
+      onclick="filterByStatusFromChart('${{status}}')"
+      onmouseover="this.style.opacity=0.8"
+      onmouseout="this.style.opacity=${{opacity}}" />`;
     
     currentAngle += angle;
   }});
@@ -738,20 +771,33 @@ function updateCharts() {{
   svgContent += '</svg>';
   
   // Add center text
+  const centerText = activeStatusChart ? 
+    `<div class="number">${{statusCounts[activeStatusChart]}}</div><div class="label">${{activeStatusChart}}</div>` :
+    `<div class="number">${{total}}</div><div class="label">Total</div>`;
+  
   svgContent += `
     <div class="donut-center">
-      <div class="number">${{total}}</div>
-      <div class="label">Total</div>
+      ${{centerText}}
     </div>
   `;
   
   statusChart.innerHTML = svgContent;
   
-  // Status legend
+  // Status legend with percentage
   const statusLegend = document.getElementById('statusLegend');
-  statusLegend.innerHTML = statusEntries.map(([status, count], i) => `
-    <span class="legend-item"><span class="legend-dot" style="background:${{colors[i % 7]}}"></span>${{status}} ${{count}}</span>
-  `).join('');
+  statusLegend.innerHTML = statusEntries.map(([status, count], i) => {{
+    const percent = ((count / total) * 100).toFixed(1);
+    const isActive = activeStatusChart === status;
+    const isDimmed = activeStatusChart && !isActive;
+    return `
+      <span class="legend-item ${{isActive ? 'active' : ''}} ${{isDimmed ? 'dimmed' : ''}}" 
+        onclick="filterByStatusFromChart('${{status}}')" 
+        style="cursor: pointer;">
+        <span class="legend-dot" style="background:${{colors[i % 7]}}"></span>
+        ${{status}} <strong>${{count}}</strong> <span style="color:#999">(${{percent}}%)</span>
+      </span>
+    `;
+  }}).join('');
   
   // Pillar bar chart
   const pillarChart = document.getElementById('pillarChart');
