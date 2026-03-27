@@ -175,7 +175,7 @@ def step2_fetch_fy26_init_initiatives(cursor):
     
     initiatives = fetch_issues_jql(
         "project = CNTIN AND issuetype = Initiative AND labels = 'FY26_INIT' AND created >= '2025-11-01' ORDER BY key ASC",
-        ["key", "summary", "description", "status", "assignee", "created", "updated", "labels"]
+        ["key", "summary", "description", "status", "assignee", "created", "updated", "labels", "customfield_14024"]
     )
     
     print(f"  ✓ 抓到 {len(initiatives)} 个Initiatives")
@@ -183,10 +183,18 @@ def step2_fetch_fy26_init_initiatives(cursor):
     # 存入数据库
     for init in initiatives:
         fields = init['fields']
+        # 解析 status_trend (customfield_14024)
+        st_raw = fields.get('customfield_14024')
+        status_trend = ''
+        if st_raw:
+            if isinstance(st_raw, dict):
+                status_trend = st_raw.get('value', '') or st_raw.get('name', '') or str(st_raw)
+            else:
+                status_trend = str(st_raw)
         cursor.execute('''
             INSERT OR REPLACE INTO initiatives 
-            (key, summary, status, assignee, labels, created, updated)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (key, summary, status, assignee, labels, created, updated, status_trend)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             init['key'],
             fields.get('summary', ''),
@@ -194,7 +202,8 @@ def step2_fetch_fy26_init_initiatives(cursor):
             fields.get('assignee', {}).get('displayName', 'Unassigned') if fields.get('assignee') else 'Unassigned',
             json.dumps(fields.get('labels', [])),
             fields.get('created', ''),
-            fields.get('updated', '')
+            fields.get('updated', ''),
+            status_trend
         ))
     
     log_fetch(cursor, "Step2", "CNTIN_FY26_INIT", len(initiatives), "success")
@@ -218,7 +227,7 @@ def step3_fetch_all_features(cursor):
             batch = feature_keys_from_epics[i:i+batch_size]
             features = fetch_issues_jql(
                 f"key in ({','.join(batch)}) ORDER BY key ASC",
-                ["key", "summary", "description", "status", "assignee", "created", "updated", "parent", "labels"]
+                ["key", "summary", "description", "status", "assignee", "created", "updated", "parent", "labels", "customfield_14024"]
             )
             all_features.extend(features)
         print(f"    ✓ 从Epics来源抓到 {len(all_features)} 个Features")
@@ -236,7 +245,7 @@ def step3_fetch_all_features(cursor):
         
         features = fetch_issues_jql(
             f"project = CNTIN AND issuetype = Feature AND parent = {init_key} AND created >= '2025-11-01' ORDER BY key ASC",
-            ["key", "summary", "description", "status", "assignee", "created", "updated", "parent", "labels"]
+            ["key", "summary", "description", "status", "assignee", "created", "updated", "parent", "labels", "customfield_14024"]
         )
         if features:
             features_from_initiatives.extend(features)
@@ -262,11 +271,19 @@ def step3_fetch_all_features(cursor):
         fields = feat['fields']
         parent = fields.get('parent')
         parent_key = parent['key'] if parent else None
+        # 解析 status_trend (customfield_14024)
+        st_raw = fields.get('customfield_14024')
+        status_trend = ''
+        if st_raw:
+            if isinstance(st_raw, dict):
+                status_trend = st_raw.get('value', '') or st_raw.get('name', '') or str(st_raw)
+            else:
+                status_trend = str(st_raw)
         
         cursor.execute('''
             INSERT OR REPLACE INTO features 
-            (key, summary, status, assignee, parent_key, labels, created, updated)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (key, summary, status, assignee, parent_key, labels, created, updated, status_trend)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             feat['key'],
             fields.get('summary', ''),
@@ -275,7 +292,8 @@ def step3_fetch_all_features(cursor):
             parent_key,
             json.dumps(fields.get('labels', [])),
             fields.get('created', ''),
-            fields.get('updated', '')
+            fields.get('updated', ''),
+            status_trend
         ))
     
     log_fetch(cursor, "Step3", "CNTIN", len(merged_features), "success", 

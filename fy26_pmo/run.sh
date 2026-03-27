@@ -4,6 +4,14 @@
 
 cd /Users/admin/.openclaw/workspace/fy26_pmo
 
+# 加载 Jira 和邮箱配置
+if [ -f "$HOME/.openclaw/workspace/.jira-config" ]; then
+    source "$HOME/.openclaw/workspace/.jira-config"
+fi
+export JIRA_API_TOKEN="${JIRA_API_TOKEN:-}"
+export JIRA_EMAIL="${JIRA_USER_EMAIL:-rcheng2@lululemon.com}"
+export QQ_MAIL_PASSWORD="${QQ_EMAIL_PASSWORD:-${QQ_MAIL_PASSWORD:-}}"
+
 # 记录日志
 LOG_FILE="/Users/admin/.openclaw/workspace/fy26_pmo/logs/cron_$(date +%Y%m%d_%H%M).log"
 mkdir -p logs
