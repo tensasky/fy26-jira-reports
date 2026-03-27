@@ -700,12 +700,56 @@ function updateCharts() {{
     }});
   }});
   
-  // Render charts (simplified)
+  // Render charts
   const colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452'];
+  const statusEntries = Object.entries(statusCounts);
+  const total = statusEntries.reduce((sum, [, count]) => sum + count, 0);
+  
+  // Render Status Donut Chart SVG
+  const statusChart = document.getElementById('statusChart');
+  let svgContent = '<svg viewBox="0 0 200 200" width="200" height="200">';
+  let currentAngle = 0;
+  
+  statusEntries.forEach(([status, count], i) => {{
+    const percentage = count / total;
+    const angle = percentage * 360;
+    const startAngle = currentAngle;
+    const endAngle = currentAngle + angle;
+    
+    // Convert angles to radians and calculate path
+    const startRad = (startAngle - 90) * Math.PI / 180;
+    const endRad = (endAngle - 90) * Math.PI / 180;
+    
+    const x1 = 100 + 80 * Math.cos(startRad);
+    const y1 = 100 + 80 * Math.sin(startRad);
+    const x2 = 100 + 80 * Math.cos(endRad);
+    const y2 = 100 + 80 * Math.sin(endRad);
+    
+    const largeArc = angle > 180 ? 1 : 0;
+    
+    const path = `M 100 100 L ${{x1}} ${{y1}} A 80 80 0 ${{largeArc}} 1 ${{x2}} ${{y2}} Z`;
+    svgContent += `<path d="${{path}}" fill="${{colors[i % 7]}}" stroke="#fff" stroke-width="2" />`;
+    
+    currentAngle += angle;
+  }});
+  
+  // Add center hole for donut effect
+  svgContent += '<circle cx="100" cy="100" r="50" fill="#fff" />';
+  svgContent += '</svg>';
+  
+  // Add center text
+  svgContent += `
+    <div class="donut-center">
+      <div class="number">${{total}}</div>
+      <div class="label">Total</div>
+    </div>
+  `;
+  
+  statusChart.innerHTML = svgContent;
   
   // Status legend
   const statusLegend = document.getElementById('statusLegend');
-  statusLegend.innerHTML = Object.entries(statusCounts).map(([status, count], i) => `
+  statusLegend.innerHTML = statusEntries.map(([status, count], i) => `
     <span class="legend-item"><span class="legend-dot" style="background:${{colors[i % 7]}}"></span>${{status}} ${{count}}</span>
   `).join('');
   
