@@ -37,9 +37,9 @@ def create_password_zip(html_file):
 def send_report():
     # 配置
     sender_email = os.getenv("QQ_EMAIL_SENDER", "3823810468@qq.com")
-    sender_password = os.getenv("QQ_EMAIL_PASSWORD", "")
+    sender_password = os.getenv("QQ_MAIL_PASSWORD", "")  # 使用统一的环境变量名
     recipients = ["chinatechpmo@lululemon.com"]
-    cc = "rcheng2@lululemon.com"
+    cc = "rcheng2@lululemon.com, jjang2@lululemon.com"
     
     print(f"发件人: {sender_email}")
     print(f"收件人: {', '.join(recipients)}")

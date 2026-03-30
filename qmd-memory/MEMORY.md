@@ -51,17 +51,12 @@
 |------|------|---------|
 | `scripts/cntin730_report.py` | 数据抓取 + HTML 生成（v5.2 完整功能版） | 2026-03-23 |
 | `scripts/send_report.py` | 邮件发送 | 2026-03-27 |
-| `scripts/run.sh` | 定时任务主脚本 | 2026-03-30 |
+| `scripts/run.sh` | 定时任务主脚本 | 2026-03-25 |
 
 **执行流程：**
 1. `run.sh` → 加载 `.jira-config`
 2. `cntin730_report.py` → 从 Jira 抓取 CNTIN-730 下所有 Initiatives 并生成 HTML
 3. `send_report.py` → AES-256 加密 ZIP 发送
-
-**⚠️ 重要修复 (2026-03-30):**
-- **问题**: plist 直接调用 `send_report.py`，跳过报告生成步骤，导致发送旧数据
-- **修复**: 修改 plist 调用 `run.sh` 而不是 `send_report.py`
-- **原因**: `send_report.py` 只负责发送邮件，不生成报告
 
 **功能：** 统计卡片、Assignee 筛选、冻结列、行展开、Excel 导出、AI Summary
 **邮件主题**: `CNTIN-730 FY26项目周报 - YYYY-MM-DD`

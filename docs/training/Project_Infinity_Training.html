@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Infinity - 培训文档</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #E31937; border-bottom: 2px solid #E31937; padding-bottom: 8px; }
+        h2 { color: #E31937; margin-top: 30px; border-left: 4px solid #E31937; padding-left: 12px; }
+        h3 { color: #333; margin-top: 24px; }
+        h4 { color: #666; margin-top: 20px; }
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        th { background-color: #f5f5f5; font-weight: bold; }
+        tr:nth-child(even) { background-color: #fafafa; }
+        ul, ol { padding-left: 20px; }
+        li { margin: 5px 0; }
+        .highlight { background-color: #fff3cd; padding: 2px 6px; border-radius: 3px; }
+        .success { color: #28a745; }
+        .danger { color: #dc3545; }
+        .info-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #E31937; }
+        .meta { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+        .divider { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
+        strong { color: #E31937; }
+    </style>
+</head>
+<body>
+
+<h1>Project Infinity - 培训文档</h1>
+
+<div class="meta">
+    <p><strong>培训对象:</strong> 技术团队成员</p>
+    <p><strong>文档来源:</strong> <a href="https://lululemon.atlassian.net/wiki/spaces/TPMO/pages/6121816068/Project+Charter+-+Infinity">Confluence - Project Charter - Infinity</a></p>
+    <p><strong>生成日期:</strong> 2026-03-30</p>
+    <p><strong>版本:</strong> v1.0</p>
+</div>
+
+<hr class="divider">
+
+<h2>1. 项目概述</h2>
+
+<h3>1.1 项目名称</h3>
+<p><strong>Project Infinity</strong> - Enterprise Taskforce for Deployment Excellence</p>
+
+<h3>1.2 项目愿景</h3>
+<p>建立一个未来的运维环境：</p>
+<ul>
+    <li><span class="success">✅ <strong>零常驻人类管理员权限</strong></span> (Zero Standing Human Admins)</li>
+    <li><span class="success">✅ <strong>零因人工错误导致的 Sev1 事故</strong></span></li>
+</ul>
+
+<h3>1.3 核心问题</h3>
+<p>lululemon 面临的主要风险：</p>
+<ul>
+    <li>分散的权限管理</li>
+    <li>广泛的 admin 权限暴露</li>
+    <li>不一致的生产环境控制</li>
+</ul>
+
+<div class="info-box">
+    <strong>我们需要转向：</strong>零常驻管理权限 + 受控的临时权限提升 + 标准化的自动化访问路径
+</div>
+
+<hr class="divider">
+
+<h2>2. 团队结构</h2>
+
+<table>
+    <tr>
+        <th>角色</th>
+        <th>成员</th>
+    </tr>
+    <tr>
+        <td><strong>执行发起人 (Executive Sponsor)</strong></td>
+        <td>Ranju Das (SLT)</td>
+    </tr>
+    <tr>
+        <td><strong>执行支持者</strong></td>
+        <td>Jebin Zacharia, Nigel Storey, Jean-Neol Filippi, Rahul Botika</td>
+    </tr>
+    <tr>
+        <td><strong>项目负责人 (Lead)</strong></td>
+        <td>Ravi Kesapragada</td>
+    </tr>
+    <tr>
+        <td><strong>核心团队</strong></td>
+        <td>Alissa Allard, Craig Henderson, Vijayanarayanan Ramanujam, Sitanshu Maheshwari, TBH - India</td>
+    </tr>
+    <tr>
+        <td><strong>扩展核心团队</strong></td>
+        <td>Ravi Sharma, Evan Hickey, Rajiv Gandhi</td>
+    </tr>
+    <tr>
+        <td><strong>项目经理</strong></td>
+        <td>Aditya Davalbhakta</td>
+    </tr>
+</table>
+
+<hr class="divider">
+
+<h2>3. 目标与成果 (Objectives & Outcomes)</h2>
+
+<table>
+    <tr>
+        <th>目标</th>
+        <th>指标</th>
+    </tr>
+    <tr>
+        <td>移除常驻生产环境人类管理员</td>
+        <td><strong>接近 100%</strong></td>
+    </tr>
+    <tr>
+        <td>自动化 SNOW change 创建</td>
+        <td><strong>≥ 1,060 个 pipelines</strong></td>
+    </tr>
+    <tr>
+        <td>强制 2 人审核 (仅限 FTE)</td>
+        <td><strong>100% 生产变更</strong></td>
+    </tr>
+    <tr>
+        <td>标准化 Runbook</td>
+        <td><strong>覆盖所有非 IaC 操作</strong></td>
+    </tr>
+    <tr>
+        <td>收紧 JIT 权限提升</td>
+        <td><strong>1-2 小时窗口期</strong></td>
+    </tr>
+</table>
+
+<hr class="divider">
+
+<h2>4. 项目范围</h2>
+
+<h3>4.1 In Scope (范围内)</h3>
+<ul>
+    <li><span class="success">✅</span> AWS 管理权限合理化</li>
+    <li><span class="success">✅</span> GitLab → ServiceNow 自动化变更创建</li>
+    <li><span class="success">✅</span> DEA/PIM 权限治理</li>
+    <li><span class="success">✅</span> 基于 SSM/自动化框架的 Runbook 标准化</li>
+    <li><span class="success">✅</span> 领导层沟通与报告</li>
+</ul>
+
+<h3>4.2 Out of Scope (范围外)</h3>
+<ul>
+    <li><span class="danger">❌</span> Azure, Kafka, 其他平台</li>
+    <li><span class="danger">❌</span> 非 GitLab CI/CD 系统</li>
+</ul>
+
+<hr class="divider">
+
+<h2>5. 限制与假设</h2>
+
+<table>
+    <tr>
+        <th>类别</th>
+        <th>详情</th>
+    </tr>
+    <tr>
+        <td><strong>限制</strong></td>
+        <td>DEA 限制、高峰期限制、多团队依赖、无专项预算、无专属资源</td>
+    </tr>
+    <tr>
+        <td><strong>假设</strong></td>
+        <td>团队迁移到 runbooks/pipelines；CAB 保留审批权限</td>
+    </tr>
+</table>
+
+<hr class="divider">
+
+<h2>6. 路线图 (Roadmap)</h2>
+
+<h3>Phase 1</h3>
+<ul>
+    <li>所有 AWS admin 账户移除</li>
+    <li>DEA 收紧</li>
+    <li>GitLab→SNOW pilot</li>
+</ul>
+
+<h3>Phase 2</h3>
+<ul>
+    <li>常驻管理员消除</li>
+    <li>环境级别强制</li>
+</ul>
+
+<h3>Phase 3</h3>
+<ul>
+    <li>Runbook 自动化</li>
+    <li>集中 IAM roles</li>
+</ul>
+
+<h3>Phase 4</h3>
+<ul>
+    <li>GitOps-only 生产部署</li>
+    <li>黄金路径模板</li>
+</ul>
+
+<hr class="divider">
+
+<h2>7. 完成定义 (Definition of Done)</h2>
+
+<ul>
+    <li><span class="success">✅</span> 零常驻生产环境人类管理员</li>
+    <li><span class="success">✅</span> 100% 生产变更需 2-FTE 审批</li>
+    <li><span class="success">✅</span> 所有 pipelines 与 SNOW 集成</li>
+    <li><span class="success">✅</span> 完整 Runbook 覆盖</li>
+    <li><span class="success">✅</span> 合规仪表盘发布</li>
+</ul>
+
+<hr class="divider">
+
+<h2>8. KPIs</h2>
+
+<table>
+    <tr>
+        <th>KPI 类别</th>
+        <th>指标</th>
+    </tr>
+    <tr>
+        <td><strong>事故 (Incidents)</strong></td>
+        <td>人工错误导致的 Sev1 数量</td>
+    </tr>
+    <tr>
+        <td><strong>权限 (Access)</strong></td>
+        <td>Admin 数量；DEA 使用量</td>
+    </tr>
+    <tr>
+        <td><strong>治理 (Governance)</strong></td>
+        <td>2-FTE 审核遵守率</td>
+    </tr>
+    <tr>
+        <td><strong>自动化 (Automation)</strong></td>
+        <td>自动变更采用率</td>
+    </tr>
+</table>
+
+<hr class="divider">
+
+<h2>9. 推广波次 (Rollout Waves)</h2>
+
+<table>
+    <tr>
+        <th>波次</th>
+        <th>团队</th>
+        <th>备注</th>
+    </tr>
+    <tr>
+        <td><strong>Wave 1</strong></td>
+        <td>OMS, B2B, PoS/Xstore</td>
+        <td>Terraform-ready</td>
+    </tr>
+    <tr>
+        <td><strong>Wave 2</strong></td>
+        <td>其他工程域</td>
+        <td>DEA 标准化</td>
+    </tr>
+    <tr>
+        <td><strong>Wave 3</strong></td>
+        <td>企业平台</td>
+        <td>Pipeline-only PRD</td>
+    </tr>
+</table>
+
+<hr class="divider">
+
+<h2>10. 快速问答 (FAQ)</h2>
+
+<h3>Q1: 为什么要移除常驻管理员权限？</h3>
+<p><strong>A:</strong> 降低风险、改善治理、预防 Sev1 事故。</p>
+
+<h3>Q2: 紧急情况下如何获取管理员权限？</h3>
+<p><strong>A:</strong> 通过 DEA/PIM，需 <strong>2-FTE 审批</strong>，<strong>1-2 小时时限</strong>，完整审计追踪。</p>
+
+<h3>Q3: 如果需要进行手动修复怎么办？</h3>
+<p><strong>A:</strong> 使用批准的 <strong>Runbook</strong> + 限时访问；然后创建 backlog 项用于自动化。</p>
+
+<h3>Q4: 事故响应会因此变慢吗？</h3>
+<p><strong>A:</strong> 不会 — DEA 支持批准后近乎即时的权限提升。</p>
+
+<hr class="divider">
+
+<h2>11. 时间线 (Timeline)</h2>
+
+<h3>11.1 关键里程碑</h3>
+
+<table>
+    <tr>
+        <th>时间</th>
+        <th>里程碑</th>
+        <th>描述</th>
+    </tr>
+    <tr>
+        <td><strong>Jan 2026</strong></td>
+        <td>Phase 1 启动</td>
+        <td>启动自动化工作流 (OMS, B2B, PoS/Xstore)</td>
+    </tr>
+    <tr>
+        <td><strong>Jan 13, 2026</strong></td>
+        <td>CHG0090256 执行</td>
+        <td>移除 278 个不活跃 AWS PRD admin 用户</td>
+    </tr>
+    <tr>
+        <td><strong>Jan-Feb 2026</strong></td>
+        <td>Admin 清理扩大</td>
+        <td>移除 700+ admin 账户；DEA guardrail 收紧</td>
+    </tr>
+    <tr>
+        <td><strong>Feb-Mar 2026</strong></td>
+        <td>Phase 2 准备</td>
+        <td>识别剩余企业 admin 用户</td>
+    </tr>
+    <tr>
+        <td><strong>Mar 2026</strong></td>
+        <td>Phase 2 执行</td>
+        <td>开始移除所有常驻 AWS admins</td>
+    </tr>
+    <tr>
+        <td><strong>Mar-Apr 2026</strong></td>
+        <td>自动化扩展</td>
+        <td>接入更多团队；标准化 runbooks</td>
+    </tr>
+    <tr>
+        <td><strong>Apr-May 2026</strong></td>
+        <td>GitOps + Runbook 集成</td>
+        <td>所有 pipelines 自动生成 SNOW change tickets</td>
+    </tr>
+    <tr>
+        <td><strong>May 2026</strong></td>
+        <td>企业对齐</td>
+        <td>所有 org 对齐自动化路线图</td>
+    </tr>
+    <tr>
+        <td><strong>⭐ June 2026</strong></td>
+        <td>VOC 目标达成</td>
+        <td><strong>100% 移除所有常驻 AWS 人类管理员</strong></td>
+    </tr>
+    <tr>
+        <td><strong>Post-June 2026</strong></td>
+        <td>Phase 4</td>
+        <td>GitOps-only PRD 路径；黄金路径模板</td>
+    </tr>
+</table>
+
+<h3>11.2 六月底 VOC 目标</h3>
+
+<h4>1. 消除所有常驻人类管理员权限</h4>
+<ul>
+    <li>100% AWS PRD + NPD 人类管理员已移除</li>
+    <li>仅允许即时权限提升 (DEA/PIM)</li>
+    <li>访问时长限制在 1-2 小时</li>
+    <li>完整的证据捕获和审计日志</li>
+</ul>
+
+<h4>2. 自动化采用（所有识别团队）</h4>
+<ul>
+    <li>所有生产变更通过以下方式路由：
+        <ul>
+            <li><strong>Terraform + CI/CD pipelines</strong>, 或</li>
+            <li><strong>Runbook 驱动的自动化 (SSM, Datadog, AWS SDK 等)</strong></li>
+        </ul>
+    </li>
+    <li>不允许手动控制台或临时 API 变更</li>
+    <li>所有 pipelines 生成自动化 ServiceNow change 记录</li>
+</ul>
+
+<h4>3. 移除个人管理员权限的生产访问</h4>
+<ul>
+    <li>任何用户不得使用个人提升权限直接执行 PRD 变更</li>
+    <li>例外仅限紧急场景（需 2-FTE 审批）</li>
+    <li>通过 GitLab、SNOW、IAM 和 DEA guardrails 强制执行策略</li>
+</ul>
+
+<h4>4. EW (Engineering Workstreams) PRD 变更自动化</h4>
+<ul>
+    <li>Engineering Workstreams 完全过渡到自动化验证+执行</li>
+    <li>部署前需同行评审，部署后需验证</li>
+    <li>可重复的 runbooks 已创建并在低环境中演练</li>
+</ul>
+
+<hr class="divider">
+
+<h2>12. 关键行动项</h2>
+
+<table>
+    <tr>
+        <th>#</th>
+        <th>行动项</th>
+        <th>负责人</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>完成当前 admin 账户审计</td>
+        <td>Core Team</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>制定 DEA 标准操作流程</td>
+        <td>Security</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>接入 GitLab→SNOW 集成</td>
+        <td>Platform Team</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>创建 Runbook 模板</td>
+        <td>SRE</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>沟通计划制定</td>
+        <td>PMO</td>
+    </tr>
+</table>
+
+<hr class="divider">
+
+<h2>附录 A: 术语表</h2>
+
+<table>
+    <tr>
+        <th>术语</th>
+        <th>解释</th>
+    </tr>
+    <tr>
+        <td><strong>DEA</strong></td>
+        <td>Dynamic Elevation Authorization - 动态权限提升授权</td>
+    </tr>
+    <tr>
+        <td><strong>PIM</strong></td>
+        <td>Privileged Identity Management - 特权身份管理</td>
+    </tr>
+    <tr>
+        <td><strong>SNOW</strong></td>
+        <td>ServiceNow - 变更管理工具</td>
+    </tr>
+    <tr>
+        <td><strong>FTE</strong></td>
+        <td>Full-Time Employee - 全职员工</td>
+    </tr>
+    <tr>
+        <td><strong>Sev1</strong></td>
+        <td>Severity 1 - P0 级别事故</td>
+    </tr>
+    <tr>
+        <td><strong>Runbook</strong></td>
+        <td>标准操作流程文档</td>
+    </tr>
+    <tr>
+        <td><strong>GitOps</strong></td>
+        <td>基于 Git 的运维模式</td>
+    </tr>
+</table>
+
+<hr class="divider">
+
+<p style="color: #666; font-size: 0.9em; margin-top: 30px;">
+    <em>本培训文档基于 Confluence 页面自动生成，如需更新请联系项目团队。</em>
+</p>
+
+</body>
+</html>
