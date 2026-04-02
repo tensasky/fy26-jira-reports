@@ -1,0 +1,55 @@
+# Jira API Configuration Template
+# ================================
+# ⚠️  IMPORTANT SECURITY NOTICE:
+#     1. Copy this file to `.jira-config` (without the .template extension)
+#     2. Fill in your actual tokens and passwords
+#     3. NEVER commit .jira-config to git!
+#     4. This file is in .gitignore for your protection
+#
+# Setup Instructions:
+# -------------------
+# 1. Copy this file:
+#    cp .jira-config.template .jira-config
+#
+# 2. Edit .jira-config and add your real credentials
+#
+# 3. Set secure permissions:
+#    chmod 600 .jira-config
+#
+# 4. Verify it's not tracked by git:
+#    git status
+#    (should not show .jira-config)
+#
+# Getting Your Tokens:
+# --------------------
+# JIRA_API_TOKEN:
+#   1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
+#   2. Click "Create API token"
+#   3. Give it a label (e.g., "FY26 Reports")
+#   4. Copy the token and paste below
+#
+# QQ_MAIL_PASSWORD:
+#   1. Log into QQ Mail (mail.qq.com)
+#   2. Go to Settings → Accounts → POP3/IMAP/SMTP
+#   3. Generate an "Authorization Code" (授权码)
+#   4. Copy the code and paste below
+#
+# ============================================================================
+
+# Jira API Configuration
+JIRA_BASE_URL="https://lululemon.atlassian.net"
+JIRA_USER_EMAIL="rcheng2@lululemon.com"
+JIRA_API_TOKEN="YOUR_JIRA_API_TOKEN_HERE"
+
+# Email Configuration
+EMAIL_SENDER="rcheng2@lululemon.com"
+EMAIL_RECIPIENT="chinatechpmo@lululemon.com"
+EMAIL_SUBJECT_PREFIX="[FY26_INIT Epic 日报]"
+
+# QQ 邮箱配置（用于发送）
+QQ_EMAIL_SENDER="3823810468@qq.com"
+QQ_MAIL_PASSWORD="YOUR_QQ_AUTHORIZATION_CODE_HERE"
+
+# ============================================================================
+# ⚠️  REMEMBER: Never share this file or commit it to version control!
+# ============================================================================

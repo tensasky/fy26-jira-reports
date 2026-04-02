@@ -1,5 +1,7 @@
 # FY26 Jira Reports
 
+> ⚠️ **SECURITY NOTICE**: This repository has been audited for sensitive data. See [SECURITY.md](SECURITY.md) for details.
+
 This repository contains three automated reporting systems for FY26 project management.
 
 ## 📊 Reports Overview
@@ -9,6 +11,79 @@ This repository contains three automated reporting systems for FY26 project mana
 | **FY26_PMO** | Daily 18:00 | Daily Epic Status Report | Multi-project Epics linked to CNTIN Features |
 | **CNTIN-730** | Weekdays 12:00 | Weekly FY26 Initiatives Report | Initiatives under CNTIN-730 Goal |
 | **FY26_Intake_Cost** | Weekdays 10:00 & 15:00 | Intake Cost Tracking Report | Initiatives under CNTIN-730 with cost fields |
+
+## 🔒 Security Setup (IMPORTANT!)
+
+### ⚠️ Never Commit Sensitive Files
+
+The following files are **gitignored** and should never be committed:
+- `.jira-config` - Contains API tokens
+- `*.plist` - Launchd configs with tokens  
+- Any file with `token`, `password`, or `secret` in the name
+
+See [SECURITY.md](SECURITY.md) for full security audit details.
+
+### Initial Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/tensasky/fy26-jira-reports.git
+cd fy26-jira-reports
+
+# 2. Create your local config from template
+cp .jira-config.template .jira-config
+# Edit .jira-config with your actual tokens
+
+# 3. Copy template plist files (edit these locally)
+cp fy26_pmo/com.openclaw.fy26-pmo-report.template.plist \
+   ~/Library/LaunchAgents/com.openclaw.fy26-pmo-report.plist
+
+cp projects/cntin730-report/config/com.openclaw.cntin730-report.template.plist \
+   ~/Library/LaunchAgents/com.openclaw.cntin730-report.plist
+
+cp projects/fy26-intake-cost/com.openclaw.fy26-intake-cost.template.plist \
+   ~/Library/LaunchAgents/com.openclaw.fy26-intake-cost.plist
+
+# 4. Edit plist files to add your tokens (see instructions below)
+#    ⚠️ DO NOT commit these plist files!
+
+# 5. Set secure permissions
+chmod 600 .jira-config
+
+# 6. Verify nothing sensitive is tracked
+git status
+```
+
+### Configure Launchd Plist Files
+
+Edit each plist file in `~/Library/LaunchAgents/` to add your credentials:
+
+```xml
+<key>EnvironmentVariables</key>
+<dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
+    <key>HOME</key>
+    <string>/Users/admin</string>
+    <!-- Add these lines (replace with your actual values) -->
+    <key>JIRA_API_TOKEN</key>
+    <string>YOUR_ACTUAL_JIRA_TOKEN_HERE</string>
+    <key>QQ_MAIL_PASSWORD</key>
+    <string>YOUR_ACTUAL_QQ_AUTH_CODE_HERE</string>
+</dict>
+```
+
+### Load Launchd Jobs
+
+```bash
+# Load all定时任务
+launchctl load ~/Library/LaunchAgents/com.openclaw.fy26-pmo-report.plist
+launchctl load ~/Library/LaunchAgents/com.openclaw.cntin730-report.plist
+launchctl load ~/Library/LaunchAgents/com.openclaw.fy26-intake-cost.plist
+
+# Verify they're loaded
+launchctl list | grep openclaw
+```
 
 ## 📁 Repository Structure
 
@@ -37,6 +112,7 @@ This repository contains three automated reporting systems for FY26 project mana
 │   └── README.md
 │
 ├── docs/                       # Documentation
+├── SECURITY.md                 # Security audit and guidelines
 ├── MEMORY.md                   # Long-term memory & decisions
 └── README.md                   # This file
 ```
@@ -59,11 +135,11 @@ All scripts require these environment variables:
 
 ```bash
 # Jira API Configuration (REQUIRED)
-export JIRA_API_TOKEN="ATATT3xFfGF0..."  # Your Jira API Token
-export JIRA_EMAIL="rcheng2@lululemon.com"  # Jira account email
+export JIRA_API_TOKEN="YOUR_JIRA_API_TOKEN"  # Your Jira API Token
+export JIRA_EMAIL="rcheng2@lululemon.com"     # Jira account email
 
 # Email Configuration (REQUIRED)
-export QQ_MAIL_PASSWORD="ftbabipdlxliceai"  # QQ email authorization code
+export QQ_MAIL_PASSWORD="YOUR_QQ_AUTH_CODE"   # QQ email authorization code
 ```
 
 ### Jira API Token Setup
@@ -72,17 +148,11 @@ export QQ_MAIL_PASSWORD="ftbabipdlxliceai"  # QQ email authorization code
 3. Give it a label (e.g., "FY26 Reports")
 4. Copy the token and set as `JIRA_API_TOKEN`
 
-### Launchd Setup
-
-```bash
-# Install all定时任务
-launchctl load ~/Library/LaunchAgents/com.openclaw.fy26-pmo-report.plist
-launchctl load ~/Library/LaunchAgents/com.openclaw.cntin730-report.plist
-launchctl load ~/Library/LaunchAgents/com.openclaw.fy26-intake-cost.plist
-
-# Check status
-launchctl list | grep openclaw
-```
+### QQ Email Authorization Code
+1. Log into QQ Mail (mail.qq.com)
+2. Go to Settings → Accounts → POP3/IMAP/SMTP
+3. Generate an "Authorization Code" (授权码)
+4. Use this code as `QQ_MAIL_PASSWORD`
 
 ## 📧 Email Delivery
 
@@ -164,12 +234,15 @@ This repository tracks all changes. Key files:
 - `CHANGELOG.md` - Detailed change history per report
 - Git commits with descriptive messages
 
-## 🔒 Security Notes
+## 🔒 Security Best Practices
 
-- API tokens are **NOT** committed to GitHub
-- Tokens stored in `~/.openclaw/workspace/.jira-config` (local only)
-- plist files contain tokens (local machine only, not in repo)
-- Never share `JIRA_API_TOKEN` or `QQ_MAIL_PASSWORD`
+1. **Never commit sensitive files**: `.jira-config`, `*.plist`, any file with tokens
+2. **Rotate tokens regularly**: Every 90 days
+3. **Use template files**: Copy from `.template` files, edit locally
+4. **Set file permissions**: `chmod 600 .jira-config`
+5. **Verify before committing**: Run `git status` and review changes
+
+See [SECURITY.md](SECURITY.md) for full security guidelines and audit details.
 
 ## 📄 License
 
