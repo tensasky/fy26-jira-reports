@@ -1,7 +1,62 @@
 #!/usr/bin/env python3
 """
-CNTIN-730 Initiative 周报生成脚本 - v5.2 完整功能版
-包含: 统计卡片、Assignee筛选、冻结列、行展开、Excel导出
+CNTIN-730 Initiative 周报生成脚本 - v5.3
+==============================================
+
+功能：从 Jira 抓取 CNTIN-730 下的所有 Initiatives，生成交互式 HTML 报告
+依赖：requests, urllib3
+环境变量：JIRA_API_TOKEN (required), JIRA_EMAIL (optional)
+
+数据流：
+--------
+Jira REST API v3 (/rest/api/3/search/jql)
+    → fetch_jira_data() [分页处理 + 重试机制]
+    → process_data() [数据加工 + SLA计算]
+    → generate_html() [HTML生成]
+    → reports/CNTIN-730_FY26_Intakes_Report_Latest.html
+
+JQL 查询逻辑：
+--------------
+project = CNTIN AND issuetype = Initiative AND parent = CNTIN-730
+
+说明：
+- CNTIN-730 是 Goal 类型（hierarchy level 4）
+- 子项是 Initiative 类型
+- 截至 2026-04-02，共有 167 个 Initiatives
+
+报告特性：
+----------
+1. 统计卡片：总数、Done、Discovery、Missing SLA
+2. 搜索功能：按 Key、Summary、Description 搜索
+3. 筛选功能：按 Status、Assignee、Label 筛选
+4. SLA 监控：标记超过 2 周未更新的非 Done 项
+5. AI Summary：自动提取 What/Why（基于 Description）
+6. 行展开：点击展开完整 Description
+7. Excel 导出：下载 CSV 格式
+
+依赖安装：
+----------
+pip install requests urllib3
+
+运行方式：
+----------
+# 1. 设置环境变量
+export JIRA_API_TOKEN="your_token_here"
+
+# 2. 运行脚本
+python3 scripts/cntin730_report.py
+
+# 3. 发送邮件
+python3 scripts/send_report.py
+
+版本历史：
+----------
+v5.3 (2026-04-02) - 修复：添加 JIRA_API_TOKEN 环境变量检查
+v5.3 (2026-03-31) - 统一数据范围，包含 Cancelled 状态
+v5.2 (2026-03-19) - 修复点击展开功能，优化列宽
+
+作者：Tensasky
+最后更新：2026-04-02
 """
 
 import json
@@ -33,7 +88,7 @@ def fetch_jira_data():
     """从 Jira 获取数据 - 使用 POST 方法"""
     print("📥 从 Jira 获取数据...")
     
-    jql = 'project = CNTIN AND issuetype = Initiative AND parent = CNTIN-730 AND status != Cancelled'
+    jql = 'project = CNTIN AND issuetype = Initiative AND parent = CNTIN-730'
     
     auth_str = f"{JIRA_EMAIL}:{JIRA_API_TOKEN}"
     auth_b64 = base64.b64encode(auth_str.encode()).decode()

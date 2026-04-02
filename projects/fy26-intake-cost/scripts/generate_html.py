@@ -168,12 +168,15 @@ def generate_html():
         })
     
     # 统计数据
+    # 先计算 cancelled，避免重复计算
+    cancelled_count = sum(1 for r in processed_rows if 'Cancel' in r['status'])
+    
     stats = {
         'total': len(processed_rows),
         'not_started': sum(1 for r in processed_rows if r['status_cat'] == 'To Do' or r['status'] in ['To Do', 'Open', 'New']),
         'in_progress': sum(1 for r in processed_rows if r['status_cat'] == 'In Progress' or r['status'] in ['In Progress']),
-        'closed': sum(1 for r in processed_rows if r['status_cat'] == 'Done' or r['status'] in ['Done', 'Closed', 'Resolved']),
-        'cancelled': sum(1 for r in processed_rows if 'Cancel' in r['status'])
+        'closed': sum(1 for r in processed_rows if (r['status_cat'] == 'Done' or r['status'] in ['Done', 'Closed', 'Resolved']) and 'Cancel' not in r['status']),
+        'cancelled': cancelled_count
     }
     
     # Pillar 分布统计

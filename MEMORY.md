@@ -40,6 +40,18 @@
 
 ---
 
+### 🔧 修复记录 (2026-04-02)
+
+**问题**: fy26_intake_cost 和 cntin730 报表数据为 0
+- **原因**: 定时任务 plist 缺少 `JIRA_API_TOKEN` 环境变量
+- **修复**: 在两个 plist 中添加 `JIRA_API_TOKEN` 环境变量
+  - `~/Library/LaunchAgents/com.openclaw.fy26-intake-cost.plist`
+  - `~/Library/LaunchAgents/com.openclaw.cntin730-report.plist`
+- **验证**: CNTIN-730 下有 **167 个 Initiative**（不是 158）
+- **批准**: Roberto (2026-04-02)
+
+---
+
 ### 📊 报表 2: CNTIN-730 FY26项目周报
 
 **定时任务**: 每个工作日 12:00
